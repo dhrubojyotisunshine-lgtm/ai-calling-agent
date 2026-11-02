@@ -1,0 +1,10 @@
+node_modules/
+.env
+*.log
+
+# build output
+.next/
+*.tsbuildinfo
+
+# captures of the live client app: real customer data, keep local only
+docs/client-approval/live-app-capture-*/

@@ -1,0 +1,160 @@
+<title>Suggested Add-ons</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: filter chips, then category groups of selectable idea cards; sticky tray collects the client's picks. */
+:root{
+  --bg:#f3f6f8;--surface:#ffffff;--surface2:#eef2f5;--ink:#10202b;--mute:#5c6c78;--line:#d8e0e6;
+  --accent:#0b7a75;--accent-ink:#ffffff;--accent-soft:#d7f0ee;
+  --ok:#17803d;--okbg:#dcf3e3;--warn:#a15c07;--warnbg:#fdf0d2;--bad:#b42323;--badbg:#fbdede;--info:#2858c9;--infobg:#dfe8fb;
+  --shadow:0 1px 2px rgba(16,32,43,.06),0 8px 24px rgba(16,32,43,.08);
+  --f-d:'Sora',system-ui,sans-serif;--f-b:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1519;--surface:#142027;--surface2:#1b2a32;--ink:#e6eef2;--mute:#92a5b0;--line:#27393f;
+  --accent:#3cc6bd;--accent-ink:#06211f;--accent-soft:#12403d;
+  --ok:#5fd68b;--okbg:#12361f;--warn:#f0b04a;--warnbg:#3a2a0a;--bad:#f27c7c;--badbg:#411a1a;--info:#8fb1ff;--infobg:#18284d;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1519;--surface:#142027;--surface2:#1b2a32;--ink:#e6eef2;--mute:#92a5b0;--line:#27393f;
+  --accent:#3cc6bd;--accent-ink:#06211f;--accent-soft:#12403d;
+  --ok:#5fd68b;--okbg:#12361f;--warn:#f0b04a;--warnbg:#3a2a0a;--bad:#f27c7c;--badbg:#411a1a;--info:#8fb1ff;--infobg:#18284d;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-b);font-size:15px;line-height:1.55;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 110px}
+.wrap{max-width:1100px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-d);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.draftbar{background:var(--warnbg);color:var(--warn);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:8px 12px;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)))}
+.hero{padding:40px 0 18px;display:grid;gap:12px;max-width:740px}
+.hero h1{font-size:clamp(26px,4.6vw,40px);line-height:1.12}
+.hero p{margin:0;color:var(--mute);font-size:16px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;background:var(--surface2);color:var(--mute)}
+.chip.ok{background:var(--okbg);color:var(--ok)}.chip.in{background:var(--infobg);color:var(--info)}.chip.q{background:var(--warnbg);color:var(--warn)}.chip.bad{background:var(--badbg);color:var(--bad)}
+.keys{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--mute)}
+.filters{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:8px max(16px,env(safe-area-inset-left,0px))}
+.filters div{display:flex;gap:6px;overflow-x:auto;max-width:1100px;margin:0 auto}
+.f{flex:none;font:600 13px var(--f-b);color:var(--mute);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer}
+.f[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.f:focus-visible,.pick:focus-visible,.go:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.group{padding:34px 0 4px}
+.group h2{font-size:21px;margin-bottom:4px}
+.group>p{margin:0 0 14px;color:var(--mute);max-width:680px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px}
+.idea{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0;position:relative}
+.idea.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.idea h3{font-size:15.5px;line-height:1.3;padding-right:34px}
+.idea p{margin:0;color:var(--mute);font-size:13.5px}
+.idea .ex{font-size:13px;background:var(--surface2);border-radius:8px;padding:8px 10px}
+.idea .ex b{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);display:block}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.pick{position:absolute;top:12px;right:12px;width:24px;height:24px;accent-color:var(--accent);cursor:pointer}
+.tray{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);box-shadow:var(--shadow);
+  padding:10px max(16px,env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.tray div{max-width:1100px;margin:0 auto;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.go{font:700 13px var(--f-b);background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:9px 16px;cursor:pointer}
+.go.g{background:var(--surface2);color:var(--ink);border:1px solid var(--line)}
+#out{width:100%;max-width:1100px;margin:8px auto 0;display:none;font:12.5px/1.5 var(--f-b);background:var(--surface2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;height:110px}
+.note{font-size:12px;color:var(--mute)}
+.foot{padding:34px 0 0;max-width:720px;color:var(--mute);font-size:13.5px}
+[hidden]{display:none!important}
+</style>
+
+<div class="draftbar">Suggestions only · Nothing here is approved or included in scope</div>
+<div class="wrap">
+<header class="hero">
+  <span class="chip in" style="justify-self:start">Optional ideas for VoiceDesk</span>
+  <h1>Ideas that could make your AI calling and CRM platform stronger</h1>
+  <p>These go beyond the eleven draft screens. Tick the ones you want to discuss, then copy your list and send it back. Each idea shows what it does, a rough relative size, and anything that needs a legal or provider check first.</p>
+  <div class="keys"><span class="chip ok">Recommended</span> likely to matter early <span class="chip in">Good next step</span> adds clear value <span class="chip">Later</span> best after launch <span class="chip q">Check first</span> legal or provider approval needed</div>
+  <p class="note">Size is a rough comparison (Small, Medium, Large), not a time or cost estimate. Real estimates come after you choose.</p>
+</header>
+</div>
+
+<div class="filters"><div id="filters"></div></div>
+
+<main class="wrap" id="groups"></main>
+<div class="wrap"><p class="foot">Provider-dependent items (WhatsApp, SMS, email, telephony features) need accounts, approved message templates and costs that are not yet confirmed. No provider prices are assumed here.</p></div>
+
+<div class="tray"><div>
+  <span id="count"><b>0</b> ideas selected</span>
+  <span style="display:flex;gap:8px;flex-wrap:wrap"><button class="go g" id="clear" type="button">Clear</button><button class="go" id="copy" type="button">Copy my list</button></span>
+</div><textarea id="out" readonly aria-label="Selected ideas"></textarea></div>
+
+<script>
+var GROUPS=[
+{id:'calls',title:'Smarter calls',blurb:'What the AI agent can do during and around a conversation.',items:[
+ {t:'Hand the call to a human',d:'When a lead asks for a person or the topic is sensitive, the call is transferred live to your sales team, with the chat so far shown on their screen.',e:'A lead asks to speak to a manager and is connected within seconds.',r:'Recommended',s:'Medium',f:'Needs telephony support for transfers'},
+ {t:'Inbound receptionist',d:'The same agent answers incoming calls, explains services and products, takes messages and books demos.',e:'A customer calls after hours and still gets a demo slot.',r:'Recommended',s:'Medium'},
+ {t:'Voicemail and answering-machine detection',d:'Detects when a machine answers, then hangs up or leaves a short message instead of wasting billed minutes.',e:'No minutes spent talking to a voicemail greeting.',r:'Recommended',s:'Small',f:'Accuracy depends on provider'},
+ {t:'Do-not-call and consent checks',d:'Checks numbers against your opt-out list and the national preference registry, and plays an optional notice at the start of calls.',e:'Numbers that opted out are never dialled.',r:'Recommended',s:'Medium',f:'Legal confirmation needed'},
+ {t:'Script A/B testing',d:'Runs two versions of an opening or offer on small groups and shows which one gets more demos booked.',e:'Version B books 18% more demos, so it becomes the default.',r:'Later',s:'Medium'},
+ {t:'Learn from your website and documents',d:'The customer pastes a website link or uploads a brochure. The agent reads it and answers questions from it.',e:'Upload a product PDF and the agent can explain pricing tiers.',r:'Good next step',s:'Medium'},
+ {t:'Customer feedback and satisfaction calls',d:'After a project or a trial, the agent calls to ask for a rating and any problems, then flags unhappy customers.',e:'A 3-star reply creates a task for support.',r:'Later',s:'Small'}]},
+{id:'follow',title:'Follow-ups beyond calls',blurb:'Reach leads on the channel they actually answer.',items:[
+ {t:'WhatsApp follow-up after a call',d:'Sends the brochure, demo link or proposal on WhatsApp right after the call ends, and logs any reply in the CRM.',e:'"Thanks Amit, here is the demo link for Saturday 11 AM."',r:'Recommended',s:'Medium',f:'Needs approved WhatsApp templates'},
+ {t:'SMS and email sequences',d:'A short series of messages after a call: reminder, case study, proposal, last nudge. Stops when the lead replies or opts out.',e:'Day 1 reminder, day 3 case study, day 7 proposal check-in.',r:'Good next step',s:'Medium',f:'SMS needs registered templates'},
+ {t:'Demo and meeting booking',d:'The agent offers real free slots from your calendar and books them during the call. Reminders go out before the meeting.',e:'Agent checks the sales calendar and books Saturday 11 AM.',r:'Recommended',s:'Medium',f:'Needs calendar access'},
+ {t:'No-show recovery',d:'If a lead misses a demo, the agent calls to reschedule the same day.',e:'Missed 11 AM demo triggers a call at 11:30.',r:'Good next step',s:'Small'},
+ {t:'Payment reminders and collection calls',d:'Polite calls and messages for unpaid invoices, with a payment link and a promised-date record.',e:'Lead promises to pay on 5 Nov and gets a reminder that day.',r:'Later',s:'Medium',f:'Check collection-call rules'}]},
+{id:'crm',title:'CRM depth',blurb:'Help the sales team work leads faster and see the real pipeline.',items:[
+ {t:'Lead scoring',d:'Each lead gets a score from their answers, budget, timeline and call behaviour, so the team calls the hottest first.',e:'Score 86: wants an app, budget confirmed, demo booked.',r:'Recommended',s:'Medium'},
+ {t:'Deal value and sales forecast',d:'Attach an expected amount to each lead and see the pipeline value by stage and by month.',e:'₹18 lakh expected from leads at the Interested stage.',r:'Good next step',s:'Small'},
+ {t:'Team assignment and round-robin',d:'New hot leads are shared among sales staff automatically, with owner, due dates and reminders.',e:'Each hot lead goes to the next free sales rep.',r:'Recommended',s:'Small'},
+ {t:'Instant alert for hot leads',d:'The sales rep gets a message the moment a lead says yes, with a one-line summary.',e:'"Amit Verma wants a demo Saturday. Budget ₹6 lakh."',r:'Recommended',s:'Small'},
+ {t:'Duplicate merge and lead history',d:'Finds the same person across imports, and merges their calls, notes and tasks into one record.',e:'Two imports of the same phone number become one lead.',r:'Good next step',s:'Small'},
+ {t:'Proposal and quote generator',d:'Creates a quote from the services and products the lead showed interest in, ready to send.',e:'One click makes a PDF quote for the mobile app plus billing app.',r:'Later',s:'Large'},
+ {t:'Custom fields, tags and saved lists',d:'Add your own fields (industry, company size) and group leads by tag for campaigns.',e:'Tag: "Retail, Pune, asked for app".',r:'Good next step',s:'Small'}]},
+{id:'src',title:'Bring leads in automatically',blurb:'Stop uploading spreadsheets by hand.',items:[
+ {t:'Website form and landing page capture',d:'New enquiries from your website form land in the CRM and can be called within minutes.',e:'A form submitted at 2:14 PM is called by 2:16 PM.',r:'Recommended',s:'Small'},
+ {t:'Ad and marketplace lead sync',d:'Pulls leads from Meta and Google ads or lead marketplaces straight into a campaign.',e:'Facebook lead form enquiries are dialled automatically.',r:'Good next step',s:'Medium',f:'Needs each platform\'s access'},
+ {t:'Connect to other tools',d:'Two-way sync with Google Sheets, Zoho, HubSpot or Zapier, plus an open API so your own software can send and receive leads.',e:'Won deals update your existing CRM.',r:'Good next step',s:'Medium'}]},
+{id:'rep',title:'Reports and insight',blurb:'Show what the calls are worth.',items:[
+ {t:'Cost per lead and campaign return',d:'Compares minutes spent with demos booked and deals won, per campaign.',e:'Campaign A: ₹420 per booked demo.',r:'Recommended',s:'Medium'},
+ {t:'Call quality and sentiment review',d:'Flags calls where the lead sounded annoyed, or the agent gave a wrong answer, so scripts can be fixed.',e:'12 calls flagged this week for review.',r:'Good next step',s:'Medium'},
+ {t:'Scheduled reports by email',d:'A weekly summary to the owner or sales head: calls, demos, hot leads and minutes used.',e:'Every Monday 9 AM.',r:'Good next step',s:'Small'},
+ {t:'Export and bulk download',d:'Download leads, calls and outcomes as Excel or CSV.',e:'Export all converted leads for March.',r:'Recommended',s:'Small'}]},
+{id:'plat',title:'Platform and business model',blurb:'Run it as a product, not just a tool.',items:[
+ {t:'Team members and roles',d:'Inside each customer account: owner, manager, sales rep, viewer, each seeing only what they should.',e:'Reps see their own leads; managers see all.',r:'Recommended',s:'Medium'},
+ {t:'Two-step login and security log',d:'Extra login check and a record of who changed what.',e:'Admin logins need a code sent to the phone.',r:'Recommended',s:'Small'},
+ {t:'Agency and white-label accounts',d:'Resellers manage many client accounts under their own brand, name and logo.',e:'A marketing agency runs campaigns for ten clients.',r:'Later',s:'Large'},
+ {t:'Mobile-friendly app',d:'Sales staff check hot leads, callbacks and call summaries from a phone.',e:'Tap a callback and call the lead back.',r:'Good next step',s:'Medium'},
+ {t:'Data export and deletion on request',d:'Lets a customer, or a lead, request their data or its deletion, and records it.',e:'A lead asks to be forgotten and is removed within the agreed time.',r:'Recommended',s:'Medium',f:'Legal confirmation needed'},
+ {t:'Voice cloning of your own team',d:'The agent speaks in the voice of a real staff member.',e:'Calls sound like your sales head.',r:'Later',s:'Large',f:'Consent and legal check needed'}]}
+];
+var RC={'Recommended':'ok','Good next step':'in','Later':''};
+var sel={},active='all';
+function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function render(){
+  var h='';
+  GROUPS.forEach(function(g){
+    if(active!=='all'&&active!==g.id)return;
+    h+='<section class="group"><h2>'+esc(g.title)+'</h2><p>'+esc(g.blurb)+'</p><div class="grid">';
+    g.items.forEach(function(it,i){
+      var k=g.id+i,on=!!sel[k];
+      h+='<article class="idea'+(on?' sel':'')+'"><input class="pick" type="checkbox" id="c-'+k+'" data-k="'+k+'" aria-label="Select '+esc(it.t)+'"'+(on?' checked':'')+'>'
+       +'<h3>'+esc(it.t)+'</h3><p>'+esc(it.d)+'</p><div class="ex"><b>Example</b>'+esc(it.e)+'</div><div class="meta">'
+       +'<span class="chip '+RC[it.r]+'">'+esc(it.r)+'</span><span class="chip">Size: '+esc(it.s)+'</span>'+(it.f?'<span class="chip q">'+esc(it.f)+'</span>':'')+'</div></article>';
+    });
+    h+='</div></section>';
+  });
+  document.getElementById('groups').innerHTML=h;
+}
+function filters(){
+  var f=document.getElementById('filters'),h='<button class="f" type="button" data-g="all" aria-pressed="'+(active==='all')+'">All ideas</button>';
+  GROUPS.forEach(function(g){h+='<button class="f" type="button" data-g="'+g.id+'" aria-pressed="'+(active===g.id)+'">'+esc(g.title)+'</button>'});
+  f.innerHTML=h;
+}
+function names(){var o=[];GROUPS.forEach(function(g){g.items.forEach(function(it,i){if(sel[g.id+i])o.push(g.title+': '+it.t)})});return o}
+function tally(){document.getElementById('count').innerHTML='<b>'+names().length+'</b> ideas selected'}
+document.getElementById('filters').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;active=b.getAttribute('data-g');filters();render()});
+document.getElementById('groups').addEventListener('change',function(e){var k=e.target.getAttribute('data-k');if(!k)return;
+  if(e.target.checked)sel[k]=1;else delete sel[k];e.target.closest('.idea').classList.toggle('sel',e.target.checked);tally()});
+document.getElementById('clear').addEventListener('click',function(){sel={};document.getElementById('out').style.display='none';render();tally()});
+document.getElementById('copy').addEventListener('click',function(){
+  var n=names(),txt=n.length?'Ideas I want to discuss:\n- '+n.join('\n- '):'No ideas selected yet.',o=document.getElementById('out');
+  o.value=txt;o.style.display='block';
+  try{navigator.clipboard.writeText(txt).catch(function(){o.select()})}catch(x){o.select()}
+});
+filters();render();tally();
+</script>

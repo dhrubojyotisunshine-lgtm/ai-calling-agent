@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Draft Screens - AI Voice Agent SaaS</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--ink:#1d2330;--mute:#6b7384;--line:#d5d9e2;--acc:#3b5bdb;--warn:#b45309;--warnbg:#fef3c7;--ok:#15803d}
+@media(prefers-color-scheme:dark){:root{--bg:#12151c;--card:#1b202b;--ink:#e8ebf2;--mute:#97a0b3;--line:#323a4b;--acc:#7c93ff;--warn:#fbbf24;--warnbg:#3a2e0b;--ok:#4ade80}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,sans-serif;padding:16px;max-width:1100px;margin-inline:auto}
+.banner{background:var(--warnbg);color:var(--warn);border:1px solid var(--warn);padding:10px 14px;border-radius:8px;font-weight:600;text-align:center}
+h1{margin:20px 0 4px}h2{margin:36px 0 4px;font-size:18px}.sub{color:var(--mute);margin:0 0 10px}
+.screen{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:8px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.box{border:1.5px dashed var(--line);border-radius:6px;padding:8px 10px;background:var(--bg);flex:1;min-width:120px}
+.box b{display:block;font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}
+.btn{background:var(--acc);color:#fff;border-radius:6px;padding:6px 12px;font-size:13px;display:inline-block}
+.btn.o{background:none;color:var(--acc);border:1px solid var(--acc)}
+.grid{display:grid;grid-template-columns:150px 1fr;gap:12px}
+.nav{border-right:1px solid var(--line);padding-right:8px;font-size:13px;color:var(--mute)}.nav div{padding:4px 0}.nav .on{color:var(--acc);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left}th{color:var(--mute);font-weight:600}
+.tag{font-size:11px;border:1px solid var(--line);border-radius:10px;padding:1px 8px}
+.q{background:var(--warnbg);color:var(--warn);border-radius:6px;padding:6px 10px;font-size:13px;margin-top:8px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+@media(max-width:640px){.grid{grid-template-columns:1fr}.nav{border:0;display:flex;gap:10px;flex-wrap:wrap}}
+</style></head><body>
+<div class="banner">DRAFT — FOR CLIENT REVIEW AND APPROVAL — NOT AUTHORIZED FOR DEVELOPMENT</div>
+<h1>Draft Screens: AI Voice Agent SaaS</h1>
+<p class="sub">Low-fidelity wireframes showing the proposed screens, for layout and flow approval only. No code exists yet. Every item is a proposal until you confirm it. Yellow notes are open decisions.</p>
+<p class="sub"><b>Basis:</b> your brief plus the public Voxura site (Next.js marketing page; prepaid per-minute wallet; 4 model providers; 8 voices; contact-sales access). No source code, database or provider credentials have been available, so nothing is verified as working.</p>
+
+<h2>S1 · Register / Login</h2><p class="sub">Roles: Customer, Admin</p>
+<div class="screen"><div class="cols">
+<div class="box"><b>Register</b>Business name · Name · Email · Phone (OTP) · Password · ☐ accept Terms/Privacy<br><span class="btn">Create account</span></div>
+<div class="box"><b>Login</b>Email · Password · Forgot password?<br><span class="btn">Sign in</span></div>
+<div class="box"><b>Reset password</b>Email link → set new password</div></div>
+<div class="q">Q: Self-serve signup, or invite/contact-sales only (as the live site does today)?</div></div>
+
+<h2>S2 · Plans &amp; Checkout</h2><p class="sub">Customer</p>
+<div class="screen"><div class="cols">
+<div class="box"><b>Plan A</b>[name]<br>[X] min / month<br>₹[TBD]<br><span class="btn o">Select</span></div>
+<div class="box"><b>Plan B</b>[name]<br>[Y] min / month<br>₹[TBD]<br><span class="btn o">Select</span></div>
+<div class="box"><b>Plan C</b>[name]<br>[Z] min / month<br>₹[TBD]<br><span class="btn o">Select</span></div>
+<div class="box"><b>Pay-as-you-go wallet</b>Recharge ₹[amount]<br><span class="btn o">Recharge</span></div></div>
+<div class="bar" style="margin-top:8px"><div class="box"><b>Checkout</b>Plan summary · GST · Payment gateway [TBD] · <span class="btn">Pay</span></div></div>
+<div class="q">Q: Monthly plan minutes, prepaid wallet (as on the live site), or both? Do unused minutes roll over? Payment gateway?</div></div>
+
+<h2>S3 · Customer Dashboard</h2><p class="sub">Customer</p>
+<div class="screen"><div class="grid"><div class="nav"><div class="on">Dashboard</div><div>Agents</div><div>Leads</div><div>Campaigns</div><div>Calls</div><div>CRM</div><div>Follow-ups</div><div>Usage &amp; Billing</div><div>Settings</div></div>
+<div><div class="bar"><div class="box"><b>Minutes left</b>412 / 1000</div><div class="box"><b>Calls today</b>86</div><div class="box"><b>Answered %</b>54%</div><div class="box"><b>Interested</b>12</div></div>
+<div class="bar"><div class="box" style="min-height:90px"><b>Calls per day (chart)</b></div><div class="box" style="min-height:90px"><b>Outcome split (chart)</b></div></div>
+<div class="box"><b>Active campaigns</b>Diwali Offer — 62% done — Running — <span class="btn o">Pause</span></div></div></div></div>
+
+<h2>S4 · AI Agent Setup &amp; Script Review</h2><p class="sub">Customer</p>
+<div class="screen"><div class="bar">
+<div class="box"><b>1 · Business profile</b>Business · Services · Audience · FAQs / knowledge (text, PDF, URL)</div>
+<div class="box"><b>2 · Agent settings</b>Goal · Language [TBD list] · Voice · Tone · Calling hours · Max call length</div>
+<div class="box"><b>3 · Script</b>Opening · Qualifying questions · Objection replies · Closing<br><span class="btn o">Generate with AI</span> <span class="btn o">Edit</span></div>
+<div class="box"><b>4 · Test &amp; approve</b>Test call to my phone · <span class="btn">Approve script</span></div></div>
+<div class="q">Q: Which languages at launch? Which AI/voice providers? Must the script be approved before every campaign?</div></div>
+
+<h2>S5 · Lead Import</h2><p class="sub">Customer</p>
+<div class="screen"><div class="bar"><div class="box"><b>Upload</b>CSV / Excel · Download sample file</div><div class="box"><b>Map columns</b>Name→name · Mobile→phone · City→custom</div><div class="box"><b>Validation result</b>480 valid · 12 invalid · 31 duplicates · 5 on do-not-call</div><div class="box"><b>Confirm</b>Skip bad rows · <span class="btn">Import 480</span></div></div>
+<div class="q">Q: Max rows per file? Must the customer confirm consent for these leads at upload?</div></div>
+
+<h2>S6 · Campaign Create &amp; Monitor</h2><p class="sub">Customer</p>
+<div class="screen"><div class="bar"><div class="box"><b>Create</b>Name · Agent · Lead list/segment · Start–end date · Calling window · Retry limit · Gap between retries · Concurrency</div>
+<div class="box"><b>Monitor</b>Progress bar · Dialled / Answered / Failed · Minutes used<br><span class="btn o">Pause</span> <span class="btn o">Resume</span> <span class="btn o">Cancel</span></div></div>
+<div class="q">Q: Expected daily call volume and simultaneous calls? Low-balance behaviour: auto-pause?</div></div>
+
+<h2>S7 · Call Log &amp; Call Detail</h2><p class="sub">Customer</p>
+<div class="screen"><table><tr><th>Time</th><th>Lead</th><th>Status</th><th>Duration</th><th>Outcome</th></tr>
+<tr><td>10:02</td><td>A. Sharma</td><td>Answered</td><td>2:14</td><td><span class="tag">Interested</span></td></tr>
+<tr><td>10:05</td><td>R. Iyer</td><td>No answer</td><td>0:30</td><td><span class="tag">Retry 1</span></td></tr>
+<tr><td>10:07</td><td>S. Khan</td><td>Busy</td><td>0:05</td><td><span class="tag">Retry 1</span></td></tr></table>
+<div class="bar" style="margin-top:8px"><div class="box"><b>Call detail</b>Audio player · Transcript · AI summary · Outcome (editable) · Minutes billed</div></div>
+<div class="q">Q: Record calls at all? Retention period? Who may hear recordings? Is a consent announcement required at call start?</div></div>
+
+<h2>S8 · CRM — Lead Pipeline &amp; Lead Detail</h2><p class="sub">Customer</p>
+<div class="screen"><div class="bar"><div class="box"><b>New</b>• lead<br>• lead</div><div class="box"><b>Contacted</b>• lead</div><div class="box"><b>Interested</b>• lead</div><div class="box"><b>Qualified</b>• lead</div><div class="box"><b>Converted</b>• lead</div><div class="box"><b>Not interested / DNC</b>• lead</div></div>
+<div class="box"><b>Lead detail</b>Contact info · Stage · Notes · Tasks · Timeline of calls and changes · <span class="btn o">Add note</span> <span class="btn o">Schedule follow-up</span> <span class="btn o">Mark do-not-call</span></div>
+<div class="q">Q: Is built-in CRM enough, or must it sync to an external CRM (Zoho, HubSpot, etc.)?</div></div>
+
+<h2>S9 · Follow-ups</h2><p class="sub">Customer</p>
+<div class="screen"><div class="bar"><div class="box"><b>Rules</b>Retry up to [N] times · every [N] hours · only within calling window · stop on opt-out</div><div class="box"><b>Callbacks due</b>Today 4:00 pm — A. Sharma — <span class="btn o">Call now</span> <span class="btn o">Reschedule</span></div><div class="box"><b>Needs human</b>Lead asked for a person — <span class="btn o">Assign</span></div></div></div>
+
+<h2>S10 · Usage &amp; Billing</h2><p class="sub">Customer</p>
+<div class="screen"><div class="bar"><div class="box"><b>Balance</b>412 min · renews [date] · <span class="btn">Upgrade / Recharge</span></div><div class="box"><b>Usage feed</b>Call #1042 — 2.0 min billed — balance 412<br>Call #1041 — 0 min (no answer)</div><div class="box"><b>Invoices</b>Download · Payment history · Failed payments</div></div>
+<div class="q">Q: Rounding (per second / per minute)? Are unanswered/failed calls billed? Low-balance alert level? Refund policy?</div></div>
+
+<h2>S11 · Admin Console</h2><p class="sub">Platform Admin</p>
+<div class="screen"><div class="bar"><div class="box"><b>Customers</b>List · Suspend · Impersonate (audited)</div><div class="box"><b>Subscriptions &amp; limits</b>Change plan · Add credits · Adjust usage</div><div class="box"><b>Providers</b>Telephony / AI / voice settings · Health status</div><div class="box"><b>Operations</b>Failed calls · Webhook errors · Audit log · Support tickets</div></div></div>
+
+<h2>Not drawn yet (will be in the full docs once you approve)</h2>
+<p class="sub">Opt-out / do-not-call list screen, notification settings, team members &amp; roles within a customer account, mobile layouts, final visual design.</p>
+</body></html>

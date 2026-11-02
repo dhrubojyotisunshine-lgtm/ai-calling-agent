@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Voxura look: deep purple sidebar, white cards, green call actions. Light theme only. */
+@theme inline {
+  --color-brand: #4a2c9e;
+  --color-brand-dark: #3a2180;
+  --color-brand-soft: #efeafb;
+  --color-ink: #1d1a2b;
+  --color-muted: #6b6780;
+  --color-paper: #f6f5fa;
+  --color-line: #e4e1ee;
+  --color-ok: #0f9d58;
+  --color-ok-soft: #e3f6ec;
+  --color-warn: #b45f00;
+  --color-warn-soft: #fff1dc;
+  --color-bad: #c62828;
+  --color-bad-soft: #fde8e8;
+  --color-info: #1a63d8;
+  --color-info-soft: #e6effd;
+  --font-sans: var(--font-manrope), "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), Consolas, monospace;
+}
+
+html { color-scheme: light; }
+body { background: var(--color-paper); color: var(--color-ink); }
+
+@utility card { @apply rounded-xl border border-line bg-white; }
+@utility btn { @apply inline-flex items-center justify-center gap-2 rounded-lg border px-3.5 py-2 text-sm font-semibold transition disabled:opacity-50 border-line bg-white text-ink hover:bg-paper; }
+@utility btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-lg border px-3.5 py-2 text-sm font-semibold transition disabled:opacity-50 border-brand bg-brand text-white hover:bg-brand-dark; }
+@utility btn-go { @apply inline-flex items-center justify-center gap-2 rounded-lg border px-3.5 py-2 text-sm font-semibold transition disabled:opacity-50 border-ok bg-ok text-white hover:brightness-95; }
+@utility btn-danger { @apply inline-flex items-center justify-center gap-2 rounded-lg border px-3.5 py-2 text-sm font-semibold transition disabled:opacity-50 border-bad-soft bg-bad-soft text-bad hover:brightness-95; }
+@utility label { @apply text-[11px] font-bold uppercase tracking-wider text-muted; }
+@utility input { @apply w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink placeholder:text-muted/60 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20; }
+@utility chip { @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-semibold; }
+
+:focus-visible { outline: 3px solid #8f74e6; outline-offset: 2px; }

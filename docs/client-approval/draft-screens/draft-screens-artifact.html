@@ -1,0 +1,372 @@
+<title>Draft Screens Preview</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky screen index on top; each screen = explanation column beside a browser-framed mockup. */
+:root{
+  --bg:#f3f6f8;--surface:#ffffff;--surface2:#eef2f5;--ink:#10202b;--mute:#5c6c78;--line:#d8e0e6;
+  --accent:#0b7a75;--accent-ink:#ffffff;--accent-soft:#d7f0ee;
+  --ok:#17803d;--okbg:#dcf3e3;--warn:#a15c07;--warnbg:#fdf0d2;--bad:#b42323;--badbg:#fbdede;--info:#2858c9;--infobg:#dfe8fb;
+  --shadow:0 1px 2px rgba(16,32,43,.06),0 8px 24px rgba(16,32,43,.08);
+  --f-d:'Sora',system-ui,sans-serif;--f-b:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1519;--surface:#142027;--surface2:#1b2a32;--ink:#e6eef2;--mute:#92a5b0;--line:#27393f;
+  --accent:#3cc6bd;--accent-ink:#06211f;--accent-soft:#12403d;
+  --ok:#5fd68b;--okbg:#12361f;--warn:#f0b04a;--warnbg:#3a2a0a;--bad:#f27c7c;--badbg:#411a1a;--info:#8fb1ff;--infobg:#18284d;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1519;--surface:#142027;--surface2:#1b2a32;--ink:#e6eef2;--mute:#92a5b0;--line:#27393f;
+  --accent:#3cc6bd;--accent-ink:#06211f;--accent-soft:#12403d;
+  --ok:#5fd68b;--okbg:#12361f;--warn:#f0b04a;--warnbg:#3a2a0a;--bad:#f27c7c;--badbg:#411a1a;--info:#8fb1ff;--infobg:#18284d;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-b);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-d);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.draftbar{background:var(--warnbg);color:var(--warn);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:8px 12px;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));}
+.hero{padding:44px 0 24px;display:grid;gap:14px;max-width:760px}
+.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.1}
+.hero p{color:var(--mute);margin:0;font-size:16px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;background:var(--surface2);color:var(--mute)}
+.chip.q{background:var(--warnbg);color:var(--warn)}.chip.ok{background:var(--okbg);color:var(--ok)}.chip.in{background:var(--infobg);color:var(--info)}.chip.bad{background:var(--badbg);color:var(--bad)}
+.index{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:8px max(16px,env(safe-area-inset-left,0px))}
+.index div{display:flex;gap:6px;overflow-x:auto;max-width:1180px;margin:0 auto;scrollbar-width:thin}
+.index a{flex:none;text-decoration:none;color:var(--mute);font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.index a:hover{color:var(--accent);border-color:var(--accent)}
+.index a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section.scr{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:28px;padding:44px 0;border-bottom:1px solid var(--line);scroll-margin-top:60px}
+.copy{display:grid;gap:12px;align-content:start}
+.copy .tag{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.copy h2{font-size:24px;line-height:1.2}
+.copy p{margin:0;color:var(--mute)}
+.copy ul{margin:0;padding-left:18px;color:var(--ink)}.copy li{margin:3px 0}
+.decide{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:12px 14px;font-size:14px}
+.decide b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.decide ul{color:inherit;padding-left:18px;margin:0}
+.frame{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.chrome{display:flex;align-items:center;gap:6px;padding:9px 12px;background:var(--surface2);border-bottom:1px solid var(--line)}
+.chrome i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.chrome span{margin-left:8px;font-size:11px;color:var(--mute);background:var(--surface);border-radius:6px;padding:2px 10px;flex:1;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sample{font-size:11px;color:var(--mute);text-align:right;padding:6px 4px 0}
+.scroller{overflow-x:auto}
+.app{display:grid;grid-template-columns:150px minmax(0,1fr);min-width:620px}
+.side{background:var(--surface2);border-right:1px solid var(--line);padding:14px 10px;display:grid;gap:2px;align-content:start;font-size:13px}
+.side .logo{font-family:var(--f-d);font-weight:700;font-size:15px;padding:2px 8px 12px;color:var(--accent)}
+.side div.i{padding:6px 8px;border-radius:7px;color:var(--mute);font-weight:500}
+.side div.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.main{padding:16px;display:grid;gap:14px;align-content:start;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.top h3{font-size:17px}
+.btn{display:inline-block;font:600 12.5px var(--f-b);padding:7px 13px;border-radius:8px;background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);cursor:default}
+.btn.o{background:transparent;color:var(--accent)}.btn.g{background:var(--surface2);color:var(--ink);border-color:var(--line)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.kpi small{display:block;color:var(--mute);font-size:11.5px}.kpi b{font-family:var(--f-d);font-size:21px;font-variant-numeric:tabular-nums}
+.kpi em{font-style:normal;font-size:11px;color:var(--ok);font-weight:600}
+.card{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--surface);min-width:0}
+.card h4{margin:0 0 8px;font-size:13px;font-family:var(--f-d)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+th{color:var(--mute);font-weight:600;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);font-size:11.5px}
+td{padding:7px 8px;border-bottom:1px solid var(--line)}tr:last-child td{border-bottom:0}
+.pill{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--surface2);color:var(--mute);white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.warn{background:var(--warnbg);color:var(--warn)}.pill.bad{background:var(--badbg);color:var(--bad)}.pill.in{background:var(--infobg);color:var(--info)}
+.bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.field{display:grid;gap:4px;font-size:12px;color:var(--mute);font-weight:600}
+.input{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--surface);color:var(--ink);font-weight:500;font-size:13px}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.step{font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;background:var(--surface2);color:var(--mute)}.step.on{background:var(--accent);color:var(--accent-ink)}.step.done{background:var(--okbg);color:var(--ok)}
+.plan{border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:8px;background:var(--surface)}
+.plan.pop{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.plan b.price{font-family:var(--f-d);font-size:22px}.plan ul{margin:0;padding-left:16px;font-size:12.5px;color:var(--mute)}
+.chat{display:grid;gap:8px;font-size:13px}
+.msg{max-width:88%;padding:8px 11px;border-radius:12px;background:var(--surface2)}.msg.me{justify-self:end;background:var(--accent-soft);color:var(--ink)}.msg.ai{justify-self:start}
+.msg small{display:block;color:var(--mute);font-size:10.5px;font-weight:700;margin-bottom:1px}
+.board{display:grid;grid-template-columns:repeat(5,minmax(112px,1fr));gap:8px}
+.col{background:var(--surface2);border-radius:10px;padding:8px;display:grid;gap:6px;align-content:start;font-size:12px}
+.col h5{margin:0;font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}
+.lead{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 9px}.lead small{display:block;color:var(--mute)}
+.chart{display:flex;align-items:flex-end;gap:6px;height:90px}
+.chart i{flex:1;background:var(--accent);border-radius:4px 4px 0 0;opacity:.85}
+.tl{display:grid;gap:8px;font-size:12.5px}.tl div{display:grid;grid-template-columns:70px 1fr;gap:8px}.tl span{color:var(--mute)}
+.center{max-width:420px;margin:0 auto;padding:26px 16px;display:grid;gap:12px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.split>div{padding:24px}.split .l{background:var(--accent-soft)}
+.note{font-size:11.5px;color:var(--mute)}
+.wave{display:flex;align-items:center;gap:2px;height:28px}.wave i{width:3px;background:var(--accent);border-radius:2px}
+.closing{padding:40px 0 0;display:grid;gap:10px;max-width:720px}
+.closing ul{margin:0;padding-left:18px;color:var(--mute)}
+@media(max-width:860px){section.scr{grid-template-columns:minmax(0,1fr);gap:16px;padding:32px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+
+<div class="draftbar">Draft for client review · Not authorized for development</div>
+<div class="wrap">
+<header class="hero">
+  <span class="chip in" style="justify-self:start">Working name: VoiceDesk</span>
+  <h1>See how your AI voice agent platform will look and work</h1>
+  <p>Eleven screens that follow a customer from sign-up to a finished call campaign, plus the admin console. These are early layouts for discussion. Colours, wording and numbers are examples only, and nothing here is final until you approve it.</p>
+  <div class="legend">
+    <span class="chip q">Yellow boxes: decisions we need from you</span>
+    <span class="chip">All names, numbers and prices are sample data</span>
+  </div>
+</header>
+</div>
+
+<nav class="index" aria-label="Screens"><div>
+  <a href="#s1">1 Sign up</a><a href="#s2">2 Plans</a><a href="#s3">3 Dashboard</a><a href="#s4">4 Services &amp; Products</a><a href="#s5">5 Agent setup</a><a href="#s6">6 Leads</a><a href="#s7">7 Campaigns</a><a href="#s8">8 Calls</a><a href="#s9">9 CRM</a><a href="#s10">10 Follow-ups</a><a href="#s11">11 Billing</a><a href="#s12">12 Admin</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- S1 -->
+<section class="scr" id="s1">
+  <div class="copy">
+    <span class="tag">Screen 1 · Customer</span>
+    <h2>Create an account</h2>
+    <p>A new business registers with its email and phone number, verifies the phone with a one-time code, and lands on plan selection.</p>
+    <ul><li>Password reset by email link</li><li>Terms and privacy acceptance recorded with date and time</li></ul>
+    <div class="decide"><b>Decide</b><ul><li>Open sign-up, or invite / approval by your sales team?</li></ul></div>
+  </div>
+  <div><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/signup</span></div>
+    <div class="split">
+      <div class="l"><h3 style="font-size:22px;color:var(--accent)">Put an AI voice agent to work on your calls</h3><p class="note" style="font-size:13px;color:var(--ink)">Qualify leads, follow up and book callbacks in your customers' own language.</p></div>
+      <div class="center" style="padding:24px">
+        <h3>Create your account</h3>
+        <label class="field">Business name<span class="input">Brightlane Software Pvt Ltd</span></label>
+        <label class="field">Mobile number<span class="input">+91 98•••• 4521</span></label>
+        <label class="field">Work email<span class="input">anita@brightlane.in</span></label>
+        <label class="field">Password<span class="input">••••••••••</span></label>
+        <span class="note">☑ I accept the Terms and Privacy Policy</span>
+        <span class="btn" style="text-align:center">Create account</span>
+        <span class="note">Already registered? Sign in</span>
+      </div>
+    </div></div></div>
+</section>
+
+<!-- S2 -->
+<section class="scr" id="s2">
+  <div class="copy">
+    <span class="tag">Screen 2 · Customer</span>
+    <h2>Choose a plan and pay</h2>
+    <p>Each plan includes a set number of calling minutes. The customer can also top up a wallet when minutes run out.</p>
+    <ul><li>GST shown before payment</li><li>Invoice emailed automatically</li></ul>
+    <div class="decide"><b>Decide</b><ul><li>Monthly plans, a prepaid wallet, or both?</li><li>Do unused minutes carry over?</li><li>Payment gateway</li></ul></div>
+  </div>
+  <div><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/plans</span></div>
+    <div class="main"><div class="top"><h3>Pick the plan that fits your calling volume</h3><span class="pill in">Prices are placeholders</span></div>
+      <div class="three">
+        <div class="plan"><span class="pill">Starter</span><b class="price">₹X,XXX<small style="font-size:12px;color:var(--mute)"> /month</small></b><ul><li>500 call minutes</li><li>1 AI agent</li><li>Basic reports</li></ul><span class="btn o" style="text-align:center">Choose</span></div>
+        <div class="plan pop"><span class="pill ok">Most popular</span><b class="price">₹XX,XXX<small style="font-size:12px;color:var(--mute)"> /month</small></b><ul><li>2,500 call minutes</li><li>5 AI agents</li><li>Follow-up automation</li></ul><span class="btn" style="text-align:center">Choose</span></div>
+        <div class="plan"><span class="pill">Business</span><b class="price">₹XX,XXX<small style="font-size:12px;color:var(--mute)"> /month</small></b><ul><li>10,000 call minutes</li><li>Unlimited agents</li><li>Priority support</li></ul><span class="btn o" style="text-align:center">Choose</span></div>
+      </div>
+      <div class="card" style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><span><b>Need more minutes?</b> <span class="note">Recharge your wallet any time.</span></span><span class="btn g">Recharge wallet</span></div>
+    </div></div></div>
+</section>
+
+<!-- S3 -->
+<section class="scr" id="s3">
+  <div class="copy">
+    <span class="tag">Screen 3 · Customer</span>
+    <h2>Dashboard</h2>
+    <p>One page that answers "how are my calls doing today?" Minutes left, calls made, how many were answered, and how many leads are interested.</p>
+    <ul><li>Running campaigns with pause button</li><li>Warning when minutes run low</li></ul>
+  </div>
+  <div class="scroller"><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/dashboard</span></div>
+    <div class="app"><div class="side"><div class="logo">VoiceDesk</div><div class="i on">Dashboard</div><div class="i">Services &amp; Products</div><div class="i">Agents</div><div class="i">Leads</div><div class="i">Campaigns</div><div class="i">Calls</div><div class="i">CRM</div><div class="i">Follow-ups</div><div class="i">Billing</div><div class="i">Settings</div></div>
+    <div class="main"><div class="top"><h3>Good morning, Anita</h3><span class="btn">+ New campaign</span></div>
+      <div class="kpis"><div class="kpi"><small>Minutes left</small><b>1,412</b><em>of 2,500</em></div><div class="kpi"><small>Calls today</small><b>186</b><em>↑ 12%</em></div><div class="kpi"><small>Answered</small><b>54%</b><em>↑ 3 pts</em></div><div class="kpi"><small>Interested leads</small><b>23</b><em>7 new today</em></div></div>
+      <div class="two"><div class="card"><h4>Calls this week</h4><div class="chart"><i style="height:45%"></i><i style="height:60%"></i><i style="height:52%"></i><i style="height:78%"></i><i style="height:90%"></i><i style="height:40%"></i><i style="height:68%"></i></div><div class="note" style="display:flex;justify-content:space-between;margin-top:4px"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div>
+      <div class="card"><h4>Running campaigns</h4><div style="display:grid;gap:10px;font-size:12.5px"><div><div style="display:flex;justify-content:space-between"><b>Website enquiries</b><span class="pill ok">Running</span></div><div class="bar" style="margin:5px 0"><i style="width:62%"></i></div><span class="note">310 of 500 leads called</span></div><div><div style="display:flex;justify-content:space-between"><b>Proposal follow-ups</b><span class="pill warn">Paused</span></div><div class="bar" style="margin:5px 0"><i style="width:28%"></i></div><span class="note">Resumes 10:00 tomorrow</span></div></div></div></div>
+    </div></div></div></div>
+</section>
+
+<!-- S4 Services -->
+<section class="scr" id="s4">
+  <div class="copy">
+    <span class="tag">Screen 4 · Customer</span>
+    <h2>Your services and products</h2>
+    <p>The customer lists everything they sell. Each item is either a service (done for the customer, such as app development) or a product (software the customer buys or subscribes to). Every item has a title and a description. The AI agent uses this list to explain the offer on a call, answer questions, suggest the right option and arrange a follow-up.</p>
+    <ul><li>Two buttons: Add service and Add product</li><li>Add, edit, switch off or reorder items</li><li>Optional: price or price range, duration, FAQs and a short "when to offer this" note</li><li>Choose which services and products each agent may talk about</li><li>The agent only describes what is written here</li></ul>
+    <div class="decide"><b>Decide</b><ul><li>Which details per item: starting price, pricing model (fixed, monthly, hourly), timeline, technologies, case studies, brochure?</li><li>May the agent quote prices, or only say "our team will share a quote"?</li><li>What happens when a customer shows interest: book a demo, send a proposal by email or WhatsApp, or alert your sales team?</li><li>Which services or products need a human to explain them?</li><li>Products only: pricing per user or per month, free trial, and where a customer can buy or sign up?</li></ul></div>
+  </div>
+  <div class="scroller"><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/services</span></div>
+    <div class="app"><div class="side"><div class="logo">VoiceDesk</div><div class="i">Dashboard</div><div class="i on">Services &amp; Products</div><div class="i">Agents</div><div class="i">Leads</div><div class="i">Campaigns</div><div class="i">Calls</div><div class="i">CRM</div><div class="i">Follow-ups</div><div class="i">Billing</div></div>
+    <div class="main"><div class="top"><h3>Services &amp; Products <span class="pill">5 active</span></h3><span style="display:flex;gap:6px"><span class="btn o">+ Add product</span><span class="btn">+ Add service</span></span></div>
+      <div class="two">
+        <div class="card" style="padding:4px 8px"><table><tr><th>Name</th><th>Type</th><th>Status</th></tr>
+          <tr style="background:var(--accent-soft)"><td><b>Mobile App Development</b><br><span class="note">From ₹4 lakh · 8–12 weeks</span></td><td><span class="pill in">Service</span></td><td><span class="pill ok">Active</span></td></tr>
+          <tr><td><b>Website Development</b><br><span class="note">From ₹60,000 · 3–5 weeks</span></td><td><span class="pill in">Service</span></td><td><span class="pill ok">Active</span></td></tr>
+          <tr><td><b>AI Chatbot and Voice Agents</b><br><span class="note">Custom quote</span></td><td><span class="pill in">Service</span></td><td><span class="pill ok">Active</span></td></tr>
+          <tr><td><b>Brightlane Billing App</b><br><span class="note">₹999 per month · 14-day free trial</span></td><td><span class="pill ok">Product</span></td><td><span class="pill ok">Active</span></td></tr>
+          <tr><td><b>ERP and CRM Customisation</b><br><span class="note">Custom quote</span></td><td><span class="pill in">Service</span></td><td><span class="pill">Off</span></td></tr></table></div>
+        <div class="card"><h4>Edit item</h4><div style="display:grid;gap:8px"><div class="steps"><span class="step on">Service</span><span class="step">Product</span></div>
+          <label class="field">Title<span class="input">Mobile App Development</span></label>
+          <label class="field">Description (what the agent explains)<span class="input" style="min-height:62px">Android and iOS apps for businesses: planning, design, development, testing and launch. Includes 3 months of free support after go-live.</span></label>
+          <div class="two"><label class="field">Starting price<span class="input">From ₹4 lakh</span></label><label class="field">Typical timeline<span class="input">8–12 weeks</span></label></div>
+          <label class="field">When to offer this<span class="input">Customer needs an app for customers or staff, budget above ₹3 lakh</span></label>
+          <label class="field">After interest, the agent should<span class="input">Book a demo call with sales</span></label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="btn g">Add FAQ</span><span class="btn">Save</span></div></div></div>
+      </div>
+      <div class="card"><h4>How the agent uses it on a call</h4><div class="chat"><div class="msg me"><small>Customer</small>We want an app for our delivery staff. What does it cost?</div><div class="msg ai"><small>Agent</small>Our mobile apps start from ₹4 lakh and take 8 to 12 weeks. Would you like a demo call with our team this Saturday?</div><div class="msg me"><small>Customer</small>Yes, 11 AM works.</div><div class="msg ai"><small>Agent</small>Booked. I will send you a reminder on Friday and our team will share a short proposal after the demo.</div></div><p class="note" style="margin:8px 0 0">If the customer asks about a product, such as the Billing App, the agent explains it, quotes the listed price and offers a free trial link. The demo appears as a task on the lead in the CRM, and a proposal follow-up is scheduled.</p></div>
+    </div></div></div></div>
+</section>
+
+<!-- S5 Agent setup -->
+<section class="scr" id="s5">
+  <div class="copy">
+    <span class="tag">Screen 5 · Customer</span>
+    <h2>Set up your AI agent</h2>
+    <p>The customer describes the goal in plain words and picks which of their services and products the agent covers. The platform drafts the call script from those. The customer reads it, edits it, tests it with a call to their own phone, and approves it.</p>
+    <ul><li>Language and voice choice</li><li>Upload FAQs or a price list for the agent to use</li><li>Script must be approved before calling starts</li></ul>
+    <div class="decide"><b>Decide</b><ul><li>Languages at launch</li><li>AI and voice providers</li><li>Is approval needed for every script change?</li></ul></div>
+  </div>
+  <div class="scroller"><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/agents/new</span></div>
+    <div class="app"><div class="side"><div class="logo">VoiceDesk</div><div class="i">Dashboard</div><div class="i">Services &amp; Products</div><div class="i on">Agents</div><div class="i">Leads</div><div class="i">Campaigns</div><div class="i">Calls</div><div class="i">CRM</div><div class="i">Follow-ups</div><div class="i">Billing</div></div>
+    <div class="main"><div class="steps"><span class="step done">1 Business</span><span class="step on">2 Script</span><span class="step">3 Voice</span><span class="step">4 Test &amp; approve</span></div>
+      <div class="two">
+        <div class="card"><h4>Tell us what the agent should do</h4><div class="chat"><div class="msg me"><small>You</small>Call people who enquired on our website, explain our services and book a demo call.</div><div class="msg ai"><small>VoiceDesk</small>Got it. I have drafted a script in Hindi and English using your services and products. Check it on the right, then edit anything you like.</div></div></div>
+        <div class="card"><h4>Script draft <span class="pill warn">Not approved</span></h4><div style="display:grid;gap:7px;font-size:12.5px"><div><b>Opening</b><br><span style="color:var(--mute)">"Namaste, this is Priya from Brightlane Software. You enquired about our services. Is this a good time to talk?"</span></div><div><b>Ask</b><br><span style="color:var(--mute)">Which service do you need? Timeline? Budget range? Would you like a demo call?</span></div><div><b>If they object</b><br><span style="color:var(--mute)">Offer a callback at a time they choose, or send details by email.</span></div></div><div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><span class="btn o">Edit</span><span class="btn g">Call my phone to test</span><span class="btn">Approve script</span></div></div>
+      </div>
+      <div class="card"><h4>Services and products this agent can talk about</h4><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill ok">☑ Mobile App Development</span><span class="pill ok">☑ Website Development</span><span class="pill ok">☑ AI Chatbot and Voice Agents</span><span class="pill ok">☑ Brightlane Billing App</span><span class="pill">☐ ERP and CRM Customisation</span></div><p class="note" style="margin:8px 0 0">Managed on the Services &amp; Products screen. The script uses these titles and descriptions.</p></div>
+      <div class="card"><h4>Agent settings</h4><div class="three"><label class="field">Language<span class="input">Hindi + English</span></label><label class="field">Voice<span class="input">Priya (female)</span></label><label class="field">Calling hours<span class="input">10:00 – 19:00</span></label></div></div>
+    </div></div></div></div>
+</section>
+
+<!-- S5 -->
+<section class="scr" id="s6">
+  <div class="copy">
+    <span class="tag">Screen 6 · Customer</span>
+    <h2>Import your leads</h2>
+    <p>Upload a CSV or Excel file. The platform matches your columns, checks every phone number, and shows what will be skipped before anything is saved.</p>
+    <ul><li>Duplicate numbers detected</li><li>Numbers on the do-not-call list are blocked</li></ul>
+    <div class="decide"><b>Decide</b><ul><li>Maximum rows per file</li><li>Should the customer confirm they have permission to call these people?</li></ul></div>
+  </div>
+  <div class="scroller"><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/leads/import</span></div>
+    <div class="app"><div class="side"><div class="logo">VoiceDesk</div><div class="i">Dashboard</div><div class="i">Services &amp; Products</div><div class="i">Agents</div><div class="i on">Leads</div><div class="i">Campaigns</div><div class="i">Calls</div><div class="i">CRM</div><div class="i">Follow-ups</div><div class="i">Billing</div></div>
+    <div class="main"><div class="steps"><span class="step done">1 Upload</span><span class="step on">2 Match columns</span><span class="step">3 Review</span><span class="step">4 Import</span></div>
+      <div class="two"><div class="card"><h4>File: website-enquiries.xlsx</h4><table><tr><th>Your column</th><th>Becomes</th></tr><tr><td>Customer Name</td><td><span class="pill in">Name</span></td></tr><tr><td>Mobile</td><td><span class="pill in">Phone</span></td></tr><tr><td>Company</td><td><span class="pill">Custom field</span></td></tr></table></div>
+      <div class="card"><h4>Check result</h4><div style="display:grid;gap:8px;font-size:13px"><div style="display:flex;justify-content:space-between"><span>Ready to import</span><span class="pill ok">480</span></div><div style="display:flex;justify-content:space-between"><span>Invalid phone numbers</span><span class="pill bad">12</span></div><div style="display:flex;justify-content:space-between"><span>Duplicates</span><span class="pill warn">31</span></div><div style="display:flex;justify-content:space-between"><span>On do-not-call list</span><span class="pill bad">5</span></div></div><div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><span class="btn g">Download skipped rows</span><span class="btn">Import 480 leads</span></div></div></div>
+    </div></div></div></div>
+</section>
+
+<!-- S6 -->
+<section class="scr" id="s7">
+  <div class="copy">
+    <span class="tag">Screen 7 · Customer</span>
+    <h2>Run a campaign</h2>
+    <p>Choose an agent and a group of leads, set the calling hours and how many retries, then start. The customer can pause, resume or cancel at any time.</p>
+    <ul><li>Calls only inside allowed hours</li><li>Stops automatically when minutes run out</li></ul>
+    <div class="decide"><b>Decide</b><ul><li>Expected calls per day</li><li>How many calls at the same time</li></ul></div>
+  </div>
+  <div class="scroller"><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/campaigns/website-enquiries</span></div>
+    <div class="app"><div class="side"><div class="logo">VoiceDesk</div><div class="i">Dashboard</div><div class="i">Services &amp; Products</div><div class="i">Agents</div><div class="i">Leads</div><div class="i on">Campaigns</div><div class="i">Calls</div><div class="i">CRM</div><div class="i">Follow-ups</div><div class="i">Billing</div></div>
+    <div class="main"><div class="top"><h3>Website enquiries <span class="pill ok">Running</span></h3><span style="display:flex;gap:6px"><span class="btn g">Pause</span><span class="btn o">Cancel</span></span></div>
+      <div class="card"><div style="display:flex;justify-content:space-between;font-size:13px"><b>310 of 500 leads called</b><span class="note">62%</span></div><div class="bar" style="margin:6px 0"><i style="width:62%"></i></div></div>
+      <div class="kpis"><div class="kpi"><small>Answered</small><b>168</b></div><div class="kpi"><small>No answer</small><b>97</b></div><div class="kpi"><small>Failed</small><b>9</b></div><div class="kpi"><small>Minutes used</small><b>402</b></div></div>
+      <div class="card"><h4>Campaign rules</h4><div class="three"><label class="field">Calling hours<span class="input">10:00 – 19:00</span></label><label class="field">Retries<span class="input">Up to 3, 4 hrs apart</span></label><label class="field">Calls at once<span class="input">5</span></label></div></div>
+    </div></div></div></div>
+</section>
+
+<!-- S7 -->
+<section class="scr" id="s8">
+  <div class="copy">
+    <span class="tag">Screen 8 · Customer</span>
+    <h2>Call history and call detail</h2>
+    <p>Every call is listed with its result. Opening one shows the written conversation, a short AI summary, the minutes billed, and the recording if recording is switched on.</p>
+    <div class="decide"><b>Decide</b><ul><li>Record calls at all?</li><li>How long to keep recordings and transcripts</li><li>Who inside the business can listen</li><li>Spoken notice at the start of a call?</li></ul></div>
+  </div>
+  <div class="scroller"><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/calls</span></div>
+    <div class="app"><div class="side"><div class="logo">VoiceDesk</div><div class="i">Dashboard</div><div class="i">Services &amp; Products</div><div class="i">Agents</div><div class="i">Leads</div><div class="i">Campaigns</div><div class="i on">Calls</div><div class="i">CRM</div><div class="i">Follow-ups</div><div class="i">Billing</div></div>
+    <div class="main"><div class="card" style="padding:4px 8px"><table><tr><th>Time</th><th>Lead</th><th>Status</th><th>Length</th><th>Result</th></tr>
+      <tr style="background:var(--accent-soft)"><td>10:02</td><td>Amit Verma</td><td>Answered</td><td>2:14</td><td><span class="pill ok">Interested</span></td></tr>
+      <tr><td>10:05</td><td>Ravi Iyer</td><td>No answer</td><td>0:30</td><td><span class="pill">Retry 1 at 14:05</span></td></tr>
+      <tr><td>10:07</td><td>Sana Khan</td><td>Busy</td><td>0:05</td><td><span class="pill">Retry 1 at 14:07</span></td></tr>
+      <tr><td>10:11</td><td>Neha Joshi</td><td>Answered</td><td>1:02</td><td><span class="pill warn">Callback asked</span></td></tr></table></div>
+      <div class="card"><h4>Amit Verma · 2:14 · 3 minutes billed</h4>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span class="btn">▶</span><div class="wave"><i style="height:30%"></i><i style="height:70%"></i><i style="height:45%"></i><i style="height:90%"></i><i style="height:60%"></i><i style="height:35%"></i><i style="height:80%"></i><i style="height:50%"></i><i style="height:25%"></i><i style="height:65%"></i><i style="height:40%"></i><i style="height:75%"></i></div></div>
+        <div class="chat"><div class="msg ai"><small>Agent</small>Namaste, am I speaking with Amit ji about the mobile app enquiry?</div><div class="msg me"><small>Amit</small>Yes. Can we see a demo on Saturday?</div><div class="msg ai"><small>Agent</small>Yes, I can book 11 AM with our team. Shall I confirm?</div></div>
+        <p class="note" style="margin:8px 0 0"><b>Summary:</b> Wants a mobile app for deliveries. Demo booked Saturday 11 AM. Budget around ₹6 lakh.</p></div>
+    </div></div></div></div>
+</section>
+
+<!-- S8 -->
+<section class="scr" id="s9">
+  <div class="copy">
+    <span class="tag">Screen 9 · Customer</span>
+    <h2>CRM: lead pipeline</h2>
+    <p>Each lead moves across stages as calls happen. Open a lead to see every call, note and task in one timeline.</p>
+    <div class="decide"><b>Decide</b><ul><li>Is the built-in CRM enough, or must it connect to Zoho, HubSpot or another CRM?</li><li>Stage names that suit your business</li></ul></div>
+  </div>
+  <div class="scroller"><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/crm</span></div>
+    <div class="app"><div class="side"><div class="logo">VoiceDesk</div><div class="i">Dashboard</div><div class="i">Services &amp; Products</div><div class="i">Agents</div><div class="i">Leads</div><div class="i">Campaigns</div><div class="i">Calls</div><div class="i on">CRM</div><div class="i">Follow-ups</div><div class="i">Billing</div></div>
+    <div class="main"><div class="board">
+      <div class="col"><h5>New · 120</h5><div class="lead">Pooja Desai<small>Retail, Pune</small></div><div class="lead">K. Nair<small>Clinic chain</small></div></div>
+      <div class="col"><h5>Contacted · 86</h5><div class="lead">Ravi Iyer<small>Retry due 14:05</small></div></div>
+      <div class="col"><h5>Interested · 23</h5><div class="lead">Amit Verma<small>Demo Sat 11 AM</small></div><div class="lead">Neha Joshi<small>Callback 4 PM</small></div></div>
+      <div class="col"><h5>Qualified · 9</h5><div class="lead">R. Kulkarni<small>Budget approved</small></div></div>
+      <div class="col"><h5>Converted · 3</h5><div class="lead">S. Patil<small>Booked</small></div></div></div>
+      <div class="card"><h4>Amit Verma <span class="pill ok">Interested</span></h4><div class="tl"><div><span>Today</span><b>Call · 2:14 · Wants a demo on Saturday</b></div><div><span>Today</span><b>Task created · Confirm demo, Fri 5 PM</b></div><div><span>Yesterday</span><b>Imported from website-enquiries.xlsx</b></div></div><div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><span class="btn g">Add note</span><span class="btn g">Schedule follow-up</span><span class="btn o">Mark do-not-call</span></div></div>
+    </div></div></div></div>
+</section>
+
+<!-- S9 -->
+<section class="scr" id="s10">
+  <div class="copy">
+    <span class="tag">Screen 10 · Customer</span>
+    <h2>Follow-ups</h2>
+    <p>The platform retries unanswered leads and keeps promised callbacks, always within allowed hours. Anything that needs a person is flagged for the team.</p>
+    <div class="decide"><b>Decide</b><ul><li>How many retries, and how far apart</li><li>When a lead should be handed to a human</li></ul></div>
+  </div>
+  <div class="scroller"><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/follow-ups</span></div>
+    <div class="app"><div class="side"><div class="logo">VoiceDesk</div><div class="i">Dashboard</div><div class="i">Services &amp; Products</div><div class="i">Agents</div><div class="i">Leads</div><div class="i">Campaigns</div><div class="i">Calls</div><div class="i">CRM</div><div class="i on">Follow-ups</div><div class="i">Billing</div></div>
+    <div class="main"><div class="two">
+      <div class="card"><h4>Callbacks due today</h4><table><tr><td><b>Neha Joshi</b><br><span class="note">Asked to be called</span></td><td>4:00 PM</td><td><span class="btn g">Reschedule</span></td></tr><tr><td><b>Ravi Iyer</b><br><span class="note">Retry 2 of 3</span></td><td>2:05 PM</td><td><span class="pill">Auto</span></td></tr></table></div>
+      <div class="card"><h4>Needs a person <span class="pill warn">2</span></h4><table><tr><td><b>Kiran Rao</b><br><span class="note">Asked to speak to a manager</span></td><td><span class="btn">Assign</span></td></tr><tr><td><b>M. Shah</b><br><span class="note">Complaint raised</span></td><td><span class="btn">Assign</span></td></tr></table></div></div>
+      <div class="card"><h4>Automatic rules</h4><div class="three"><label class="field">Retry unanswered<span class="input">3 times, 4 hrs apart</span></label><label class="field">Only call between<span class="input">10:00 – 19:00</span></label><label class="field">Stop when<span class="input">Lead opts out</span></label></div></div>
+    </div></div></div></div>
+</section>
+
+<!-- S10 -->
+<section class="scr" id="s11">
+  <div class="copy">
+    <span class="tag">Screen 11 · Customer</span>
+    <h2>Usage and billing</h2>
+    <p>The customer sees the minutes left, how each call was billed, invoices, and any failed payments. Alerts fire before minutes run out.</p>
+    <div class="decide"><b>Decide</b><ul><li>Billing by the second or by the minute</li><li>Are unanswered or failed calls charged?</li><li>Low-balance alert level</li><li>Refund policy</li></ul></div>
+  </div>
+  <div class="scroller"><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>app.yourdomain.com/billing</span></div>
+    <div class="app"><div class="side"><div class="logo">VoiceDesk</div><div class="i">Dashboard</div><div class="i">Services &amp; Products</div><div class="i">Agents</div><div class="i">Leads</div><div class="i">Campaigns</div><div class="i">Calls</div><div class="i">CRM</div><div class="i">Follow-ups</div><div class="i on">Billing</div></div>
+    <div class="main"><div class="two">
+      <div class="card"><h4>Plan: Growth <span class="pill ok">Active</span></h4><b style="font-family:var(--f-d);font-size:24px">1,412 min</b> <span class="note">left of 2,500 · renews 12 Nov</span><div class="bar" style="margin:8px 0"><i style="width:56%"></i></div><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="btn">Upgrade</span><span class="btn g">Recharge wallet</span></div></div>
+      <div class="card"><h4>Alerts</h4><div style="display:grid;gap:6px;font-size:12.5px"><span class="pill warn" style="justify-self:start">Alert at 20% minutes left</span><span class="pill" style="justify-self:start">Campaigns pause at 0 minutes</span><span class="note">Emails go to anita@brightlane.in</span></div></div></div>
+      <div class="card" style="padding:4px 8px"><h4 style="padding:8px 0 0">Recent usage</h4><table><tr><th>Call</th><th>Lead</th><th>Billed</th><th>Balance</th></tr><tr><td>#1042</td><td>Amit Verma</td><td>3 min</td><td>1,412</td></tr><tr><td>#1041</td><td>Ravi Iyer</td><td>0 min · no answer</td><td>1,415</td></tr><tr><td>#1040</td><td>Neha Joshi</td><td>2 min</td><td>1,415</td></tr></table></div>
+    </div></div></div></div>
+</section>
+
+<!-- S11 -->
+<section class="scr" id="s12">
+  <div class="copy">
+    <span class="tag">Screen 12 · Platform admin</span>
+    <h2>Admin console</h2>
+    <p>Your team sees every customer, can change plans, add credits, suspend accounts and watch provider health. Every admin action is recorded in an audit log.</p>
+    <ul><li>Customers cannot see each other's data</li><li>Admin access to customer data is logged</li></ul>
+  </div>
+  <div class="scroller"><div class="frame"><div class="chrome"><i></i><i></i><i></i><span>admin.yourdomain.com/customers</span></div>
+    <div class="app"><div class="side"><div class="logo">Admin</div><div class="i on">Customers</div><div class="i">Subscriptions</div><div class="i">Providers</div><div class="i">Failed calls</div><div class="i">Support</div><div class="i">Audit log</div></div>
+    <div class="main"><div class="kpis"><div class="kpi"><small>Customers</small><b>42</b></div><div class="kpi"><small>Calls today</small><b>3,180</b></div><div class="kpi"><small>Telephony</small><b style="color:var(--ok);font-size:16px">● Healthy</b></div><div class="kpi"><small>AI model</small><b style="color:var(--warn);font-size:16px">● Slow</b></div></div>
+      <div class="card" style="padding:4px 8px"><table><tr><th>Customer</th><th>Plan</th><th>Minutes left</th><th>Status</th><th></th></tr><tr><td>Brightlane Software</td><td>Growth</td><td>1,412</td><td><span class="pill ok">Active</span></td><td><span class="btn g">Manage</span></td></tr><tr><td>Patel Finance</td><td>Business</td><td>212</td><td><span class="pill warn">Low balance</span></td><td><span class="btn g">Add credit</span></td></tr><tr><td>Nova Clinics</td><td>Starter</td><td>0</td><td><span class="pill bad">Suspended</span></td><td><span class="btn g">Review</span></td></tr></table></div>
+    </div></div></div></div>
+</section>
+
+<div class="closing">
+  <h2>What happens next</h2>
+  <ul><li>Tell us what to change on any screen: layout, wording, missing items.</li><li>Answer the yellow decision boxes, or tell us which ones to leave open.</li><li>Once you approve these screens, we write the full documentation set for sign-off. Development starts only after you confirm in writing.</li></ul>
+  <p class="note">Not shown yet: do-not-call list screen, team members inside a customer account, notification settings, final visual design and phone layouts.</p>
+</div>
+</main>
