@@ -4,7 +4,14 @@ node_modules/
 
 # build output
 .next/
+.next-preview/
 *.tsbuildinfo
 
 # captures of the live client app: real customer data, keep local only
 docs/client-approval/live-app-capture-*/
+
+# video binaries: too big for GitHub, rebuilt from tools/ + build/scenes.json (see video/PRODUCTION-NOTES.md)
+docs/client-approval/video/**/*.mp4
+docs/client-approval/video/**/*.wav
+docs/client-approval/video/**/*.m4a
+docs/client-approval/video/build/check/

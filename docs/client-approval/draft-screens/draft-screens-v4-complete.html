@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxura v4: Complete Platform Audit &amp; Draft Screens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout idea: a review board. Left index of screens; each screen = app mock (in the live app's own look) beside a notes column. */
+  --brand: #4a2c9e;        /* Voxura sidebar purple, taken from the live app */
+  --brand-soft: #efeafb;
+  --ink: #1d1a2b;
+  --muted: #6b6780;
+  --paper: #f6f5fa;
+  --card: #ffffff;
+  --line: #e4e1ee;
+  --ok: #0f9d58;  --ok-soft: #e3f6ec;
+  --warn: #c86a00; --warn-soft: #fff1dc;
+  --bad: #c62828;  --bad-soft: #fde8e8;
+  --info: #1a63d8; --info-soft: #e6effd;
+  --font-display: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.55 var(--font-body); }
+a { color: var(--brand); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #8f74e6; outline-offset: 2px; }
+h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- page shell ---------- */
+.top { background: var(--brand); color: #fff; padding: 28px 24px 24px; }
+.top-inner { max-width: 1320px; margin: 0 auto; display: grid; gap: 14px; }
+.top h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.top p { margin: 0; max-width: 78ch; color: #ddd4fb; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.top .legend .tag { box-shadow: 0 0 0 1px rgba(255,255,255,.25); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: #cfc4f6; }
+.facts b { color: #fff; }
+
+.wrap { max-width: 1320px; margin: 0 auto; padding: 24px 16px 60px; display: grid; grid-template-columns: 230px 1fr; gap: 24px; align-items: start; }
+.index { position: sticky; top: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 2px; font-size: 13.5px; }
+.index h4 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 6px 8px 4px; }
+.index a { display: flex; justify-content: space-between; align-items: center; gap: 6px; text-decoration: none; color: var(--ink); padding: 6px 8px; border-radius: 8px; }
+.index a:hover { background: var(--brand-soft); }
+.index .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.screens { display: grid; gap: 28px; min-width: 0; }
+
+.tag { display: inline-flex; align-items: center; gap: 5px; font: 700 11px/1 var(--font-body); letter-spacing: .05em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
+.t-live { background: var(--ok-soft); color: var(--ok); }
+.t-chg { background: var(--warn-soft); color: var(--warn); }
+.t-new { background: var(--info-soft); color: var(--info); }
+.t-unseen { background: #ecebf1; color: #55516a; }
+.d-live { background: var(--ok); } .d-chg { background: var(--warn); } .d-new { background: var(--info); } .d-unseen { background: #8f8aa3; }
+
+/* ---------- screen block ---------- */
+.screen { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; scroll-margin-top: 12px; }
+.screen-head { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.screen-head .no { font: 600 12px var(--font-mono); color: var(--muted); }
+.screen-head h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.screen-head .url { margin-left: auto; font: 12px var(--font-mono); color: var(--muted); }
+.screen-body { display: grid; grid-template-columns: minmax(0, 1fr) 300px; }
+.mock-area { padding: 20px 16px 16px; background: #f1eff7; min-width: 0; overflow-x: auto; }
+.notes { padding: 16px 18px; border-left: 1px solid var(--line); display: grid; gap: 14px; align-content: start; font-size: 13.5px; }
+.notes h4 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.notes ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.notes .q li { color: #3d2a85; }
+.notes .issue li::marker { color: var(--bad); }
+
+/* ---------- app mock (Voxura look) ---------- */
+.app { display: grid; grid-template-columns: 136px minmax(0, 1fr); min-width: 640px; background: #fff; border-radius: 10px; box-shadow: 0 1px 2px rgba(30,20,60,.08), 0 8px 24px rgba(30,20,60,.08); font-size: 13px; }
+.side { border-radius: 10px 0 0 10px; background: var(--brand); color: #e6defc; padding: 12px 8px; display: grid; align-content: start; gap: 2px; font-size: 12.5px; }
+.side .logo { display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 800; padding: 4px 6px 12px; }
+.side .logo i { width: 22px; height: 22px; border-radius: 6px; background: #fff; display: inline-block; }
+.side .grp { font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: #a999e0; padding: 10px 8px 3px; }
+.side span { padding: 6px 8px; border-radius: 7px; display: flex; justify-content: space-between; align-items: center; }
+.side span.on { background: rgba(255,255,255,.16); color: #fff; font-weight: 700; }
+.side span em { font-style: normal; font-size: 9px; font-weight: 800; background: #fff; color: var(--info); padding: 2px 5px; border-radius: 6px; }
+.main { padding: 16px 18px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.ph { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.ph h3 { font-size: 17px; font-weight: 800; }
+.ph p { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; color: var(--ink); font: 600 12px var(--font-body); padding: 7px 11px; border-radius: 8px; white-space: nowrap; }
+.btn.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
+.btn.go { background: #12c06a; border-color: #12c06a; color: #fff; }
+.btn.del { background: var(--bad-soft); border-color: #f6caca; color: var(--bad); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.box { border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; background: #fff; min-width: 0; }
+.box.soft { background: #faf9fd; }
+.box h5 { margin: 0 0 6px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.big { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.sub { color: var(--muted); font-size: 11.5px; }
+.wallet { background: var(--brand); color: #fff; border: 0; }
+.wallet h5, .wallet .sub { color: #cfc4f6; }
+.banner { background: linear-gradient(90deg, #0d9a5c, #138a68); color: #fff; border-radius: 10px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.banner b { font-size: 15px; }
+.alert { border-radius: 9px; padding: 9px 11px; font-size: 12px; display: flex; gap: 8px; align-items: center; }
+.alert.w { background: var(--warn-soft); color: #7a4300; }
+.alert.b { background: var(--bad-soft); color: #8e1c1c; }
+.alert.i { background: var(--info-soft); color: #164a9e; }
+.field { display: grid; gap: 4px; }
+.field label { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.inp { border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; background: #fff; color: var(--ink); font-size: 12.5px; min-height: 32px; }
+.inp.ph-t { color: #a29eb3; }
+.inp.area { min-height: 54px; }
+.seg { display: inline-flex; background: #f0eef6; border-radius: 8px; padding: 3px; gap: 2px; }
+.seg b { font-weight: 600; font-size: 12px; padding: 5px 10px; border-radius: 6px; color: var(--muted); }
+.seg b.on { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.chip { display: inline-block; font: 500 10.5px var(--font-mono); padding: 3px 7px; border-radius: 999px; background: #f1edfb; color: #4c3a96; border: 1px solid #e0d8f7; white-space: nowrap; }
+.chip.g { background: var(--ok-soft); color: var(--ok); border-color: #c4ead4; }
+.chip.r { background: var(--bad-soft); color: var(--bad); border-color: #f6caca; }
+.chip.o { background: var(--warn-soft); color: var(--warn); border-color: #f3dcb4; }
+.chip.b { background: var(--info-soft); color: var(--info); border-color: #c9dcfa; }
+.chip.n { background: #f0eff4; color: #5d5970; border-color: #e2e0ea; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tbl th { text-align: left; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 8px; border-bottom: 1px solid #f0eef5; vertical-align: middle; }
+.tbl td.r, .tbl th.r { text-align: right; }
+.tbl tr.muted td { color: #a29eb3; }
+.mark { outline: 2px dashed var(--info); outline-offset: 3px; border-radius: 8px; position: relative; }
+.mark.c { outline-color: var(--warn); }
+.pin { position: absolute; top: -9px; right: 6px; z-index: 1; font: 800 9px var(--font-body); letter-spacing: .05em; padding: 2px 6px; border-radius: 6px; color: #fff; background: var(--info); }
+.mark.c > .pin { background: var(--warn); }
+.agent { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+.agent .meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.agent .stats { text-align: right; font-size: 11.5px; color: var(--muted); }
+.agent .stats b { color: var(--ink); font-size: 14px; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.steps span { font-size: 11.5px; font-weight: 600; padding: 6px 10px; border-radius: 8px; background: #f0eef6; color: var(--muted); }
+.steps span.on { background: var(--brand); color: #fff; }
+.steps span.done { background: var(--ok-soft); color: var(--ok); }
+.bar { height: 7px; background: #eceaf3; border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--brand); border-radius: 99px; }
+.kan { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 8px; }
+.kan .col { background: #f5f4fa; border-radius: 9px; padding: 8px; display: grid; gap: 6px; align-content: start; }
+.kan .col h6 { margin: 0; font-size: 11px; display: flex; justify-content: space-between; }
+.kan .cd { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 7px 8px; font-size: 11.5px; display: grid; gap: 3px; }
+.tx { display: grid; gap: 6px; }
+.tx div { max-width: 82%; padding: 7px 10px; border-radius: 10px; font-size: 12px; }
+.tx .ag { background: #f1edfb; }
+.tx .cu { background: #eef7f1; justify-self: end; }
+.wave { height: 30px; border-radius: 8px; background: repeating-linear-gradient(90deg, #cbbdf3 0 3px, transparent 3px 6px); opacity: .8; }
+.login { display: grid; grid-template-columns: 1fr 1fr; min-width: 640px; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 24px rgba(30,20,60,.08); background: #fff; font-size: 13px; }
+.login .l { background: linear-gradient(160deg, #3b1f8a, #1a1236); color: #fff; padding: 24px; display: grid; gap: 10px; align-content: center; }
+.login .l h3 { font-size: 22px; line-height: 1.15; }
+.login .l span { border: 1px solid rgba(255,255,255,.18); border-radius: 9px; padding: 8px 10px; font-size: 12px; background: rgba(255,255,255,.06); }
+.login .r { padding: 26px 30px; display: grid; gap: 10px; align-content: center; }
+
+.end { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 12px; }
+.end ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.end h2 { font-size: 20px; }
+
+@media (max-width: 1100px) {
+  .screen-body { grid-template-columns: 1fr; }
+  .notes { border-left: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 820px) {
+  .wrap { grid-template-columns: 1fr; }
+  .index { position: static; grid-template-columns: 1fr 1fr; }
+  .index h4 { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) { .index { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html { scroll-behavior: smooth; }
+
+/* ---------- v3 additions ---------- */
+.t-exp { background: #f3e8ff; color: #7b2cbf; }
+.d-exp { background: #7b2cbf; }
+.mark.x { outline-color: #7b2cbf; } .mark.x > .pin { background: #7b2cbf; }
+.part { background: linear-gradient(120deg, #2a1660, #4a2c9e); color: #fff; border-radius: 14px; padding: 22px 22px 18px; display: grid; gap: 12px; }
+.part h2 { font-size: 22px; font-weight: 800; }
+.part p { margin: 0; color: #ddd4fb; max-width: 90ch; }
+.journey { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; }
+.journey div { flex: 1 1 110px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22); border-radius: 10px; padding: 9px 10px; font-size: 12px; }
+.journey b { display: block; font-size: 13px; color: #fff; }
+.journey span { color: #cfc4f6; }
+.journey .now { background: rgba(18,192,106,.22); border-color: rgba(18,192,106,.6); }
+.status { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: #cfc4f6; }
+.status i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.tg { display: inline-block; width: 30px; height: 17px; border-radius: 99px; background: #d9d5e6; position: relative; vertical-align: middle; flex: none; }
+.tg::after { content: ""; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; }
+.tg.on { background: var(--ok); } .tg.on::after { left: 15px; }
+.src { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; }
+.src .ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; font: 800 12px var(--font-body); color: #fff; }
+.slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.slots span { border: 1px solid var(--line); border-radius: 7px; padding: 6px; text-align: center; font-size: 11.5px; }
+.slots span.on { background: var(--brand); color: #fff; border-color: var(--brand); }
+.slots span.no { color: #b9b5c8; text-decoration: line-through; }
+.wf { display: grid; gap: 6px; justify-items: start; }
+.wf .n { border: 1px solid var(--line); border-radius: 9px; padding: 8px 11px; background: #fff; font-size: 12px; min-width: 260px; }
+.wf .n.t { border-color: #c9dcfa; background: var(--info-soft); }
+.wf .n.c { border-color: #f3dcb4; background: var(--warn-soft); }
+.wf .n.a { border-color: #c4ead4; background: var(--ok-soft); }
+.wf .ln { width: 2px; height: 12px; background: #cfcadf; margin-left: 22px; }
+.score { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; font: 800 12px var(--font-body); color: #fff; }
+.meter { display: grid; grid-template-columns: 90px 1fr 70px; gap: 8px; align-items: center; font-size: 11.5px; }
+.stack { display: flex; height: 12px; border-radius: 99px; overflow: hidden; }
+.stack i { display: block; height: 100%; }
+
+.st { display:inline-block; font:700 10px/1 var(--font-body); letter-spacing:.04em; text-transform:uppercase; padding:4px 7px; border-radius:99px; white-space:nowrap; }
+.s-bt { background:var(--ok-soft); color:var(--ok); }
+.s-pb { background:#fff7cc; color:#7a5d00; }
+.s-dw { background:#f3e8ff; color:#7b2cbf; }
+.s-nb { background:#ecebf1; color:#55516a; }
+.s-na { background:var(--warn-soft); color:var(--warn); }
+.s-bp { background:var(--bad-soft); color:var(--bad); }
+.d-v4 { background:#0e7490; } .t-v4 { background:#cffafe; color:#0e7490; }
+.doc { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 22px; display:grid; gap:12px; scroll-margin-top:12px; }
+.doc h2 { font-size:21px; font-weight:800; }
+.doc h3 { font-size:15px; font-weight:800; margin-top:6px; }
+.doc p { margin:0; }
+.doc ul, .doc ol { margin:0; padding-left:20px; display:grid; gap:3px; }
+.mx { width:100%; border-collapse:collapse; font-size:12.5px; }
+.mx th { text-align:left; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding:7px 8px; border-bottom:2px solid var(--line); background:#faf9fd; position:sticky; top:0; }
+.mx td { padding:7px 8px; border-bottom:1px solid #efedf5; vertical-align:top; }
+.mx tr.grp td { background:#f4f1fc; font-weight:800; color:var(--brand); font-size:12px; letter-spacing:.02em; }
+.cnt { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; }
+.cnt div { border-radius:10px; padding:10px; text-align:center; }
+.cnt b { display:block; font-size:24px; font-weight:800; }
+.pipe { display:flex; flex-wrap:wrap; gap:5px; align-items:center; font-size:11.5px; }
+.pipe span { border:1px solid var(--line); border-radius:7px; padding:4px 8px; background:#fff; }
+.pipe span.on { background:var(--brand); color:#fff; border-color:var(--brand); }
+.pipe i { color:#a29eb3; font-style:normal; }
+.evt { display:grid; grid-template-columns:70px 22px 1fr; gap:6px; align-items:start; font-size:12px; }
+.evt .dt { color:var(--muted); font-family:var(--font-mono); font-size:11px; }
+.evt .ic { width:18px; height:18px; border-radius:50%; display:grid; place-items:center; color:#fff; font-size:10px; font-weight:800; }
+.code { font:12px/1.5 var(--font-mono); background:#1d1a2b; color:#e6defc; border-radius:9px; padding:10px 12px; white-space:pre-wrap; word-break:break-all; }
+.lay { display:grid; gap:8px; }
+.lay .l { border:1px solid var(--line); border-radius:11px; padding:10px 12px; background:#fff; }
+.lay .l h4 { font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.lay .ents { display:flex; flex-wrap:wrap; gap:5px; }
+.lay .ents span { border:1px solid #d9d2f3; background:#f6f3ff; border-radius:7px; padding:4px 7px; font:500 11px var(--font-mono); }
+.lay .ents span.n { border-color:#a5e9f5; background:#ecfeff; }
+.lay .ents span.x { border-color:#f3dcb4; background:var(--warn-soft); }
+.down { text-align:center; color:#a29eb3; font-weight:800; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+  <h1>Voxura v4: complete AI sales &amp; business automation SaaS</h1>
+  <p>Implementation audit, missing-feature report, development plan and draft screens, prepared 2 Nov 2026 for approval. Part 1 is verified against the actual code, database and tests. Part 2 adds screens for features not covered by earlier drafts. Part 3 shows the target architecture. No code has been changed for this document; nothing is built until you approve.</p>
+  <div class="legend"><span class="st s-bt">Built &amp; tested</span><span class="st s-pb">Partially built</span><span class="st s-dw">Designed – waiting</span><span class="st s-nb">Not built</span><span class="st s-na">Needs 3rd-party accounts</span><span class="st s-bp">Blocked by provider</span></div>
+  <div class="facts"><span>Earlier drafts (unchanged): <a style="color:#fff" href="https://claude.ai/artifact/HWG5ADzHj7Q6Vsw7MxeomR">v2 core app</a> · <a style="color:#fff" href="https://claude.ai/artifact/LgeGKPc3t9vUfYr2sumFjS">v3 sales expansion</a> · <a style="color:#fff" href="https://claude.ai/artifact/PfQyZaViffF2YzYFnCs2ou">Super Admin</a></span></div>
+</div></header>
+<div class="wrap">
+  <nav class="index" aria-label="Contents"><h4>Part 1 · Audit &amp; plan</h4><a href="#audit">1.1 Feature matrix</a><a href="#arch-review">1.2 Architecture review</a><a href="#missing">1.3 Missing functionality</a><a href="#db">1.4 Database changes</a><a href="#api">1.5 Backend APIs</a><a href="#screens">1.6 Frontend screens</a><a href="#accounts">1.7 Accounts &amp; approvals</a><a href="#deps">1.8 Dependencies &amp; testing</a><a href="#plan">1.9 Implementation sequence</a><h4 style="margin-top:6px">Part 2 · New draft screens</h4><a href="#n1">N1 Integration Hub <i class="dot d-v4"></i></a><a href="#n2">N2 Connect Meta <i class="dot d-v4"></i></a><a href="#n3">N3 Website, webhook &amp; API <i class="dot d-v4"></i></a><a href="#n4">N4 Indian portals &amp; others <i class="dot d-v4"></i></a><a href="#n5">N5 Integration health &amp; logs <i class="dot d-v4"></i></a><a href="#n6">N6 Lead processing trace <i class="dot d-v4"></i></a><a href="#n7">N7 Prospect discovery <i class="dot d-v4"></i></a><a href="#n8">N8 Prospect review <i class="dot d-v4"></i></a><a href="#n9">N9 Full CRM lead profile <i class="dot d-v4"></i></a><a href="#n10">N10 Pipeline editor <i class="dot d-v4"></i></a><a href="#n11">N11 Lead change history <i class="dot d-v4"></i></a><a href="#n12">N12 Agent rules <i class="dot d-v4"></i></a><a href="#n13">N13 Orchestration engine <i class="dot d-v4"></i></a><a href="#n14">N14 Follow-up memory <i class="dot d-v4"></i></a><a href="#n15">N15 Automation controls <i class="dot d-v4"></i></a><a href="#n16">N16 Unified inbox <i class="dot d-v4"></i></a><a href="#n17">N17 Approvals <i class="dot d-v4"></i></a><a href="#n18">N18 Client reports <i class="dot d-v4"></i></a><a href="#n19">N19 Super Admin reports <i class="dot d-v4"></i></a><a href="#n20">N20 Workspace map <i class="dot d-v4"></i></a><h4 style="margin-top:6px">Part 3 · Architecture</h4><a href="#arch">Lead flow, data model, security</a><a href="#next">Decisions needed</a></nav>
+  <main class="screens">
+
+<section class="doc" id="audit">
+  <h2>Part 1 · Implementation audit (verified in the code, 2 Nov 2026)</h2>
+  <p>Checked against the real database schema, server code, screens and the 285 automated end-to-end checks, not against designs. "Built &amp; tested" means it works end to end in the app today. A row can carry two statuses (e.g. partly built and partly designed).</p>
+  <div class="cnt"><div class="s-bt"><b>12</b>Built &amp; tested</div><div class="s-pb"><b>13</b>Partially built</div><div class="s-dw"><b>20</b>Designed – waiting</div><div class="s-nb"><b>19</b>Not built</div><div class="s-na"><b>11</b>Needs 3rd-party accounts</div><div class="s-bp"><b>2</b>Blocked by provider</div></div>
+  <div style="overflow-x:auto"><table class="mx"><tr><th style="width:38%">Feature</th><th style="width:20%">Status</th><th>Evidence / note</th></tr><tr class="grp"><td colspan="3">1 · Lead Source Integration Hub</td></tr><tr><td>Excel / CSV import</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'>10,000 rows, preview, phone clean-up, duplicates skipped, extra columns kept. Tested (Leads suite).</td></tr><tr><td>Manual lead entry</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'>Add/edit form, duplicate check in any number format.</td></tr><tr><td>Facebook / Instagram Lead Ads, Meta pages &amp; forms</td><td><span class="st s-dw">Designed – waiting</span> <span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>Designed in v3 (16) and here. Needs Meta app, business verification and leads_retrieval approval.</td></tr><tr><td>Google Ads lead forms</td><td><span class="st s-dw">Designed – waiting</span> <span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>Webhook delivery per form; needs Google Ads admin access.</td></tr><tr><td>Website forms, landing pages, WordPress, custom webhook / API</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>No public webhook or API exists yet (only server actions + one CSV download).</td></tr><tr><td>Website chat enquiries</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>Needs a chat widget or a chat provider's webhook.</td></tr><tr><td>IndiaMART</td><td><span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>IndiaMART Lead Manager CRM API (key from the client's paid seller account).</td></tr><tr><td>JustDial</td><td><span class="st s-bp">Blocked by provider</span></td><td class='sub' style='font-size:12px'>No open public lead API; partner access or lead-email parsing only. Commercial approval needed.</td></tr><tr><td>99acres / other property portals</td><td><span class="st s-bp">Blocked by provider</span></td><td class='sub' style='font-size:12px'>Partner/CRM integrations by agreement; fallback: parse lead notification emails.</td></tr><tr><td>Google Sheets, Zapier, Make, external CRMs</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>Generic inbound webhook + API key covers Zapier/Make; Sheets and CRMs need OAuth connectors.</td></tr><tr><td>Integration Hub dashboard (health, last sync, counts, failures, logs, reconnect)</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>No integration tables or screens yet.</td></tr><tr><td>Automatic lead processing pipeline</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>Phone normalisation + duplicate detection exist (import/manual). Merge, source/campaign/ad attribution, auto agent assignment and next-action trigger do not.</td></tr><tr class="grp"><td colspan="3">2 · Prospect discovery engine</td></tr><tr><td>Search by industry, category, city, state, size</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>Needs licensed/permitted data sources (see section 1.8).</td></tr><tr><td>Review, approve, add to CRM, source attribution, deletion</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'></td></tr><tr><td>Legal gate before AI contact</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>Must check consent/DND/NCPR before any call.</td></tr><tr class="grp"><td colspan="3">3 · CRM &amp; lead management</td></tr><tr><td>Name, phone, city, stage, deal value, owner, notes, DND</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'>Lead model + screens + tests.</td></tr><tr><td>Email, company, requirements, budget, interest level, campaign, source</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>Fields don't exist in the database yet.</td></tr><tr><td>Board / list / search / detail with calls + follow-ups</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'></td></tr><tr><td>11-stage pipeline (New … Negotiation, Converted/Lost/Not interested)</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>6 fixed stages built (New, Contacted, Interested, Demo/proposal, Won, Lost).</td></tr><tr><td>Custom pipelines per client</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>Stages are a fixed enum today; needs a PipelineStage table.</td></tr><tr><td>Hot / Warm / Cold scoring</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>Designed in v3 (17).</td></tr><tr><td>AI updates lead after each call, with change history</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>Lead.memory field exists but nothing writes it; no change-history table.</td></tr><tr><td>Meeting history on lead</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>No Meeting model.</td></tr><tr class="grp"><td colspan="3">4 · AI voice agent engine</td></tr><tr><td>Agent builder (script, FAQs, knowledge text, catalog, limits)</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'>Tested (Agents suite).</td></tr><tr><td>Voice: male/female, personality, language (11)</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>Saved as settings only; nothing speaks yet.</td></tr><tr><td>Voice preview, speed, style, accent, per-campaign voice</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>v3 (24).</td></tr><tr><td>Multiple voice / LLM providers (OpenAI, Gemini, Claude…)</td><td><span class="st s-pb">Partially built</span> <span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>Only Claude models selectable; no provider registry; v3 (25), Admin (B7).</td></tr><tr><td>Plan-based model permissions</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>Admin draft B5/B7; Plan table exists but unused.</td></tr><tr><td>Knowledge document upload (PDF/Word/Excel/website)</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>v3 (26); needs file storage + search index.</td></tr><tr><td>Qualification questions, call outcomes, escalation rules</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>Fixed outcome list exists on calls; configurable questions/rules not built.</td></tr><tr><td>Inbound + outbound real-time calling (voice worker)</td><td><span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>Not built. Needs LiveKit, Deepgram, Sarvam, Claude keys; SIP provider for phone calls.</td></tr><tr><td>Code-switching (Hinglish)</td><td><span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>Depends on STT/LLM choice; to be validated in testing.</td></tr><tr class="grp"><td colspan="3">5 · Sales automation &amp; follow-up engine</td></tr><tr><td>Campaigns: audience, hours, retries, DND skip, busy skip, cost estimate, pause/cancel</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'>Tested (Campaigns suite).</td></tr><tr><td>Campaign runner (actually starts calls at startAt, retries)</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>No background scheduler: campaigns stay 'Scheduled'.</td></tr><tr><td>Follow-ups: agent callbacks + team tasks, buckets, dashboard</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'>Tested (Follow-ups suite).</td></tr><tr><td>Callback execution at due time</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>Same: needs the scheduler + voice engine.</td></tr><tr><td>Follow-up intelligence (memory of calls, objections, budget, language…)</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>Transcripts/summaries are stored per call; no memory builder.</td></tr><tr><td>Automation controls (intervals, priorities, stop conditions, contact preferences)</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>Per-campaign hours/retries/gap built; the rest not.</td></tr><tr><td>Workflow builder (when → if → do)</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>v3 (23).</td></tr><tr class="grp"><td colspan="3">6 · Communication hub</td></tr><tr><td>WhatsApp Business messages + templates</td><td><span class="st s-dw">Designed – waiting</span> <span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>v3 (18); needs WhatsApp Business API via Meta/BSP and approved templates.</td></tr><tr><td>Email</td><td><span class="st s-dw">Designed – waiting</span> <span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>No email sending at all today (also blocks password reset and invites).</td></tr><tr><td>SMS</td><td><span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>Needs DLT registration (TRAI) + SMS provider.</td></tr><tr><td>Unified communication history per lead</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'></td></tr><tr class="grp"><td colspan="3">7 · Meetings</td></tr><tr><td>Calendar connect, slots, book/reschedule/cancel, reminders</td><td><span class="st s-dw">Designed – waiting</span> <span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>v3 (19); needs Google/Microsoft calendar OAuth.</td></tr><tr class="grp"><td colspan="3">8 · Conversion &amp; onboarding</td></tr><tr><td>Quotes / proposals</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>v3 (20).</td></tr><tr><td>Human approval for price, discount, legal, payment</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>Designed rule only (v3 20); needs an approvals queue.</td></tr><tr><td>Handover to salesperson</td><td><span class="st s-dw">Designed – waiting</span> <span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>v3 (21); needs SIP transfer support.</td></tr><tr><td>Converted → stop automation → onboarding</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>v3 (22). Today Won is a manual stage with no effects.</td></tr><tr class="grp"><td colspan="3">9 · AI orchestration engine</td></tr><tr><td>Event intake, next-action decisions, task scheduling, failure detection, escalation</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>Core of v4; needs job queue + worker.</td></tr><tr><td>Backend-enforced guardrails (billing, permissions, tenancy, hours, wallet, retries, audit)</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>Tenancy, roles, hours/DND/wallet checks on start, single-charge wallet are built; enforcement at call time and audit log are not.</td></tr><tr class="grp"><td colspan="3">10 · Client workspace</td></tr><tr><td>Dashboard, agents, services, leads, campaigns, follow-ups, calls, numbers, billing</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'>9 E2E suites, 285 checks.</td></tr><tr><td>Team management, settings, password reset, 2-step</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>Super Admin draft A1–A5.</td></tr><tr><td>Recordings playback</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>Player shows if a URL exists; no recording storage yet.</td></tr><tr><td>Analytics / reports</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>Dashboard tiles + call totals; no report module.</td></tr><tr class="grp"><td colspan="3">11 · Super Admin</td></tr><tr><td>Number pool + assignment</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'>Tested (Phone numbers suite).</td></tr><tr><td>Clients, suspend, plans, custom pricing, providers, wallets, audit, support access, admin roles</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>Super Admin draft B1–B13.</td></tr><tr><td>Voice provider configuration</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>Admin B7.</td></tr><tr class="grp"><td colspan="3">12 · Billing &amp; cost</td></tr><tr><td>Wallet, ledger, top-ups (test), low-balance alert</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'>Tested (Billing suite incl. concurrent top-ups).</td></tr><tr><td>Charge each call exactly once</td><td><span class="st s-pb">Partially built</span></td><td class='sub' style='font-size:12px'>chargeCall() exists with a unique-per-call guard, but nothing calls it until the voice engine exists.</td></tr><tr><td>Per-provider cost lines (telephony, STT, TTS, LLM, WhatsApp, SMS)</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>Admin C2; Call.usage field exists but is never written.</td></tr><tr><td>Plans, per-minute and custom pricing, usage limits</td><td><span class="st s-pb">Partially built</span> <span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>Plan table unused; Admin B5/B6.</td></tr><tr><td>Real payments (Razorpay), GST invoices</td><td><span class="st s-na">Needs 3rd-party accounts</span></td><td class='sub' style='font-size:12px'>Razorpay account; GST invoice format.</td></tr><tr class="grp"><td colspan="3">13 · Analytics</td></tr><tr><td>Client reports (sources, funnel, cost per lead / customer, agent performance)</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>Designed here (N18).</td></tr><tr><td>Super Admin reports (revenue, costs, margin, consumption, integration performance)</td><td><span class="st s-dw">Designed – waiting</span></td><td class='sub' style='font-size:12px'>Admin B1/B13 + here (N19).</td></tr><tr class="grp"><td colspan="3">14 · Architecture</td></tr><tr><td>Multi-tenant isolation (workspaceId on every record, checked in every query)</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'>Isolation checks in every E2E suite.</td></tr><tr><td>Roles &amp; permissions (Owner/Admin/Staff), platform admin flag</td><td><span class="st s-bt">Built &amp; tested</span></td><td class='sub' style='font-size:12px'></td></tr><tr><td>Integrations, external accounts, prospects, meetings, messages, workflows, usage, provider costs, subscriptions, audit tables</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'>See section 1.5.</td></tr><tr><td>Encrypted credential storage, webhook signature checks, background jobs</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'></td></tr><tr><td>Login rate limiting, email verification</td><td><span class="st s-nb">Not built</span></td><td class='sub' style='font-size:12px'></td></tr></table></div>
+</section>
+
+<section class="doc" id="arch-review">
+  <h2>1.2 Existing architecture review</h2>
+  <div class="grid2">
+    <div class="box"><h5>Solid foundation (keep)</h5><ul class="sub" style="font-size:12.5px">
+      <li>Next.js 15 + TypeScript + Prisma 6 + MySQL; one app for all companies.</li>
+      <li>Every company record carries <code>workspaceId</code>; every query filters by it; linked ids are verified; uniqueness per company. Tested for isolation in every suite.</li>
+      <li>Signed session cookie; user re-loaded on every request; roles enforced in server actions, not only in the UI.</li>
+      <li>Wallet ledger with atomic balance updates and a once-per-call charge guard.</li>
+      <li>India-first: IST everywhere, ₹ formatting, Indian number cleaning, DND flag.</li>
+    </ul></div>
+    <div class="box"><h5>Gaps that block the v4 vision</h5><ul class="sub" style="font-size:12.5px">
+      <li><b>No background jobs</b>: nothing runs on a schedule, so campaigns and callbacks never execute.</li>
+      <li><b>No inbound API</b>: no webhooks, no API keys, no signature checks, so no outside source can send leads.</li>
+      <li><b>No secrets vault</b>: provider keys and OAuth tokens need encrypted storage.</li>
+      <li><b>No file storage</b> for recordings and knowledge documents; <b>no search index</b> for knowledge.</li>
+      <li><b>No outbound email</b>: blocks invites, password reset, email follow-ups.</li>
+      <li><b>No audit log</b>, no login rate limiting, no provider/usage cost records.</li>
+      <li>Lead model too thin (no email, company, source, budget); pipeline stages fixed.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="doc" id="missing">
+  <h2>1.3 Missing functionality (summary)</h2>
+  <ol>
+    <li><b>Platform plumbing:</b> job queue + worker processes, public API and webhooks, encrypted credentials, file storage, email service, audit log, rate limiting.</li>
+    <li><b>Lead Source Integration Hub</b> (all connectors, hub dashboard, processing pipeline with merge and attribution).</li>
+    <li><b>Prospect discovery</b> (data sources, review/approve, compliance gate, deletion).</li>
+    <li><b>CRM depth</b>: richer lead fields, custom pipelines, scoring, AI-written fields with change history, meetings.</li>
+    <li><b>Voice engine</b> (inbound/outbound, browser test, SIP), provider registry, plan-based model access, knowledge documents.</li>
+    <li><b>Orchestration &amp; automation</b>: campaign runner, callback runner, next-action engine, workflows, approvals, escalation.</li>
+    <li><b>Communication hub</b>: WhatsApp, email, SMS, unified history; <b>meetings</b> with calendars.</li>
+    <li><b>Conversion &amp; onboarding</b>; <b>Team &amp; Settings</b>; <b>Super Admin</b>; <b>cost lines + reports</b>; <b>payments</b>.</li>
+  </ol>
+</section>
+
+<section class="doc" id="db">
+  <h2>1.4 Database changes required</h2>
+  <table class="mx"><tr><th style="width:28%">Area</th><th>New tables / changes</th></tr>
+    <tr><td>Organisation &amp; access</td><td><code>Workspace</code> + status, suspendedReason, planOverrides · <code>Invite</code> · <code>PasswordReset</code> · <code>Session</code> (devices) · <code>LoginAttempt</code> · <code>AdminUser</code>, <code>AdminRole</code> · <code>SupportAccessGrant</code> · <code>AuditLog</code> (append-only) · <code>ActivityLog</code> (per company)</td></tr>
+    <tr><td>Integrations</td><td><code>Integration</code> (type, status, health, lastSyncAt, config) · <code>ExternalAccount</code> (encrypted OAuth tokens, expiry) · <code>LeadSource</code> (form/page/campaign ids) · <code>WebhookEndpoint</code> (secret, signature method) · <code>InboundEvent</code> (raw payload, idempotency key, processing result) · <code>ApiKey</code> (hashed)</td></tr>
+    <tr><td>CRM</td><td><code>Lead</code> + email, company, requirements, budgetMin/Max, interestLevel, score, scoreReason, sourceId, campaignRef, adRef, agentId, preferredLanguage, consentAt, consentSource · <code>Pipeline</code>, <code>PipelineStage</code> (replaces fixed enum, default 11 stages) · <code>LeadChange</code> (field, old, new, by AI/user/system, callId) · <code>LeadMemory</code> (facts, objections, commitments) · <code>Prospect</code>, <code>ProspectSource</code>, <code>ProspectSearch</code> · <code>Meeting</code> · <code>Quote</code>, <code>QuoteItem</code> · <code>Approval</code> · <code>Customer</code>/<code>OnboardingTask</code></td></tr>
+    <tr><td>Agents &amp; AI</td><td><code>Provider</code>, <code>ProviderModel</code>, <code>ProviderRate</code> (dated) · <code>PlanModelAccess</code> · <code>Voice</code> · <code>KnowledgeDoc</code>, <code>KnowledgeChunk</code> (+ search index) · <code>QualificationQuestion</code> · <code>OutcomeRule</code>, <code>HandoverRule</code></td></tr>
+    <tr><td>Automation</td><td><code>Workflow</code>, <code>WorkflowStep</code>, <code>WorkflowRun</code> · <code>Job</code> (scheduled actions, attempts, lockedBy, nextRunAt) · <code>ContactPreference</code> · <code>DncCheck</code> (NCPR result cache)</td></tr>
+    <tr><td>Communication</td><td><code>Channel</code> (WhatsApp/email/SMS accounts) · <code>MessageTemplate</code> (approval status) · <code>Message</code> (direction, status, cost) · <code>Recording</code> (storage key, retention)</td></tr>
+    <tr><td>Billing</td><td><code>Plan</code> (used) + rates, limits · <code>Subscription</code> · <code>UsageRecord</code> (every billable event, unique idempotency key) · <code>CostLine</code> (provider cost per event) · <code>Payment</code> · <code>Invoice</code> · <code>WalletTransaction</code> + adjustment types, approver</td></tr>
+  </table>
+  <p class="sub">Migrations are written by hand on this PC (see work log) and every new company table carries <code>workspaceId</code> with an index.</p>
+</section>
+
+<section class="doc" id="api">
+  <h2>1.5 Backend API requirements</h2>
+  <div class="grid2">
+    <div class="box"><h5>Public (outside world → Voxura)</h5><ul class="sub" style="font-size:12.5px">
+      <li><code>POST /api/hooks/meta</code>: Meta leadgen webhook (verify token + X-Hub-Signature-256).</li>
+      <li><code>POST /api/hooks/google-ads/:key</code>: Google lead form webhook (per-form key).</li>
+      <li><code>POST /api/hooks/in/:endpointId</code>: generic webhook for websites, WordPress, Zapier, Make (HMAC signature or secret).</li>
+      <li><code>POST /api/v1/leads</code>, <code>GET /api/v1/leads/:id</code>: REST API with company API keys, rate-limited.</li>
+      <li><code>POST /api/hooks/voice/*</code>, <code>/whatsapp</code>, <code>/email</code>, <code>/payments</code>: provider callbacks.</li>
+      <li>Every inbound event is stored first (idempotency key), then processed by a job, so retries never duplicate leads.</li>
+    </ul></div>
+    <div class="box"><h5>Internal (app + workers)</h5><ul class="sub" style="font-size:12.5px">
+      <li>OAuth connect/callback for Meta, Google, calendars; token refresh jobs.</li>
+      <li>Pollers for sources without webhooks (IndiaMART API, mailbox parsing, Sheets).</li>
+      <li>Lead processing job: validate → normalise → dedupe/merge → attribute → assign agent → next action.</li>
+      <li>Orchestrator: event → context → AI recommendation → policy check → job.</li>
+      <li>Campaign and callback runners; message sender; meeting reminder jobs.</li>
+      <li>Billing: usage → cost lines → customer charge → wallet (exactly once).</li>
+      <li>Admin APIs for every Super Admin screen, with audit writes in the same transaction.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="doc" id="screens">
+  <h2>1.6 Frontend screen requirements</h2>
+  <table class="mx"><tr><th>Module</th><th>Screens</th><th>Where designed</th></tr>
+    <tr><td>Core app (built)</td><td>Dashboard, Agents, Services, Leads, Campaigns, Follow-ups, Calls, Numbers, Billing</td><td>v2 · built</td></tr>
+    <tr><td>Team &amp; Settings, Super Admin</td><td>18 screens + architecture</td><td>Super Admin draft</td></tr>
+    <tr><td>Sales expansion</td><td>Scoring, WhatsApp/email, meetings, quotes, handover, onboarding, workflows, voice studio, AI models, knowledge, usage, live monitor, sales dashboard</td><td>v3 (16–32)</td></tr>
+    <tr><td><b>New in v4</b></td><td>Integration Hub, Meta connect, website/webhook/API, Indian portals &amp; other sources, integration health, lead processing trace, prospect discovery + review, full CRM profile, pipeline editor, lead change history, agent rules, orchestration, memory, automation controls, unified inbox, approvals, client reports, admin reports, workspace map</td><td><b>This document, Part 2</b></td></tr>
+  </table>
+</section>
+
+<section class="doc" id="accounts">
+  <h2>1.7 Third-party integrations and accounts</h2>
+  <table class="mx"><tr><th style="width:22%">Provider</th><th>Needed for</th><th style="width:30%">Approval / access</th><th style="width:13%">Status</th></tr>
+    <tr><td>LiveKit Cloud</td><td>Real-time audio rooms (browser + phone)</td><td>Account + API key</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>Deepgram / Sarvam</td><td>Speech to text; Indian-language voices</td><td>Accounts + keys</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>Anthropic, OpenAI, Google Gemini</td><td>AI brain options</td><td>API accounts with billing (not chat subscriptions)</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>Indian SIP provider</td><td>Phone numbers, inbound/outbound, transfer</td><td>KYC, number allocation; DLT/telemarketing rules for promotional calls</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>Meta (Facebook/Instagram Lead Ads, WhatsApp)</td><td>Lead ads, WhatsApp messages</td><td>Meta app, business verification, App Review for leads_retrieval / pages permissions; WhatsApp via Meta or a BSP; template approval</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>Google Ads</td><td>Lead form webhooks</td><td>Admin access to each client's ad account (API developer token only if pulling reports)</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>Google Calendar / Microsoft 365</td><td>Meeting slots and booking</td><td>OAuth app verification for calendar scopes</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>IndiaMART</td><td>B2B enquiries</td><td>Client's paid seller account + Lead Manager CRM API key</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>JustDial, 99acres, other portals</td><td>Enquiries</td><td>No open API; partner agreements, or parse lead notification emails</td><td><span class="st s-bp">Blocked by provider</span></td></tr>
+    <tr><td>Zapier / Make</td><td>Connect anything else</td><td>Works through our generic webhook + API key (an official Zapier app needs Zapier review)</td><td><span class="st s-nb">Not built</span></td></tr>
+    <tr><td>Email (SES / SendGrid / Resend…)</td><td>Invites, resets, follow-ups</td><td>Domain verification (SPF, DKIM)</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>SMS provider</td><td>SMS follow-ups</td><td>TRAI DLT: entity, header and template registration</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>Prospect data</td><td>Business discovery</td><td>Licensed B2B data provider or official APIs whose terms allow storing results (e.g. Google Places limits storage); public registries (MCA, GST) where terms allow</td><td><span class="st s-bp">Blocked by provider</span></td></tr>
+    <tr><td>Razorpay</td><td>Wallet top-ups, plan payments</td><td>KYC'd merchant account</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+    <tr><td>Object storage (S3-compatible)</td><td>Recordings, documents</td><td>Account; India region for data residency</td><td><span class="st s-na">Needs 3rd-party accounts</span></td></tr>
+  </table>
+</section>
+
+<section class="doc" id="deps">
+  <h2>1.8 Development dependencies and testing</h2>
+  <div class="grid2">
+    <div class="box"><h5>New building blocks</h5><ul class="sub" style="font-size:12.5px">
+      <li><b>Job queue</b> (Redis + BullMQ) with separate worker processes; jobs are idempotent and retried safely.</li>
+      <li><b>Python voice worker</b> on LiveKit Agents (one process per call, scaled by lines).</li>
+      <li><b>Secrets</b>: AES-GCM encryption for tokens and keys with a master key outside the database.</li>
+      <li><b>Search index</b> for knowledge documents (embeddings).</li>
+      <li><b>Hosting</b>: VPS (web + workers + Redis + MySQL) in India, HTTPS, backups, monitoring.</li>
+    </ul></div>
+    <div class="box"><h5>Testing requirements</h5><ul class="sub" style="font-size:12.5px">
+      <li>Keep the 285 end-to-end checks green on every change; add a suite per module.</li>
+      <li>Webhook tests with signed sample payloads (valid, bad signature, replay, duplicate).</li>
+      <li>Tenancy tests for every new table and API (company B can never read or write company A).</li>
+      <li>Billing tests: each usage event charged exactly once under retries and concurrency.</li>
+      <li>Orchestrator tests: AI suggestions that break a rule (DND, hours, wallet, discount) are always refused.</li>
+      <li>Provider sandboxes (Meta test leads, Razorpay test mode), voice quality checks in Hindi/Hinglish, load test for concurrent calls.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="doc" id="plan">
+  <h2>1.9 Recommended implementation sequence</h2>
+  <p>Your 10 phases, with what each depends on. Phases on the same line can run in parallel.</p>
+  <table class="mx"><tr><th style="width:6%">#</th><th style="width:26%">Phase</th><th>Main deliverables</th><th style="width:22%">Depends on</th></tr>
+    <tr><td>0</td><td><b>Platform plumbing</b> (added)</td><td>Job queue + workers, encrypted secrets, audit log, email service, file storage, public API/webhook framework, rate limiting</td><td>Email + storage accounts</td></tr>
+    <tr><td>1</td><td>Team &amp; Settings, tenant foundation</td><td>Invites, roles, company profile, password reset, 2-step, support-access approval</td><td>0 (email)</td></tr>
+    <tr><td>2</td><td>Super Admin core</td><td>Clients, plans, pricing, providers, wallets, number rent, audit, support access, dashboards</td><td>0, 1</td></tr>
+    <tr><td>3</td><td>Lead Source Integration Hub</td><td>Website/webhook/API first, then Meta, Google, IndiaMART, email-parsing portals; hub dashboard; processing pipeline</td><td>0; Meta/Google approvals (start applying now)</td></tr>
+    <tr><td>4</td><td>CRM &amp; lead management (with 3)</td><td>Rich lead fields, custom pipelines, scoring, change history, memory, meetings table</td><td>0</td></tr>
+    <tr><td>5</td><td>AI agent &amp; voice engine (with 3–4)</td><td>Voice worker, browser test, SIP, provider registry, plan model access, knowledge docs, qualification/outcome/handover rules, cost lines</td><td>Provider accounts, SIP</td></tr>
+    <tr><td>6</td><td>Orchestration &amp; sales automation</td><td>Campaign + callback runners, next-action engine with policy checks, workflows, approvals, escalation</td><td>4, 5</td></tr>
+    <tr><td>7</td><td>WhatsApp, email, calendar</td><td>Communication hub, templates, sequences, meetings booking</td><td>Meta WhatsApp, calendar OAuth</td></tr>
+    <tr><td>8</td><td>Prospect discovery</td><td>Licensed data source, search, review/approve, compliance gate</td><td>Data provider + legal review</td></tr>
+    <tr><td>9</td><td>Conversion &amp; onboarding</td><td>Quotes, approvals, converted → onboarding</td><td>6, 7</td></tr>
+    <tr><td>10</td><td>Billing, analytics, security, production</td><td>Razorpay, invoices, reports, security review, load tests, go-live</td><td>All</td></tr>
+  </table>
+  <div class="alert w">Start the slow approvals now (Meta App Review, WhatsApp Business, TRAI DLT, SIP provider KYC, Razorpay KYC): they take days to weeks and don't need code.</div>
+</section>
+
+<section class="part" id="part2"><h2>Part 2 · New draft screens (v4)</h2><p>Only features not already drawn in v2, v3 or the Super Admin draft. Each screen shows its current status. All names and figures are sample data.</p></section>
+
+<section class="screen" id="n1">
+  <div class="screen-head"><span class="no">N1</span><h2>Lead Source Integration Hub</h2><span class="tag t-v4">v4</span><span class="st s-nb">Not built</span><span class="url">/integrations</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span class="on">Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Integrations</h3><p>Where your leads come from. Only your company sees these connections.</p></div><span class="btn pri">+ Add a source</span></div>
+      <div class="grid4"><div class="box"><h5>Connected</h5><div class="big num">5</div></div><div class="box"><h5>Leads today</h5><div class="big num">63</div></div><div class="box"><h5>Needs attention</h5><div class="big num" style="color:var(--bad)">1</div></div><div class="box"><h5>Failed (24 h)</h5><div class="big num">2</div></div></div>
+      <table class="tbl"><tr><th>Source</th><th>Status</th><th>Last lead</th><th class="r">30 d</th><th></th></tr>
+        <tr><td><b>Facebook Lead Ads</b><div class="sub">1 page · 2 forms</div></td><td><span class="chip g">Healthy</span></td><td class="num">2 min ago</td><td class="r num">412</td><td><span class="btn">Manage</span></td></tr>
+        <tr><td><b>Instagram Lead Ads</b><div class="sub">via the same Meta business</div></td><td><span class="chip g">Healthy</span></td><td class="num">1 h ago</td><td class="r num">96</td><td><span class="btn">Manage</span></td></tr>
+        <tr><td><b>Website form</b><div class="sub">webhook</div></td><td><span class="chip g">Healthy</span></td><td class="num">14 min ago</td><td class="r num">188</td><td><span class="btn">Manage</span></td></tr>
+        <tr><td><b>Google Ads lead forms</b><div class="sub">2 campaigns</div></td><td><span class="chip r">Reconnect needed</span></td><td class="num">3 days ago</td><td class="r num">57</td><td><span class="btn pri">Reconnect</span></td></tr>
+        <tr><td><b>IndiaMART</b><div class="sub">API · every 5 min</div></td><td><span class="chip g">Healthy</span></td><td class="num">35 min ago</td><td class="r num">71</td><td><span class="btn">Manage</span></td></tr>
+        <tr class="muted"><td>Google Sheets</td><td>Not connected</td><td>-</td><td class="r">-</td><td><span class="btn">Connect</span></td></tr></table>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>One place to connect, configure, pause and disconnect every lead source.</li><li>Health, last lead, totals and failures per source; links to logs (N5).</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Each company has its own connections and tokens; tokens stored encrypted.</li><li>A failing source raises an alert to the Owner/Admin.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Which sources do your clients use most (to build first)?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n2">
+  <div class="screen-head"><span class="no">N2</span><h2>Connect Facebook &amp; Instagram (Meta)</h2><span class="tag t-v4">v4</span><span class="st s-dw">Designed – waiting</span> <span class="st s-na">Needs 3rd-party accounts</span><span class="url">/integrations/meta</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span class="on">Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Facebook &amp; Instagram Lead Ads</h3><p>Step 2 of 3 · choose pages and forms</p></div><span class="chip b">Signed in as Anil Kapoor (Meta)</span></div>
+      <div class="steps"><span class="done">1 Sign in with Facebook</span><span class="on">2 Pages &amp; forms</span><span>3 Map fields &amp; actions</span></div>
+      <div class="grid2">
+        <div class="box"><h5>Pages and forms</h5><div class="sub"><span class="tg on"></span> <b>Brightlane Software</b> (page)<br>&nbsp;&nbsp;☑ ERP demo request (form) · 412 leads<br>&nbsp;&nbsp;☑ Billing app trial (form) · 96 leads<br><span class="tg"></span> Brightlane Careers (page)</div></div>
+        <div class="box mark x"><span class="pin">MAPPING</span><h5>Form field → Voxura lead</h5><div class="sub">full_name → Name<br>phone_number → Mobile (cleaned to +91)<br>email → Email<br>city → City<br>"How many branches?" → Requirements<br>Ad, ad set, campaign → saved on the lead</div></div>
+      </div>
+      <div class="box"><h5>When a lead arrives</h5><div class="sub">Assign agent: <b>Priya Sales</b> · Call: <b>within 60 s, inside calling hours</b> · If the form has no consent tick: <b>don't call, add a team task</b></div></div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Meta sign-in (OAuth), choose pages and forms, map fields, set the first action.</li><li>Leads arrive in seconds through Meta's webhook; old leads can be back-filled (90 days).</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Uses only the leads people submitted to the client's own forms; no profile scraping.</li><li>Webhook signature verified on every request; token refresh handled automatically.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Should leads without a consent checkbox ever be called?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n3">
+  <div class="screen-head"><span class="no">N3</span><h2>Website forms, WordPress, webhook &amp; API</h2><span class="tag t-v4">v4</span><span class="st s-nb">Not built</span><span class="url">/integrations/website</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span class="on">Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Website &amp; custom sources</h3><p>Pick the easiest way for your website.</p></div></div>
+      <div class="grid3">
+        <div class="box"><h5>1 · Copy-paste form</h5><div class="sub">A ready Voxura form. Paste one line into any page.</div><div class="code">&lt;script src="https://voxura.app/f/brl_7k2.js" async&gt;&lt;/script&gt;</div></div>
+        <div class="box"><h5>2 · WordPress plugin</h5><div class="sub">Install "Voxura Leads", paste your site key. Works with Contact Form 7, WPForms, Elementor forms.</div></div>
+        <div class="box"><h5>3 · Webhook</h5><div class="sub">Send any form, Zapier or Make here:</div><div class="code">POST https://voxura.app/api/hooks/in/wh_83fa
+X-Voxura-Signature: sha256=…</div></div>
+      </div>
+      <div class="grid2">
+        <div class="box"><h5>REST API keys</h5><table class="tbl"><tr><th>Key</th><th>Scope</th><th>Last used</th></tr><tr><td class="num">vx_live_…9c1</td><td>Create leads</td><td>Today</td></tr><tr><td class="num">vx_live_…4ad</td><td>Read leads</td><td>Never</td></tr></table></div>
+        <div class="box"><h5>Test</h5><div class="sub">Send a test lead → see it in the processing log (N6) without calling anyone.</div><span class="btn" style="margin-top:6px">Send test lead</span></div>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Three no-code / low-code ways to connect a website, plus API keys for developers and chat providers.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Secrets shown once; keys can be revoked; every request rate-limited and signed.</li><li>Duplicate submissions (same form, same minute) are ignored.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Do clients need a hosted landing-page builder too, or only forms?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n4">
+  <div class="screen-head"><span class="no">N4</span><h2>Indian lead portals &amp; other sources</h2><span class="tag t-v4">v4</span><span class="st s-nb">Not built</span> <span class="st s-bp">Blocked by provider</span><span class="url">/integrations/catalogue</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span class="on">Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Add a source</h3><p>How each source connects, and what access it needs.</p></div></div>
+      <table class="tbl"><tr><th>Source</th><th>How it connects</th><th>Access needed</th><th>Availability</th></tr>
+        <tr><td><b>IndiaMART</b></td><td>Official Lead Manager API, checked every few minutes</td><td>Your paid seller account's CRM key</td><td><span class="chip g">Supported</span></td></tr>
+        <tr><td><b>JustDial</b></td><td>Lead notification emails read from a Voxura inbox</td><td>Forward JustDial lead emails</td><td><span class="chip o">Workaround</span></td></tr>
+        <tr><td><b>99acres / MagicBricks / Housing</b></td><td>Partner CRM feed, or lead-email parsing</td><td>Agreement with the portal, or forward emails</td><td><span class="chip o">Needs approval</span></td></tr>
+        <tr><td><b>Google Ads lead forms</b></td><td>Google's lead form webhook</td><td>Ad account admin</td><td><span class="chip g">Supported</span></td></tr>
+        <tr><td><b>Google Sheets</b></td><td>Google sign-in, watch a sheet</td><td>Sheet access</td><td><span class="chip g">Supported</span></td></tr>
+        <tr><td><b>Zapier / Make</b></td><td>Generic webhook (N3)</td><td>Zapier or Make account</td><td><span class="chip g">Supported</span></td></tr>
+        <tr><td><b>HubSpot / Zoho / Salesforce</b></td><td>Two-way sync (OAuth)</td><td>CRM admin</td><td><span class="chip n">Later phase</span></td></tr>
+        <tr><td><b>CSV / Excel</b></td><td>Upload</td><td>None</td><td><span class="chip g">Built</span></td></tr></table>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>A catalogue that is honest about how each source connects and what it needs.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Only official APIs, approved partner feeds or the client's own notification emails; no scraping of portals.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Which portals matter most to your clients?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n5">
+  <div class="screen-head"><span class="no">N5</span><h2>Integration detail: health, sync log, errors</h2><span class="tag t-v4">v4</span><span class="st s-nb">Not built</span><span class="url">/integrations/:id</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span class="on">Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Website form · brightlane.in/contact</h3><p>Webhook · created 2 Nov · 188 leads in 30 days</p></div><div class="row"><span class="chip g">Healthy</span><span class="btn">Pause</span><span class="btn del">Disconnect</span></div></div>
+      <div class="grid4"><div class="box"><h5>Received (24 h)</h5><div class="big num">21</div></div><div class="box"><h5>Created</h5><div class="big num">17</div></div><div class="box"><h5>Merged</h5><div class="big num">2</div></div><div class="box"><h5>Failed</h5><div class="big num" style="color:var(--bad)">2</div></div></div>
+      <table class="tbl"><tr><th>Time</th><th>Result</th><th>Details</th><th></th></tr>
+        <tr><td class="num">10:02:41</td><td><span class="chip g">Lead created</span></td><td>Anita Joshi · +91 98290 11223 · agent call queued</td><td><span class="btn">Trace</span></td></tr>
+        <tr><td class="num">09:47:10</td><td><span class="chip b">Merged</span></td><td>Rakesh Rao already exists (from Facebook) · source added</td><td><span class="btn">Trace</span></td></tr>
+        <tr><td class="num">09:31:05</td><td><span class="chip r">Rejected</span></td><td>Phone "12345" is not a valid number · saved for review</td><td><span class="btn">Fix &amp; retry</span></td></tr>
+        <tr><td class="num">08:58:22</td><td><span class="chip r">Bad signature</span></td><td>Request not signed with your secret · ignored</td><td><span class="btn">Details</span></td></tr></table>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Per-source health, counts, full request log, failure reasons, retry for fixable failures, pause/disconnect/reconnect.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Raw payloads kept 30 days for debugging, then only the result is kept.</li><li>Personal data in logs is visible only to Owner/Admin.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n6">
+  <div class="screen-head"><span class="no">N6</span><h2>Automatic lead processing (one lead's trace)</h2><span class="tag t-v4">v4</span><span class="st s-pb">Partially built</span><span class="url">/leads/:id → Source trace</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span class="on">Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Anita Joshi · from Facebook form "ERP demo request"</h3><p>Campaign: Diwali ERP · Ad set: Jaipur retailers · Ad: video 2</p></div><span class="chip g">Processed in 1.8 s</span></div>
+      <div class="box" style="display:grid;gap:6px">
+        <div class="evt"><span class="dt">10:02:39</span><span class="ic" style="background:#1a63d8">1</span><span><b>Received</b> from Meta webhook · signature valid · stored as event #88213</span></div>
+        <div class="evt"><span class="dt">10:02:39</span><span class="ic" style="background:#1a63d8">2</span><span><b>Validated</b> name, phone, email · consent ticked on form</span></div>
+        <div class="evt"><span class="dt">10:02:39</span><span class="ic" style="background:#1a63d8">3</span><span><b>Normalised</b> "098290 11223" → +91 98290 11223</span></div>
+        <div class="evt"><span class="dt">10:02:40</span><span class="ic" style="background:#1a63d8">4</span><span><b>Duplicate check</b> by phone and email → new lead</span></div>
+        <div class="evt"><span class="dt">10:02:40</span><span class="ic" style="background:#1a63d8">5</span><span><b>Source saved</b>: Facebook · form · campaign · ad</span></div>
+        <div class="evt"><span class="dt">10:02:40</span><span class="ic" style="background:#0f9d58">6</span><span><b>Assigned</b> agent Priya Sales (form rule) · salesperson Rahul (round-robin)</span></div>
+        <div class="evt"><span class="dt">10:02:41</span><span class="ic" style="background:#0f9d58">7</span><span><b>Checks passed</b>: inside calling hours · not on DND/NCPR · wallet ₹1,250</span></div>
+        <div class="evt"><span class="dt">10:02:41</span><span class="ic" style="background:#7b2cbf">8</span><span><b>Next action</b>: call queued (attempt 1 of 3) → answered 10:03:20</span></div>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Every incoming lead goes through the same steps; the trace shows exactly what happened and why.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>If any check fails (outside hours, DND, empty wallet, no consent) the lead is saved and a task or later call is scheduled instead.</li><li>Merges keep both sources and never overwrite a field a person edited.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Merge rule: same phone only, or phone or email?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n7">
+  <div class="screen-head"><span class="no">N7</span><h2>Prospect discovery: search</h2><span class="tag t-v4">v4</span><span class="st s-nb">Not built</span> <span class="st s-bp">Blocked by provider</span><span class="url">/prospects</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span class="on">Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Find business prospects</h3><p>Publicly listed businesses from permitted data sources. Separate from your ad leads.</p></div><span class="chip o">Optional add-on</span></div>
+      <div class="grid4"><div class="field"><label>Industry</label><div class="inp">Retail · electronics ▾</div></div><div class="field"><label>City / state</label><div class="inp">Kolkata, West Bengal</div></div><div class="field"><label>Company size</label><div class="inp">10–200 staff ▾</div></div><div class="field"><label>Type</label><div class="inp">Private limited ▾</div></div></div>
+      <div class="row"><div class="inp ph-t" style="flex:1">Keywords, e.g. "multi-branch, billing software"</div><span class="btn pri">Search</span></div>
+      <table class="tbl"><tr><th>Business</th><th>Category</th><th>City</th><th>Size</th><th>Source</th><th>Contact</th></tr>
+        <tr><td><b>Eastern Electronics Pvt Ltd</b></td><td>Electronics retail</td><td>Kolkata</td><td>~60</td><td><span class="chip b">B2B data</span></td><td><span class="chip o">NCPR check pending</span></td></tr>
+        <tr><td><b>Salt Lake Mobiles</b></td><td>Mobile retail</td><td>Kolkata</td><td>~25</td><td><span class="chip b">Public registry</span></td><td><span class="chip n">Email only</span></td></tr>
+        <tr><td><b>Howrah Home Appliances</b></td><td>Appliance retail</td><td>Howrah</td><td>~120</td><td><span class="chip b">B2B data</span></td><td><span class="chip r">On NCPR</span></td></tr></table>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Search businesses by industry, category, location, size and type; see where each result came from.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Only licensed data or official APIs whose terms allow it; no private social profiles; no bypassing logins.</li><li>Results are not leads until a person approves them (N8).</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Which industries and cities matter first?</li><li>Budget for a licensed B2B data provider?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n8">
+  <div class="screen-head"><span class="no">N8</span><h2>Prospect review, approval &amp; data controls</h2><span class="tag t-v4">v4</span><span class="st s-nb">Not built</span><span class="url">/prospects/review</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span class="on">Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Review 24 prospects</h3><p>Approve to add to your CRM. Nothing is contacted automatically.</p></div><div class="row"><span class="btn">Reject selected</span><span class="btn pri">Approve 18</span></div></div>
+      <div class="grid2">
+        <div class="box"><h5>Eastern Electronics Pvt Ltd</h5><dl class="kv" style="display:grid;grid-template-columns:110px 1fr;gap:3px 8px;font-size:12px;margin:0"><dt class="sub">Source</dt><dd style="margin:0">Licensed B2B data · fetched 2 Nov · ref #ED-44812</dd><dt class="sub">Duplicate</dt><dd style="margin:0">Not in your CRM</dd><dt class="sub">Category</dt><dd style="margin:0">Electronics retail · 3 stores</dd><dt class="sub">Contact</dt><dd style="margin:0">Business line · NCPR: not registered</dd></dl></div>
+        <div class="box mark x"><span class="pin">COMPLIANCE</span><h5>Before the AI may call</h5><div class="sub">✓ Business number (not personal)<br>✓ Not on NCPR / DND<br>✓ Calling hours and DLT-registered caller ID<br>◻ First contact by email or a person (your setting)<br>Data-deletion requests are honoured within 7 days and logged.</div></div>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Review, de-duplicate, categorise, approve or reject; approved prospects become leads with source attribution.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Source reference kept on every record; delete-on-request and retention rules; contact only when legally permitted.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Should approved prospects be called by the AI at all, or first contacted by email/person?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n9">
+  <div class="screen-head"><span class="no">N9</span><h2>CRM lead profile (complete)</h2><span class="tag t-v4">v4</span><span class="st s-pb">Partially built</span><span class="url">/leads/:id</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span class="on">Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Ravi Traders <span class="chip r" style="vertical-align:3px">Hot 86</span></h3><p>Ravi Agarwal · Owner · +91 98111 00001 · ravi@ravitraders.in · Jaipur</p></div><div class="row"><span class="btn">Edit</span><span class="btn pri">Call now</span></div></div>
+      <div class="pipe"><span>New</span><i>→</i><span>Contacted</span><i>→</i><span>Connected</span><i>→</i><span>Qualified</span><i>→</i><span>Interested</span><i>→</i><span class="on">Meeting scheduled</span><i>→</i><span>Meeting done</span><i>→</i><span>Proposal</span><i>→</i><span>Negotiation</span><i>→</i><span>Converted</span></div>
+      <div class="grid3">
+        <dl class="box" style="display:grid;grid-template-columns:90px 1fr;gap:3px 8px;font-size:12px;margin:0"><dt class="sub">Company</dt><dd style="margin:0">Ravi Traders (3 shops)</dd><dt class="sub">Source</dt><dd style="margin:0">Facebook · Diwali ERP</dd><dt class="sub">Needs</dt><dd style="margin:0">Stock + GST in one app</dd><dt class="sub">Budget</dt><dd style="margin:0">₹4–5 lakh</dd><dt class="sub">Timeline</dt><dd style="margin:0">This month</dd><dt class="sub">Language</dt><dd style="margin:0">Hinglish</dd></dl>
+        <dl class="box" style="display:grid;grid-template-columns:90px 1fr;gap:3px 8px;font-size:12px;margin:0"><dt class="sub">AI agent</dt><dd style="margin:0">Priya Sales</dd><dt class="sub">Salesperson</dt><dd style="margin:0">Rahul Verma</dd><dt class="sub">Next</dt><dd style="margin:0">Demo Fri 11 am</dd><dt class="sub">Consent</dt><dd style="margin:0">Facebook form, 2 Nov</dd><dt class="sub">Deal</dt><dd style="margin:0">₹1,77,000</dd></dl>
+        <div class="box"><h5>Timeline</h5><div class="sub">Fri · meeting booked<br>Thu · WhatsApp brochure read<br>Thu · call 2m 5s · Interested<br>Thu · lead from Facebook</div></div>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>All lead fields you listed; full timeline of calls, transcripts, messages, meetings, follow-ups; next action.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Fields the AI fills show an AI badge and their history (N11); people can correct them.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n10">
+  <div class="screen-head"><span class="no">N10</span><h2>Custom sales pipelines</h2><span class="tag t-v4">v4</span><span class="st s-pb">Partially built</span><span class="url">/settings/pipelines</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span class="on">Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Pipelines</h3><p>Your sales stages. Default pipeline has 11 stages; add your own per product or team.</p></div><span class="btn pri">+ New pipeline</span></div>
+      <table class="tbl"><tr><th>#</th><th>Stage</th><th>Type</th><th>Automation on entering</th></tr>
+        <tr><td>1</td><td>New lead</td><td><span class="chip n">Open</span></td><td>Assign agent, first call</td></tr>
+        <tr><td>4</td><td>Qualified</td><td><span class="chip n">Open</span></td><td>Score ≥ 40</td></tr>
+        <tr><td>6</td><td>Meeting scheduled</td><td><span class="chip n">Open</span></td><td>Reminders on</td></tr>
+        <tr><td>9</td><td>Negotiation</td><td><span class="chip n">Open</span></td><td>Hand over to salesperson</td></tr>
+        <tr><td>10</td><td>Converted</td><td><span class="chip g">Won</span></td><td>Stop sales automation, start onboarding</td></tr>
+        <tr><td>11</td><td>Lost / Not interested</td><td><span class="chip r">Closed</span></td><td>Stop calls; monthly newsletter (optional)</td></tr></table>
+      <div class="sub">Drag to reorder · rename · add stages · stages in use can be merged, not deleted.</div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Edit stage names and order, mark won/lost stages, attach an automation to entering a stage.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Existing leads move to the merged stage when a stage is removed; change is logged.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n11">
+  <div class="screen-head"><span class="no">N11</span><h2>Lead change history (AI and people)</h2><span class="tag t-v4">v4</span><span class="st s-nb">Not built</span><span class="url">/leads/:id → History</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span class="on">Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Ravi Traders · change history</h3><p>Every field change: who or what changed it, when, and why.</p></div></div>
+      <table class="tbl"><tr><th>When</th><th>Field</th><th>From → to</th><th>By</th><th>Because</th></tr>
+        <tr><td class="num">Thu 10:05</td><td>Budget</td><td>– → ₹4–5 lakh</td><td><span class="chip">AI · Priya</span></td><td>Call: "budget 4 se 5 lakh"</td></tr>
+        <tr><td class="num">Thu 10:05</td><td>Score</td><td>– → 86 (Hot)</td><td><span class="chip">AI · Priya</span></td><td>Need + budget + this month</td></tr>
+        <tr><td class="num">Thu 10:05</td><td>Stage</td><td>Contacted → Interested</td><td><span class="chip">AI · Priya</span></td><td>Asked for a demo</td></tr>
+        <tr><td class="num">Thu 15:20</td><td>Budget</td><td>₹4–5 lakh → ₹3.5–5 lakh</td><td><span class="chip b">Rahul</span></td><td>Corrected after WhatsApp chat</td></tr>
+        <tr><td class="num">Fri 09:00</td><td>Stage</td><td>Interested → Meeting scheduled</td><td><span class="chip n">System</span></td><td>Meeting booked</td></tr></table>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Auditable history of every lead field, including AI updates with the call excerpt that caused them.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>History is append-only; a person's correction is never overwritten by the AI later.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n12">
+  <div class="screen-head"><span class="no">N12</span><h2>Agent rules: qualification, outcomes, handover</h2><span class="tag t-v4">v4</span><span class="st s-pb">Partially built</span><span class="url">/agents/:id → Rules</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span class="on">Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Priya Sales · rules</h3><p>Adds to the agent setup (built) and voice studio / AI models (v3).</p></div></div>
+      <div class="grid3">
+        <div class="box"><h5>Qualification questions</h5><div class="sub">1 What do you need it for? → <b>requirements</b><br>2 Rough budget? → <b>budget</b><br>3 When to start? → <b>timeline</b><br>4 Who decides? → <b>decision maker</b><br>+ Add question</div></div>
+        <div class="box"><h5>Call outcomes</h5><div class="sub">Interested → stage Interested, WhatsApp brochure<br>Call back → follow-up at the time asked<br>Not interested → stage Lost, stop calls<br>Wrong number → mark invalid<br>+ Add outcome</div></div>
+        <div class="box mark x"><span class="pin">HANDOVER</span><h5>Escalate to a person when</h5><div class="sub">Caller asks for a person · price negotiation · angry caller · deal above ₹5 lakh</div></div>
+      </div>
+      <div class="alert i">The AI only suggests discounts up to the limit you set; anything above goes to the approval queue (N17).</div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Per-agent qualification questions mapped to lead fields, outcome rules, escalation rules.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Outcomes can only trigger actions the platform allows; money and legal actions always need approval.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n13">
+  <div class="screen-head"><span class="no">N13</span><h2>AI orchestration: events, decisions, actions</h2><span class="tag t-v4">v4</span><span class="st s-nb">Not built</span><span class="url">/automations/activity</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span class="on">Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>What the AI did and why</h3><p>Live activity of the orchestration engine for your company.</p></div><div class="seg"><b class="on">All</b><b>Blocked</b><b>Failed</b><b>Escalated</b></div></div>
+      <table class="tbl"><tr><th>Time</th><th>Event</th><th>AI suggested</th><th>Platform check</th><th>Result</th></tr>
+        <tr><td class="num">10:03</td><td>Call ended · Ravi · Hot</td><td>Send brochure, book demo</td><td><span class="chip g">Allowed</span></td><td>WhatsApp sent · slots offered</td></tr>
+        <tr><td class="num">10:20</td><td>New lead · Sunil</td><td>Call now</td><td><span class="chip o">Outside hours</span></td><td>Call scheduled 10:00 tomorrow</td></tr>
+        <tr><td class="num">11:05</td><td>Call · Kumar asks 15% off</td><td>Offer 15%</td><td><span class="chip r">Above 5% limit</span></td><td>Sent to approval queue</td></tr>
+        <tr><td class="num">11:40</td><td>Callback due · Verma</td><td>Call</td><td><span class="chip r">DND</span></td><td>Not called · team task created</td></tr>
+        <tr><td class="num">12:10</td><td>WhatsApp failed · Meena</td><td>Retry</td><td><span class="chip g">Allowed</span></td><td>Retried, then email sent</td></tr></table>
+      <div class="box soft"><h5>Always enforced by the platform, never by the AI</h5><div class="sub">Billing · permissions · company isolation · calling hours · DND/consent · wallet limits · retry limits · discounts and payments · audit logging</div></div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Central engine: receives events, loads history, asks the AI for the next step, checks it against rules, runs it or escalates.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>An AI suggestion that breaks a rule is refused and logged; the AI can never move money or change permissions.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n14">
+  <div class="screen-head"><span class="no">N14</span><h2>Follow-up intelligence: what the agent remembers</h2><span class="tag t-v4">v4</span><span class="st s-pb">Partially built</span><span class="url">/leads/:id → Memory</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span class="on">Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Ravi Traders · agent memory</h3><p>Used at the start of every call and message. Editable by your team.</p></div></div>
+      <div class="grid2">
+        <div class="box"><h5>Facts</h5><div class="sub">3 shops in Jaipur, uses Tally · budget ₹4–5 lakh · wants GST e-invoice · prefers Hinglish, evenings after 6 pm</div></div>
+        <div class="box"><h5>Objections so far</h5><div class="sub">"Training staff will take time" → offered free on-site training (answered)<br>"Price is high" → handed to Rahul (open)</div></div>
+        <div class="box"><h5>Commitments</h5><div class="sub">Demo Fri 11 am with Rahul · send brochure (done) · call back after demo</div></div>
+        <div class="box"><h5>Salesperson notes</h5><div class="sub">"Decision with his brother Mohan, include him in demo" · Rahul</div></div>
+      </div>
+      <div class="alert i">Opening line next call: "Ravi ji, Friday ke demo se pehle Mohan ji ko bhi join karwa dein?"</div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Rolling memory of calls, needs, objections, budget, language, commitments, dates, messages and notes.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Built from stored transcripts and messages; people can edit or delete memory items; nothing is shared across companies.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n15">
+  <div class="screen-head"><span class="no">N15</span><h2>Automation controls</h2><span class="tag t-v4">v4</span><span class="st s-pb">Partially built</span><span class="url">/campaigns/:id → Automation · /settings/automation</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span class="on">Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Automation controls</h3><p>Limits the AI must stay inside.</p></div></div>
+      <div class="grid3">
+        <div class="box"><h5>Schedule</h5><div class="sub">Mon–Sat 10:00–19:00 IST · no calls on public holidays</div></div>
+        <div class="box"><h5>Retries</h5><div class="sub">Max 3 calls per lead per day, 6 per week · gap 3 h</div></div>
+        <div class="box"><h5>Follow-up intervals</h5><div class="sub">Interested: 2 days · Warm: 5 days · Cold: monthly message only</div></div>
+        <div class="box"><h5>Priorities</h5><div class="sub">1 Callbacks due · 2 New leads &lt; 5 min · 3 Hot · 4 Campaigns</div></div>
+        <div class="box"><h5>Stop conditions</h5><div class="sub">Converted · Lost · "don't call me" · 3 unanswered weeks · opted out of WhatsApp</div></div>
+        <div class="box"><h5>Contact preferences</h5><div class="sub">Per lead: channel, language, best time, do-not-contact list</div></div>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Company-wide and per-campaign limits on when, how often and how the AI contacts people.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Enforced by the platform at the moment of each action, not only when a campaign starts.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n16">
+  <div class="screen-head"><span class="no">N16</span><h2>Communication hub: unified inbox</h2><span class="tag t-v4">v4</span><span class="st s-dw">Designed – waiting</span> <span class="st s-na">Needs 3rd-party accounts</span><span class="url">/inbox</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span class="on">Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="grid2" style="grid-template-columns:200px 1fr">
+        <div class="box" style="display:grid;gap:6px"><h5>Conversations</h5><div class="sub"><b>Ravi Traders</b> · WhatsApp · 2 m<br>Meena Stores · Email · 1 h<br>Das Furniture · SMS · yesterday<br>Kumar Elec. · WhatsApp · yesterday</div></div>
+        <div class="box" style="display:grid;gap:6px"><h5>Ravi Traders · all channels</h5>
+          <div class="tx"><div class="ag">📞 Call · Thu 10:03 · 2m 5s · Interested <u>transcript</u></div><div class="ag">WhatsApp · template "after_call_interested" · read</div><div class="cu">"Brother bhi demo me aayenge"</div><div class="ag">AI reply (approved template): "Zaroor! Friday 11 baje dono ke liye link bhej diya hai."</div><div class="ag">✉ Email · meeting invite · opened</div></div>
+          <div class="row"><div class="inp ph-t" style="flex:1">Reply on WhatsApp…</div><span class="btn pri">Send</span></div></div>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>One thread per lead across calls, WhatsApp, email and SMS; team and AI replies; delivery and read status.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Messages outside WhatsApp's 24-hour window use approved templates only; opt-outs stop all sends.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n17">
+  <div class="screen-head"><span class="no">N17</span><h2>Human approvals (price, discount, legal, payment)</h2><span class="tag t-v4">v4</span><span class="st s-nb">Not built</span><span class="url">/approvals</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span class="on">Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Waiting for approval</h3><p>Sensitive decisions never happen automatically.</p></div><span class="chip o">3 waiting</span></div>
+      <table class="tbl"><tr><th>Lead</th><th>Request</th><th>Raised by</th><th>Limit</th><th></th></tr>
+        <tr><td>Kumar Electricals</td><td>15% discount on ERP</td><td>AI · during call</td><td>AI limit 5%</td><td><span class="btn">Reject</span> <span class="btn go">Approve 10%</span></td></tr>
+        <tr><td>Ravi Traders</td><td>Payment ₹1,77,000 received (bank)</td><td>Rahul</td><td>Finance confirms</td><td><span class="btn go">Confirm</span></td></tr>
+        <tr><td>Metro Loans</td><td>Custom contract clause</td><td>AI · email reply</td><td>Owner only</td><td><span class="btn">Open</span></td></tr></table>
+      <div class="sub">Converted status, final price and payment confirmation always need a person or a verified payment record.</div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Queue of decisions the AI or staff raised that need a person: discounts, final price, legal terms, payment confirmation.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Who can approve what is set per role; every decision is logged with the person's name.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n18">
+  <div class="screen-head"><span class="no">N18</span><h2>Client analytics &amp; reports</h2><span class="tag t-v4">v4</span><span class="st s-nb">Not built</span><span class="url">/reports</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span class="on">Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Reports · November</h3><p>From your recorded data only.</p></div><div class="seg"><b class="on">Funnel</b><b>Sources</b><b>Agents</b><b>Costs</b></div></div>
+      <div class="pipe"><span>Leads 1,820</span><i>→</i><span>Called 1,650</span><i>→</i><span>Connected 710</span><i>→</i><span>Qualified 260</span><i>→</i><span>Meetings 84</span><i>→</i><span>Proposals 41</span><i>→</i><span class="on">Converted 19</span></div>
+      <table class="tbl"><tr><th>Source</th><th class="r">Leads</th><th class="r">Connected</th><th class="r">Converted</th><th class="r">Conv. %</th><th class="r">Cost / lead</th><th class="r">Cost / customer</th></tr>
+        <tr><td>Facebook</td><td class="r num">908</td><td class="r num">402</td><td class="r num">11</td><td class="r num">1.2%</td><td class="r num">₹6.10</td><td class="r num">₹503</td></tr>
+        <tr><td>Website</td><td class="r num">540</td><td class="r num">220</td><td class="r num">6</td><td class="r num">1.1%</td><td class="r num">₹5.40</td><td class="r num">₹486</td></tr>
+        <tr><td>IndiaMART</td><td class="r num">372</td><td class="r num">88</td><td class="r num">2</td><td class="r num">0.5%</td><td class="r num">₹7.80</td><td class="r num">₹1,450</td></tr></table>
+      <div class="sub">Also: missed calls, lost leads by reason, agent performance (connect rate, qualify rate, average call), export CSV.</div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Leads by source, calls made/connected/missed, qualified, meetings, proposals, converted, lost, conversion %, cost per lead and per customer, agent performance.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Cost here = what the client paid Voxura (wallet), not Voxura's provider cost.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n19">
+  <div class="screen-head"><span class="no">N19</span><h2>Super Admin reports</h2><span class="tag t-v4">v4</span><span class="st s-dw">Designed – waiting</span><span class="url">/admin/reports</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm" style="background:#1d1a2b"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span>Clients</span><span>Plans &amp; pricing</span><span>AI providers</span><span>Wallets</span><span class="on">Reports <em>NEW</em></span><span>Audit log</span></div><div class="main">
+
+      <div class="ph"><div><h3>Platform reports · November</h3><p>Totals across clients; no client's leads or conversations are shown.</p></div></div>
+      <table class="tbl"><tr><th>Provider / channel</th><th class="r">Usage</th><th class="r">Our cost</th><th class="r">Charged</th><th class="r">Margin</th></tr>
+        <tr><td>LLM (all models)</td><td class="r num">412 M tokens</td><td class="r num">₹38,600</td><td rowspan="4" class="r num" style="vertical-align:middle">₹2,61,400<div class="sub">per-minute calls</div></td><td rowspan="4" class="r num" style="vertical-align:middle">46%</td></tr>
+        <tr><td>Speech-to-text</td><td class="r num">52,400 min</td><td class="r num">₹18,300</td></tr>
+        <tr><td>Text-to-speech</td><td class="r num">96 M chars</td><td class="r num">₹26,200</td></tr>
+        <tr><td>Telephony</td><td class="r num">52,400 min</td><td class="r num">₹58,100</td></tr>
+        <tr><td>WhatsApp</td><td class="r num">18,200 msgs</td><td class="r num">₹9,100</td><td class="r num">₹12,700</td><td class="r num">28%</td></tr>
+        <tr><td>SMS</td><td class="r num">6,400 msgs</td><td class="r num">₹1,300</td><td class="r num">₹1,900</td><td class="r num">32%</td></tr></table>
+      <div class="sub">Also: clients and active subscriptions, client profitability, model and voice consumption, integration success/failure rates by source.</div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Revenue, provider expenses and margin by provider, channel, model and client; subscriptions; integration performance.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Computed from usage and cost tables (section 3); figures here are illustrative.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+<section class="screen" id="n20">
+  <div class="screen-head"><span class="no">N20</span><h2>Client workspace map</h2><span class="tag t-v4">v4</span><span class="st s-pb">Partially built</span><span class="url">navigation</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side" style=""><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span class="on">Dashboard</span><span>Leads</span><span>Pipeline <em>NEW</em></span><span>Prospects <em>NEW</em></span><span>Integrations <em>NEW</em></span><span>Campaigns</span><span>Automations <em>NEW</em></span><span>Follow-ups</span><span>Inbox <em>NEW</em></span><span>Meetings <em>NEW</em></span><span>Call history</span><span>Agents</span><div class="grp">Insights</div><span>Reports <em>NEW</em></span><div class="grp">Finance</div><span>Wallet &amp; billing</span><div class="grp">Settings</div><span>Team</span><span>Settings</span></div><div class="main">
+
+      <div class="ph"><div><h3>Everything in a client workspace</h3><p>Status of each area today.</p></div></div>
+      <div class="grid3">
+        <div class="box"><h5>Get leads</h5><div class="sub">Leads <span class="chip g">built</span><br>Integrations <span class="chip n">v4</span><br>Prospects <span class="chip n">v4</span></div></div>
+        <div class="box"><h5>Work leads</h5><div class="sub">Pipeline <span class="chip o">partial</span><br>Follow-ups <span class="chip g">built</span><br>Meetings <span class="chip n">v3</span><br>Inbox <span class="chip n">v4</span></div></div>
+        <div class="box"><h5>AI</h5><div class="sub">Agents <span class="chip g">built</span><br>Voice &amp; models <span class="chip n">v3</span><br>Automations <span class="chip n">v3/v4</span><br>Live calls <span class="chip o">needs keys</span></div></div>
+        <div class="box"><h5>Reach out</h5><div class="sub">Campaigns <span class="chip g">built</span><br>Call history &amp; recordings <span class="chip g">built</span></div></div>
+        <div class="box"><h5>Results</h5><div class="sub">Dashboard <span class="chip g">built</span><br>Reports <span class="chip n">v4</span></div></div>
+        <div class="box"><h5>Account</h5><div class="sub">Wallet &amp; billing <span class="chip g">built</span><br>Team &amp; settings <span class="chip n">Admin draft</span></div></div>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Shows how every requested client module fits into one navigation, and its current status.</li></ul></div>
+      <div><h4>Platform rules</h4><ul><li>Every module is scoped to the signed-in company.</li></ul></div>
+      
+    </aside>
+  </div>
+</section>
+
+<section class="doc" id="arch">
+  <h2>Part 3 · Target architecture</h2>
+  <h3>3.1 How a lead flows through the system</h3>
+  <div class="lay">
+    <div class="l"><h4>Sources</h4><div class="ents"><span>Meta webhook</span><span>Google webhook</span><span>Website / WordPress / Zapier webhook</span><span>REST API</span><span>IndiaMART poller</span><span>Mail parser</span><span>Sheets</span><span>CSV import</span><span>Prospect approval</span></div></div>
+    <div class="down">↓ verified, stored once (idempotency key)</div>
+    <div class="l"><h4>Lead processing worker</h4><div class="ents"><span class="n">validate</span><span class="n">normalise</span><span class="n">dedupe / merge</span><span class="n">attribute source + campaign + ad</span><span class="n">assign agent + salesperson</span></div></div>
+    <div class="down">↓ event</div>
+    <div class="l"><h4>Orchestration engine</h4><div class="ents"><span class="n">load history + memory</span><span class="n">AI suggests next step</span><span class="x">policy check: hours · DND/NCPR · consent · wallet · retries · limits · approvals</span><span class="n">schedule job</span></div></div>
+    <div class="down">↓ jobs</div>
+    <div class="l"><h4>Action workers</h4><div class="ents"><span>Voice worker (LiveKit + STT + LLM + TTS + SIP)</span><span>WhatsApp / email / SMS sender</span><span>Calendar booking</span><span>Task creator</span><span>Approval request</span></div></div>
+    <div class="down">↓ results</div>
+    <div class="l"><h4>Records &amp; money</h4><div class="ents"><span>CRM update + change history</span><span>Transcript, recording, memory</span><span class="x">UsageRecord (once) → CostLine → wallet charge</span><span class="x">AuditLog</span></div></div>
+  </div>
+  <h3>3.2 Data model groups</h3>
+  <div class="lay">
+    <div class="l"><h4>Platform (Voxura only)</h4><div class="ents"><span>AdminUser · AdminRole</span><span>Plan · PlanModelAccess</span><span>Provider · ProviderModel · ProviderRate</span><span>Voice</span><span>PhoneNumber pool</span><span>AuditLog</span><span>SupportAccessGrant</span></div></div>
+    <div class="l"><h4>Per company (every row has workspaceId)</h4><div class="ents"><span>Workspace · Subscription</span><span>User · Role · Invite</span><span class="n">Integration · ExternalAccount · LeadSource · WebhookEndpoint · InboundEvent · ApiKey</span><span>Lead · Pipeline · PipelineStage · LeadChange · LeadMemory</span><span class="n">Prospect · ProspectSource</span><span>Agent · KnowledgeDoc · QualificationQuestion · OutcomeRule · HandoverRule</span><span>Campaign · Call · Transcript · Recording</span><span>FollowUp · Meeting · Quote · Approval · OnboardingTask</span><span>Workflow · WorkflowRun · Job</span><span>Channel · MessageTemplate · Message</span><span class="x">Wallet ledger · UsageRecord · CostLine · Payment · Invoice</span><span>ActivityLog</span></div></div>
+  </div>
+  <h3>3.3 Security</h3>
+  <ul>
+    <li>OAuth tokens, API keys and provider secrets encrypted (AES-GCM) with a master key outside the database; secrets shown once.</li>
+    <li>Every webhook verified (Meta X-Hub-Signature-256, HMAC for our webhooks), replay-protected, rate-limited.</li>
+    <li>Company isolation enforced in every query and every job (jobs carry workspaceId and re-check it).</li>
+    <li>The AI has no direct database or payment access: it can only return suggestions that the platform checks and executes.</li>
+    <li>Audit log for admin and money actions; activity log per company; support access only with consent.</li>
+  </ul>
+</section>
+
+<section class="end" id="next">
+  <h2>Decisions needed before development</h2>
+  <ol>
+    <li><b>Approve the architecture and sequence</b> (1.9), including the added Phase 0 for platform plumbing.</li>
+    <li><b>First lead sources</b> to build (suggested: website/webhook, Meta, IndiaMART, Google).</li>
+    <li><b>Contact policy:</b> call leads without a consent tick? first contact method for approved prospects?</li>
+    <li><b>Prospect data provider</b> and budget (licensed B2B data), plus legal review of its use.</li>
+    <li><b>Duplicate merge rule</b> (phone only, or phone or email).</li>
+    <li><b>Approval limits:</b> AI discount limit; who confirms payments and conversion.</li>
+    <li><b>Start external approvals now:</b> Meta App Review, WhatsApp Business, TRAI DLT, SIP KYC, Razorpay KYC, calendar OAuth verification.</li>
+    <li>Answers still open from the Super Admin draft (plans, prices, billing step, approval amounts, support access, data retention).</li>
+  </ol>
+  <p class="sub">Figures in the mock screens are illustrative. In the built product every report reads only from recorded data.</p>
+</section>
+  </main>
+</div>
+</body>
+</html>

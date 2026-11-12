@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxura Draft Screens: Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout idea: a review board. Left index of screens; each screen = app mock (in the live app's own look) beside a notes column. */
+  --brand: #4a2c9e;        /* Voxura sidebar purple, taken from the live app */
+  --brand-soft: #efeafb;
+  --ink: #1d1a2b;
+  --muted: #6b6780;
+  --paper: #f6f5fa;
+  --card: #ffffff;
+  --line: #e4e1ee;
+  --ok: #0f9d58;  --ok-soft: #e3f6ec;
+  --warn: #c86a00; --warn-soft: #fff1dc;
+  --bad: #c62828;  --bad-soft: #fde8e8;
+  --info: #1a63d8; --info-soft: #e6effd;
+  --font-display: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.55 var(--font-body); }
+a { color: var(--brand); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #8f74e6; outline-offset: 2px; }
+h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- page shell ---------- */
+.top { background: var(--brand); color: #fff; padding: 28px 24px 24px; }
+.top-inner { max-width: 1320px; margin: 0 auto; display: grid; gap: 14px; }
+.top h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.top p { margin: 0; max-width: 78ch; color: #ddd4fb; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.top .legend .tag { box-shadow: 0 0 0 1px rgba(255,255,255,.25); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: #cfc4f6; }
+.facts b { color: #fff; }
+
+.wrap { max-width: 1320px; margin: 0 auto; padding: 24px 16px 60px; display: grid; grid-template-columns: 230px 1fr; gap: 24px; align-items: start; }
+.index { position: sticky; top: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 2px; font-size: 13.5px; }
+.index h4 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 6px 8px 4px; }
+.index a { display: flex; justify-content: space-between; align-items: center; gap: 6px; text-decoration: none; color: var(--ink); padding: 6px 8px; border-radius: 8px; }
+.index a:hover { background: var(--brand-soft); }
+.index .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.screens { display: grid; gap: 28px; min-width: 0; }
+
+.tag { display: inline-flex; align-items: center; gap: 5px; font: 700 11px/1 var(--font-body); letter-spacing: .05em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
+.t-live { background: var(--ok-soft); color: var(--ok); }
+.t-chg { background: var(--warn-soft); color: var(--warn); }
+.t-new { background: var(--info-soft); color: var(--info); }
+.t-unseen { background: #ecebf1; color: #55516a; }
+.d-live { background: var(--ok); } .d-chg { background: var(--warn); } .d-new { background: var(--info); } .d-unseen { background: #8f8aa3; }
+
+/* ---------- screen block ---------- */
+.screen { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; scroll-margin-top: 12px; }
+.screen-head { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.screen-head .no { font: 600 12px var(--font-mono); color: var(--muted); }
+.screen-head h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.screen-head .url { margin-left: auto; font: 12px var(--font-mono); color: var(--muted); }
+.screen-body { display: grid; grid-template-columns: minmax(0, 1fr) 300px; }
+.mock-area { padding: 20px 16px 16px; background: #f1eff7; min-width: 0; overflow-x: auto; }
+.notes { padding: 16px 18px; border-left: 1px solid var(--line); display: grid; gap: 14px; align-content: start; font-size: 13.5px; }
+.notes h4 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.notes ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.notes .q li { color: #3d2a85; }
+.notes .issue li::marker { color: var(--bad); }
+
+/* ---------- app mock (Voxura look) ---------- */
+.app { display: grid; grid-template-columns: 136px minmax(0, 1fr); min-width: 640px; background: #fff; border-radius: 10px; box-shadow: 0 1px 2px rgba(30,20,60,.08), 0 8px 24px rgba(30,20,60,.08); font-size: 13px; }
+.side { border-radius: 10px 0 0 10px; background: var(--brand); color: #e6defc; padding: 12px 8px; display: grid; align-content: start; gap: 2px; font-size: 12.5px; }
+.side .logo { display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 800; padding: 4px 6px 12px; }
+.side .logo i { width: 22px; height: 22px; border-radius: 6px; background: #fff; display: inline-block; }
+.side .grp { font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: #a999e0; padding: 10px 8px 3px; }
+.side span { padding: 6px 8px; border-radius: 7px; display: flex; justify-content: space-between; align-items: center; }
+.side span.on { background: rgba(255,255,255,.16); color: #fff; font-weight: 700; }
+.side span em { font-style: normal; font-size: 9px; font-weight: 800; background: #fff; color: var(--info); padding: 2px 5px; border-radius: 6px; }
+.main { padding: 16px 18px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.ph { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.ph h3 { font-size: 17px; font-weight: 800; }
+.ph p { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; color: var(--ink); font: 600 12px var(--font-body); padding: 7px 11px; border-radius: 8px; white-space: nowrap; }
+.btn.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
+.btn.go { background: #12c06a; border-color: #12c06a; color: #fff; }
+.btn.del { background: var(--bad-soft); border-color: #f6caca; color: var(--bad); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.box { border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; background: #fff; min-width: 0; }
+.box.soft { background: #faf9fd; }
+.box h5 { margin: 0 0 6px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.big { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.sub { color: var(--muted); font-size: 11.5px; }
+.wallet { background: var(--brand); color: #fff; border: 0; }
+.wallet h5, .wallet .sub { color: #cfc4f6; }
+.banner { background: linear-gradient(90deg, #0d9a5c, #138a68); color: #fff; border-radius: 10px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.banner b { font-size: 15px; }
+.alert { border-radius: 9px; padding: 9px 11px; font-size: 12px; display: flex; gap: 8px; align-items: center; }
+.alert.w { background: var(--warn-soft); color: #7a4300; }
+.alert.b { background: var(--bad-soft); color: #8e1c1c; }
+.alert.i { background: var(--info-soft); color: #164a9e; }
+.field { display: grid; gap: 4px; }
+.field label { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.inp { border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; background: #fff; color: var(--ink); font-size: 12.5px; min-height: 32px; }
+.inp.ph-t { color: #a29eb3; }
+.inp.area { min-height: 54px; }
+.seg { display: inline-flex; background: #f0eef6; border-radius: 8px; padding: 3px; gap: 2px; }
+.seg b { font-weight: 600; font-size: 12px; padding: 5px 10px; border-radius: 6px; color: var(--muted); }
+.seg b.on { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.chip { display: inline-block; font: 500 10.5px var(--font-mono); padding: 3px 7px; border-radius: 999px; background: #f1edfb; color: #4c3a96; border: 1px solid #e0d8f7; white-space: nowrap; }
+.chip.g { background: var(--ok-soft); color: var(--ok); border-color: #c4ead4; }
+.chip.r { background: var(--bad-soft); color: var(--bad); border-color: #f6caca; }
+.chip.o { background: var(--warn-soft); color: var(--warn); border-color: #f3dcb4; }
+.chip.b { background: var(--info-soft); color: var(--info); border-color: #c9dcfa; }
+.chip.n { background: #f0eff4; color: #5d5970; border-color: #e2e0ea; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tbl th { text-align: left; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 8px; border-bottom: 1px solid #f0eef5; vertical-align: middle; }
+.tbl td.r, .tbl th.r { text-align: right; }
+.tbl tr.muted td { color: #a29eb3; }
+.mark { outline: 2px dashed var(--info); outline-offset: 3px; border-radius: 8px; position: relative; }
+.mark.c { outline-color: var(--warn); }
+.pin { position: absolute; top: -9px; right: 6px; z-index: 1; font: 800 9px var(--font-body); letter-spacing: .05em; padding: 2px 6px; border-radius: 6px; color: #fff; background: var(--info); }
+.mark.c > .pin { background: var(--warn); }
+.agent { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+.agent .meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.agent .stats { text-align: right; font-size: 11.5px; color: var(--muted); }
+.agent .stats b { color: var(--ink); font-size: 14px; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.steps span { font-size: 11.5px; font-weight: 600; padding: 6px 10px; border-radius: 8px; background: #f0eef6; color: var(--muted); }
+.steps span.on { background: var(--brand); color: #fff; }
+.steps span.done { background: var(--ok-soft); color: var(--ok); }
+.bar { height: 7px; background: #eceaf3; border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--brand); border-radius: 99px; }
+.kan { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 8px; }
+.kan .col { background: #f5f4fa; border-radius: 9px; padding: 8px; display: grid; gap: 6px; align-content: start; }
+.kan .col h6 { margin: 0; font-size: 11px; display: flex; justify-content: space-between; }
+.kan .cd { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 7px 8px; font-size: 11.5px; display: grid; gap: 3px; }
+.tx { display: grid; gap: 6px; }
+.tx div { max-width: 82%; padding: 7px 10px; border-radius: 10px; font-size: 12px; }
+.tx .ag { background: #f1edfb; }
+.tx .cu { background: #eef7f1; justify-self: end; }
+.wave { height: 30px; border-radius: 8px; background: repeating-linear-gradient(90deg, #cbbdf3 0 3px, transparent 3px 6px); opacity: .8; }
+.login { display: grid; grid-template-columns: 1fr 1fr; min-width: 640px; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 24px rgba(30,20,60,.08); background: #fff; font-size: 13px; }
+.login .l { background: linear-gradient(160deg, #3b1f8a, #1a1236); color: #fff; padding: 24px; display: grid; gap: 10px; align-content: center; }
+.login .l h3 { font-size: 22px; line-height: 1.15; }
+.login .l span { border: 1px solid rgba(255,255,255,.18); border-radius: 9px; padding: 8px 10px; font-size: 12px; background: rgba(255,255,255,.06); }
+.login .r { padding: 26px 30px; display: grid; gap: 10px; align-content: center; }
+
+.end { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 12px; }
+.end ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.end h2 { font-size: 20px; }
+
+@media (max-width: 1100px) {
+  .screen-body { grid-template-columns: 1fr; }
+  .notes { border-left: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 820px) {
+  .wrap { grid-template-columns: 1fr; }
+  .index { position: static; grid-template-columns: 1fr 1fr; }
+  .index h4 { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) { .index { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html { scroll-behavior: smooth; }
+
+/* ---------- v3 additions ---------- */
+.t-exp { background: #f3e8ff; color: #7b2cbf; }
+.d-exp { background: #7b2cbf; }
+.mark.x { outline-color: #7b2cbf; } .mark.x > .pin { background: #7b2cbf; }
+.part { background: linear-gradient(120deg, #2a1660, #4a2c9e); color: #fff; border-radius: 14px; padding: 22px 22px 18px; display: grid; gap: 12px; }
+.part h2 { font-size: 22px; font-weight: 800; }
+.part p { margin: 0; color: #ddd4fb; max-width: 90ch; }
+.journey { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; }
+.journey div { flex: 1 1 110px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22); border-radius: 10px; padding: 9px 10px; font-size: 12px; }
+.journey b { display: block; font-size: 13px; color: #fff; }
+.journey span { color: #cfc4f6; }
+.journey .now { background: rgba(18,192,106,.22); border-color: rgba(18,192,106,.6); }
+.status { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: #cfc4f6; }
+.status i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.tg { display: inline-block; width: 30px; height: 17px; border-radius: 99px; background: #d9d5e6; position: relative; vertical-align: middle; flex: none; }
+.tg::after { content: ""; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; }
+.tg.on { background: var(--ok); } .tg.on::after { left: 15px; }
+.src { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; }
+.src .ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; font: 800 12px var(--font-body); color: #fff; }
+.slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.slots span { border: 1px solid var(--line); border-radius: 7px; padding: 6px; text-align: center; font-size: 11.5px; }
+.slots span.on { background: var(--brand); color: #fff; border-color: var(--brand); }
+.slots span.no { color: #b9b5c8; text-decoration: line-through; }
+.wf { display: grid; gap: 6px; justify-items: start; }
+.wf .n { border: 1px solid var(--line); border-radius: 9px; padding: 8px 11px; background: #fff; font-size: 12px; min-width: 260px; }
+.wf .n.t { border-color: #c9dcfa; background: var(--info-soft); }
+.wf .n.c { border-color: #f3dcb4; background: var(--warn-soft); }
+.wf .n.a { border-color: #c4ead4; background: var(--ok-soft); }
+.wf .ln { width: 2px; height: 12px; background: #cfcadf; margin-left: 22px; }
+.score { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; font: 800 12px var(--font-body); color: #fff; }
+.meter { display: grid; grid-template-columns: 90px 1fr 70px; gap: 8px; align-items: center; font-size: 11.5px; }
+.stack { display: flex; height: 12px; border-radius: 99px; overflow: hidden; }
+.stack i { display: block; height: 100%; }
+
+.t-adm { background: #1d1a2b; color: #fff; }
+.t-cus { background: var(--info-soft); color: var(--info); }
+.d-adm { background: #1d1a2b; } .d-cus { background: var(--info); } .d-arch { background: #7b2cbf; }
+.side.adm { background: #1d1a2b; }
+.side.adm .grp { color: #8f8aa3; }
+.kv { display: grid; grid-template-columns: 130px 1fr; gap: 4px 10px; font-size: 12px; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); }
+.tabs b { font-size: 12px; font-weight: 600; padding: 7px 10px; color: var(--muted); border-bottom: 2px solid transparent; }
+.tabs b.on { color: var(--ink); border-bottom-color: var(--brand); }
+.perm td { text-align: center; } .perm td:first-child { text-align: left; }
+.ok { color: var(--ok); font-weight: 800; } .no { color: #c4c0d2; }
+.supbar { background: #7b2cbf; color: #fff; border-radius: 8px; padding: 7px 10px; font-size: 12px; display: flex; justify-content: space-between; gap: 8px; }
+.arch { display: grid; gap: 10px; }
+.arch .layer { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: #fff; }
+.arch .layer h4 { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.arch .ents { display: flex; flex-wrap: wrap; gap: 6px; }
+.arch .ents span { border: 1px solid #d9d2f3; background: #f6f3ff; border-radius: 8px; padding: 5px 8px; font: 500 11.5px var(--font-mono); }
+.arch .ents span.k { border-color: #c4ead4; background: var(--ok-soft); }
+.arch .ents span.c { border-color: #f3dcb4; background: var(--warn-soft); }
+.money { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.money div { border-radius: 9px; padding: 9px; font-size: 11.5px; border: 1px solid var(--line); background: #fff; }
+.money div b { display: block; font-size: 15px; }
+.money .cost { background: var(--bad-soft); border-color: #f6caca; }
+.money .rev { background: var(--info-soft); border-color: #c9dcfa; }
+.money .mar { background: var(--ok-soft); border-color: #c4ead4; }
+.dialog { border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 30px rgba(30,20,60,.18); background: #fff; padding: 14px; display: grid; gap: 10px; max-width: 420px; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+  <h1>Voxura: Team &amp; Settings + Super Admin (draft screens)</h1>
+  <p>Draft for client approval, 2 Nov 2026. Part A is what each customer company manages itself. Part B is the complete Super Admin: the SaaS business-management side used by Voxura staff. Part C shows how the data and billing are organised underneath. All names and figures in the mock screens are sample data; the real screens will show only values calculated from the database. Nothing is built until you approve.</p>
+  <div class="legend"><span class="tag t-cus">Customer side</span><span class="tag t-adm">Super admin</span><span class="tag t-exp">Architecture</span></div>
+  <div class="facts"><span>Related: <a style="color:#fff" href="https://claude.ai/artifact/HWG5ADzHj7Q6Vsw7MxeomR">draft screens v2</a> · <a style="color:#fff" href="https://claude.ai/artifact/LgeGKPc3t9vUfYr2sumFjS">v3 expansion</a></span><span><b>5</b> customer screens · <b>13</b> super admin screens · <b>2</b> architecture pages</span></div>
+</div></header>
+<div class="wrap">
+  <nav class="index" aria-label="Screens">
+    <h4 style="margin-top:6px">A · Team &amp; Settings</h4><a href="#a1">A1 Team members <i class="dot d-cus"></i></a><a href="#a2">A2 Roles & permissions <i class="dot d-cus"></i></a><a href="#a3">A3 Company settings <i class="dot d-cus"></i></a><a href="#a4">A4 Security & sign-in <i class="dot d-cus"></i></a><a href="#a5">A5 Allow Voxura support <i class="dot d-cus"></i></a>
+    <h4 style="margin-top:6px">B · Super Admin</h4><a href="#b1">B1 Platform dashboard <i class="dot d-adm"></i></a><a href="#b2">B2 Clients <i class="dot d-adm"></i></a><a href="#b3">B3 Company profile <i class="dot d-adm"></i></a><a href="#b4">B4 Activate / suspend <i class="dot d-adm"></i></a><a href="#b5">B5 Plans <i class="dot d-adm"></i></a><a href="#b6">B6 Custom pricing <i class="dot d-adm"></i></a><a href="#b7">B7 AI providers & access <i class="dot d-adm"></i></a><a href="#b8">B8 Wallet management <i class="dot d-adm"></i></a><a href="#b9">B9 Number pool <i class="dot d-adm"></i></a><a href="#b10">B10 Audit log <i class="dot d-adm"></i></a><a href="#b11">B11 Support access <i class="dot d-adm"></i></a><a href="#b12">B12 Admin team & roles <i class="dot d-adm"></i></a><a href="#b13">B13 Costs & margin <i class="dot d-adm"></i></a>
+    <h4 style="margin-top:6px">C · Architecture</h4><a href="#c1">C1 Multi-tenant data model <i class="dot d-arch"></i></a><a href="#c2">C2 Billing architecture <i class="dot d-arch"></i></a>
+    <a href="#next">Build order &amp; questions</a>
+  </nav>
+  <main class="screens">
+
+<section class="screen" id="a1">
+  <div class="screen-head"><span class="no">A1</span><h2>Team members</h2><span class="tag t-cus">Customer</span><span class="url">/settings/team</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><div class="grp">Settings</div><span class="on">Team <em>NEW</em></span><span>Company <em>NEW</em></span><span>Security <em>NEW</em></span></div><div class="main">
+
+      <div class="ph"><div><h3>Team</h3><p>People who can use Brightlane Software's workspace.</p></div><span class="btn pri">+ Invite member</span></div>
+      <table class="tbl"><tr><th>Name</th><th>Role</th><th class="r">Leads</th><th>Active</th><th>Status</th><th></th></tr>
+        <tr><td><b>Anil Kapoor</b><div class="sub">anil@brightlane.in</div></td><td><span class="chip">Owner</span></td><td class="r num">8</td><td class="num">10:12 am</td><td><span class="chip g">Active</span></td><td></td></tr>
+        <tr><td><b>Rahul Verma</b><div class="sub">rahul@brightlane.in</div></td><td><span class="chip b">Admin</span></td><td class="r num">31</td><td class="num">9:40 am</td><td><span class="chip g">Active</span></td><td><span class="btn">Edit</span></td></tr>
+        <tr><td><b>Neha Singh</b><div class="sub">neha@brightlane.in</div></td><td><span class="chip n">Staff</span></td><td class="r num">0</td><td>-</td><td><span class="chip o">Invited · 6 days left</span></td><td><span class="btn">Resend</span></td></tr>
+        <tr class="muted"><td>Vikas Jain<div class="sub">vikas@brightlane.in</div></td><td>Staff</td><td class="r num">12</td><td class="num">12 Oct</td><td>Deactivated</td><td><span class="btn">Reactivate</span></td></tr></table>
+      <div class="grid2">
+        <div class="dialog"><b>Invite a team member</b><div class="field"><label>Email</label><div class="inp ph-t">name@brightlane.in</div></div><div class="field"><label>Role</label><div class="seg"><b>Admin</b><b class="on">Staff</b></div></div><span class="btn pri" style="justify-content:center">Send invite</span><div class="sub">They set their own password from the email link (valid 7 days).</div></div>
+        <div class="box"><h5>Deactivate Vikas Jain</h5><div class="sub">He can no longer sign in. His 12 leads and 3 open follow-ups go to: <b>Rahul Verma ▾</b>. His calls and notes stay in history.</div><div class="row" style="margin-top:8px"><span class="btn">Keep</span><span class="btn del">Deactivate</span></div></div>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Invite by email with a role; resend or cancel an invite; change roles; deactivate and reactivate.</li><li>On deactivation, reassign that person's leads and open follow-ups so nothing is lost.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Only Owner and Admin manage the team; only the Owner can make or remove Admins.</li><li>There is always exactly one Owner; ownership can be transferred, never deleted.</li><li>Team-member limit comes from the plan (C3).</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Should Staff see all leads, or only leads assigned to them?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="a2">
+  <div class="screen-head"><span class="no">A2</span><h2>Roles &amp; permissions</h2><span class="tag t-cus">Customer</span><span class="url">/settings/team → Roles</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><div class="grp">Settings</div><span class="on">Team <em>NEW</em></span><span>Company <em>NEW</em></span><span>Security <em>NEW</em></span></div><div class="main">
+
+      <div class="ph"><div><h3>What each role can do</h3><p>The same rules are enforced on every screen and every API call, not just hidden buttons.</p></div></div>
+      <table class="tbl perm"><tr><th>Action</th><th>Owner</th><th>Admin</th><th>Staff</th></tr>
+        <tr><td>See leads, calls, campaigns, follow-ups</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+        <tr><td>Add / edit leads, move stages, team tasks</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+        <tr><td>Import / delete leads, download call CSV</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✕</td></tr>
+        <tr><td>Create and run campaigns, agent callbacks</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✕</td></tr>
+        <tr><td>Create / edit agents, services, phone-number use</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✕</td></tr>
+        <tr><td>Add funds, see billing</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✕</td></tr>
+        <tr><td>Invite / deactivate Staff</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✕</td></tr>
+        <tr><td>Make Admins, transfer ownership, approve Voxura support access</td><td class="ok">✓</td><td class="no">✕</td><td class="no">✕</td></tr></table>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>One clear table the customer can read; it matches what the app enforces.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Most rows already work in the built app; the team rows arrive with A1.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Do you need a fourth role, e.g. "Viewer" (read-only) or "Team lead" (sees their team only)?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="a3">
+  <div class="screen-head"><span class="no">A3</span><h2>Company profile &amp; calling defaults</h2><span class="tag t-cus">Customer</span><span class="url">/settings/company</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><div class="grp">Settings</div><span>Team <em>NEW</em></span><span class="on">Company <em>NEW</em></span><span>Security <em>NEW</em></span></div><div class="main">
+
+      <div class="ph"><div><h3>Company</h3><p>Used on invoices, quotes and caller details.</p></div><span class="btn pri">Save</span></div>
+      <div class="grid2">
+        <div class="box" style="display:grid;gap:8px"><div class="field"><label>Company name</label><div class="inp">Brightlane Software Pvt Ltd</div></div><div class="field"><label>GST number</label><div class="inp">08ABCDE1234F1Z5</div></div><div class="field"><label>Billing address</label><div class="inp area">12 MI Road, Jaipur, Rajasthan 302001</div></div><div class="field"><label>Logo (for quotes)</label><div class="inp ph-t">Upload PNG/JPG</div></div></div>
+        <div class="box" style="display:grid;gap:8px"><h5>Calling defaults (new campaigns start with these)</h5><div class="grid2"><div class="field"><label>Call from</label><div class="inp">10:00</div></div><div class="field"><label>Call until</label><div class="inp">19:00</div></div></div><div class="field"><label>Days</label><div class="seg"><b class="on">Mon–Sat</b><b>Every day</b></div></div><div class="row"><span class="tg on"></span>Skip Do-not-call numbers</div><div class="row"><span class="tg on"></span>Low-balance alert at ₹200</div><div class="sub">Time zone: India (IST)</div></div>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Company name, GST number, billing address, logo; default calling hours and days; DND default; low-balance alert.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>GST number format is checked; changes are recorded in the company's activity log.</li><li>Changing defaults never changes campaigns that already exist.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Do invoices need a PAN or CIN as well as GST?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="a4">
+  <div class="screen-head"><span class="no">A4</span><h2>Security, password &amp; sign-in</h2><span class="tag t-cus">Customer</span><span class="url">/settings/security · /forgot-password</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><div class="grp">Settings</div><span>Team <em>NEW</em></span><span>Company <em>NEW</em></span><span class="on">Security <em>NEW</em></span></div><div class="main">
+
+      <div class="grid2">
+        <div class="box" style="display:grid;gap:8px"><h5>Change password</h5><div class="field"><label>Current password</label><div class="inp ph-t">••••••••</div></div><div class="field"><label>New password (8+ characters)</label><div class="inp ph-t">••••••••</div></div><span class="btn pri" style="justify-content:center">Update password</span></div>
+        <div class="box" style="display:grid;gap:8px"><h5>Forgot password (from sign-in page)</h5><div class="field"><label>Email</label><div class="inp ph-t">you@company.com</div></div><span class="btn" style="justify-content:center">Email me a reset link</span><div class="sub">Link valid 30 minutes, works once. The same message is shown whether or not the email exists.</div></div>
+      </div>
+      <div class="grid2">
+        <div class="box"><h5>Two-step sign-in</h5><div class="row"><span class="tg"></span>Ask for a code from an authenticator app</div><div class="sub" style="margin-top:4px">Owners can make it required for the whole team.</div></div>
+        <div class="box"><h5>Where you're signed in</h5><div class="sub">Chrome · Windows · Jaipur · now<br>Safari · iPhone · 2 days ago</div><span class="btn" style="margin-top:6px">Sign out all other devices</span></div>
+      </div>
+      <div class="alert w">After 5 wrong passwords, sign-in pauses for 15 minutes for that account and address.</div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Change password, forgot password by email, two-step sign-in, active sessions, sign out everywhere.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Passwords stored only as strong hashes; reset links single-use and short-lived.</li><li>Repeated wrong passwords are slowed down (protects against guessing).</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Should two-step sign-in be required for all customers, or optional?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="a5">
+  <div class="screen-head"><span class="no">A5</span><h2>Voxura support access (customer approves)</h2><span class="tag t-cus">Customer</span><span class="url">/settings/security → Support access</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><div class="grp">Settings</div><span>Team <em>NEW</em></span><span>Company <em>NEW</em></span><span class="on">Security <em>NEW</em></span></div><div class="main">
+
+      <div class="ph"><div><h3>Support access</h3><p>Voxura staff can only see your workspace if you allow it.</p></div></div>
+      <div class="box mark x"><span class="pin">REQUEST</span><b>Priya from Voxura support asks for access</b><div class="sub" style="margin-top:4px">Reason: "Ticket #2041: campaign not starting." · Access: <b>View only</b> · For: <b>2 hours</b></div><div class="row" style="margin-top:8px"><span class="btn">Decline</span><span class="btn go">Allow for 2 hours</span></div></div>
+      <table class="tbl"><tr><th>When</th><th>Voxura staff</th><th>Access</th><th>What they did</th></tr>
+        <tr><td class="num">28 Oct, 3:10 pm</td><td>Priya (Support)</td><td>View only · 1 h</td><td>Opened Campaigns, Diwali offer, 2 calls <span class="btn">Full log</span></td></tr>
+        <tr><td class="num">12 Oct, 11:00 am</td><td>Amit (Support)</td><td>Edit · 30 min</td><td>Changed agent "Priya Sales" greeting <span class="btn">Full log</span></td></tr></table>
+      <div class="row"><span class="btn del">End access now</span><span class="sub">Only the Owner can approve or end access.</span></div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>The Owner approves or declines each support request, chooses view-only or edit, and how long.</li><li>Every page Voxura staff open and every change they make is listed here for the customer.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>No silent access: without approval Voxura staff cannot open the workspace.</li><li>Access ends automatically when the time runs out, or at once if the Owner ends it.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Should edit access be allowed at all, or view-only only?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b1">
+  <div class="screen-head"><span class="no">B1</span><h2>Platform dashboard</h2><span class="tag t-adm">Super admin</span><span class="url">/admin</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span class="on">Dashboard</span><span>Clients</span><span>Plans & pricing</span><span>AI providers</span><span>Wallets</span><span>Number pool</span><span>Costs & margin</span><span>Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Platform · November 2026</h3><p>All numbers are calculated from the ledgers below; nothing is typed in by hand.</p></div><div class="seg"><b>Today</b><b class="on">This month</b><b>Last month</b></div></div>
+      <div class="grid4">
+        <div class="box"><h5>Active clients</h5><div class="big num">38</div><div class="sub">+4 new · 2 suspended</div></div>
+        <div class="box"><h5>Customer charges</h5><div class="big num">₹2,61,400</div><div class="sub">calls + plans + rent</div></div>
+        <div class="box"><h5>Provider costs</h5><div class="big num">₹1,41,200</div><div class="sub">AI + voice + telephony</div></div>
+        <div class="box"><h5>Gross margin</h5><div class="big num" style="color:var(--ok)">46%</div><div class="sub">₹1,20,200</div></div>
+      </div>
+      <div class="grid3">
+        <div class="box"><h5>Call minutes</h5><div class="big num">52,400</div><div class="sub">61,300 calls · 41% answered</div></div>
+        <div class="box"><h5>Wallet balances held</h5><div class="big num">₹3,84,900</div><div class="sub">money owed to clients as call credit</div></div>
+        <div class="box"><h5>Top-ups received</h5><div class="big num">₹2,95,000</div><div class="sub">via Razorpay · 112 payments</div></div>
+      </div>
+      <div class="grid2">
+        <div class="box"><h5>Needs attention</h5><div class="sub"><span class="chip r">Low balance</span> 6 clients below their alert<br><span class="chip o">Rent due</span> 4 numbers renew this week<br><span class="chip b">Support</span> 2 access requests waiting<br><span class="chip n">Provider</span> Sarvam spend 82% of monthly budget</div></div>
+        <table class="tbl"><tr><th>Top clients</th><th class="r">Minutes</th><th class="r">Charges</th><th class="r">Margin</th></tr>
+          <tr><td>Brightlane Software</td><td class="r num">4,800</td><td class="r num">₹28,800</td><td class="r num">48%</td></tr>
+          <tr><td>Sunrise Realty</td><td class="r num">3,900</td><td class="r num">₹27,300</td><td class="r num">51%</td></tr>
+          <tr><td>Metro Loans</td><td class="r num">3,100</td><td class="r num">₹15,500</td><td class="r num">38%</td></tr></table>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Business health in one place: clients, revenue, provider costs, margin, minutes, wallet money held, payments, alerts.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Figures come only from database ledgers (C2 data model); empty until real calls and payments exist.</li><li>Finance and Super admin see money; Support role sees clients and alerts only (B12).</li></ul></div>
+      <div><h4>Real data from</h4><ul><li>Customer charges: wallet ledger (call charges, plan fees, rent).</li><li>Provider costs: per-call cost lines (C2).</li><li>Wallets held: sum of client balances.</li><li>Top-ups: payment records.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Which 4 numbers matter most to you on this page?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b2">
+  <div class="screen-head"><span class="no">B2</span><h2>Clients (all companies)</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/clients</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span class="on">Clients</span><span>Plans & pricing</span><span>AI providers</span><span>Wallets</span><span>Number pool</span><span>Costs & margin</span><span>Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Clients</h3><p>Every company using Voxura.</p></div><span class="btn pri">+ Add client</span></div>
+      <div class="row"><div class="inp ph-t" style="flex:1">Search name, email, GST or phone</div><div class="seg"><b class="on">All 41</b><b>Active 38</b><b>Trial 1</b><b>Suspended 2</b></div><div class="inp">Plan: any ▾</div></div>
+      <table class="tbl"><tr><th>Company</th><th>Plan</th><th class="r">Wallet</th><th class="r">Min (Nov)</th><th class="r">Rate</th><th class="r">Margin</th><th>Status</th></tr>
+        <tr><td><b>Brightlane Software</b><div class="sub">anil@brightlane.in · Jaipur</div></td><td>Growth</td><td class="r num">₹1,250</td><td class="r num">4,800</td><td class="r num">₹6.00</td><td class="r num">48%</td><td><span class="chip g">Active</span></td></tr>
+        <tr><td><b>Sunrise Realty</b><div class="sub">admin@sunrise.in · Pune</div></td><td>Growth · custom</td><td class="r num" style="color:var(--bad)">₹40</td><td class="r num">3,900</td><td class="r num">₹7.00</td><td class="r num">51%</td><td><span class="chip o">Low balance</span></td></tr>
+        <tr><td><b>Metro Loans</b><div class="sub">ops@metroloans.in · Delhi</div></td><td>Enterprise</td><td class="r num">₹52,000</td><td class="r num">3,100</td><td class="r num">₹5.00</td><td class="r num">38%</td><td><span class="chip g">Active</span></td></tr>
+        <tr class="muted"><td>Old Test Co<div class="sub">test@oldco.in</div></td><td>Starter</td><td class="r num">₹0</td><td class="r num">0</td><td class="r">-</td><td class="r">-</td><td>Suspended · unpaid</td></tr></table>
+      <div class="sub">Sort by any column · export CSV (Finance and Super admin only)</div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Search, filter and sort all companies; open a company profile (B3).</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Every company's data stays in its own workspace; this list shows only totals.</li></ul></div>
+      <div><h4>Real data from</h4><ul><li>Workspace, plan, wallet balance, minutes and margin from the ledgers.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Can companies sign up on their own, or only be added by Voxura (or both)?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b3">
+  <div class="screen-head"><span class="no">B3</span><h2>Company profile</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/clients/:id</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span class="on">Clients</span><span>Plans & pricing</span><span>AI providers</span><span>Wallets</span><span>Number pool</span><span>Costs & margin</span><span>Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Brightlane Software Pvt Ltd</h3><p>Client since 2 Nov 2026 · Owner: Anil Kapoor · anil@brightlane.in · +91 98765 43210</p></div><div class="row"><span class="chip g">Active</span><span class="btn">Request support access</span><span class="btn del">Suspend</span></div></div>
+      <div class="tabs"><b class="on">Overview</b><b>Plan &amp; pricing</b><b>Wallet</b><b>Usage &amp; costs</b><b>Numbers</b><b>Team</b><b>Notes</b><b>Activity</b></div>
+      <div class="grid2">
+        <dl class="kv box"><dt>GST</dt><dd>08ABCDE1234F1Z5</dd><dt>Address</dt><dd>12 MI Road, Jaipur 302001</dd><dt>Plan</dt><dd>Growth · ₹6.00/min (custom from ₹6.50)</dd><dt>Limits</dt><dd>5 agents (3 used) · 4 lines · 10 team</dd><dt>AI access</dt><dd>Claude Haiku, Claude Sonnet, Sarvam, Deepgram</dd><dt>Numbers</dt><dd>+91 80456 78901 (2 lines)</dd></dl>
+        <div class="grid2"><div class="box"><h5>Wallet</h5><div class="big num">₹1,250</div></div><div class="box"><h5>This month</h5><div class="big num">₹28,800</div><div class="sub">48% margin</div></div><div class="box"><h5>Leads</h5><div class="big num">2,140</div></div><div class="box"><h5>Campaigns</h5><div class="big num">3</div><div class="sub">1 running</div></div></div>
+      </div>
+      <div class="box soft"><h5>Internal notes (Voxura only)</h5><div class="sub">Agreed custom rate ₹6.00 till 31 Mar 2027 (Rahul, sales) · Prefers WhatsApp contact</div></div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>One page per company: profile, plan and custom pricing, wallet, usage and costs, numbers, team, internal notes, activity.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Admins see counts and settings; opening the company's leads, calls or recordings needs approved support access (B11).</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Should internal notes be visible to all Voxura staff or only Super admin and Finance?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b4">
+  <div class="screen-head"><span class="no">B4</span><h2>Activate, suspend &amp; reactivate</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/clients/:id → Status</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span class="on">Clients</span><span>Plans & pricing</span><span>AI providers</span><span>Wallets</span><span>Number pool</span><span>Costs & margin</span><span>Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="grid2">
+        <div class="dialog"><b>Suspend Sunrise Realty?</b>
+          <div class="field"><label>Reason (required)</label><div class="inp">Unpaid number rent for 30 days ▾</div></div>
+          <div class="field"><label>Note</label><div class="inp area ph-t">Visible to Voxura staff only</div></div>
+          <div class="sub"><b>What happens:</b><br>• Running campaigns pause, no new calls start<br>• Incoming calls get a polite "service unavailable" message<br>• Team can sign in to <b>view and download</b> data, not change it<br>• Wallet balance is kept; nothing is deleted</div>
+          <div class="row"><span class="tg on"></span>Email the owner about the suspension</div>
+          <div class="row" style="justify-content:flex-end"><span class="btn">Cancel</span><span class="btn del">Suspend</span></div></div>
+        <div class="box" style="display:grid;gap:8px"><h5>Status history</h5>
+          <div class="sub"><span class="chip g">Active</span> 2 Nov 2026 · signed up (self) </div>
+          <div class="sub"><span class="chip r">Suspended</span> 4 Feb 2027 · unpaid rent · by Rahul (Finance)</div>
+          <div class="sub"><span class="chip g">Reactivated</span> 6 Feb 2027 · payment received · by Rahul</div>
+          <div class="alert i">Reactivating does not restart paused campaigns automatically; the client chooses when to resume.</div></div>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Suspend with a required reason; reactivate; full status history.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Suspension blocks calls and changes immediately, keeps all data and money.</li><li>Only Super admin and Finance can suspend; every change goes to the audit log (B10).</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>During suspension, should the team be able to sign in at all (read-only), or be fully locked out?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b5">
+  <div class="screen-head"><span class="no">B5</span><h2>Subscription plans</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/plans</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span>Clients</span><span class="on">Plans & pricing</span><span>AI providers</span><span>Wallets</span><span>Number pool</span><span>Costs & margin</span><span>Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Plans</h3><p>What each plan includes and costs. Changes apply from the next billing month.</p></div><span class="btn pri">+ New plan</span></div>
+      <table class="tbl"><tr><th>Plan</th><th class="r">Monthly fee</th><th class="r">Included min</th><th class="r">Rate / min</th><th class="r">Agents</th><th class="r">Lines</th><th class="r">Team</th><th class="r">Clients</th></tr>
+        <tr><td><b>Starter</b></td><td class="r num">₹999</td><td class="r num">100</td><td class="r num">₹7.00</td><td class="r num">1</td><td class="r num">1</td><td class="r num">3</td><td class="r num">14</td></tr>
+        <tr><td><b>Growth</b></td><td class="r num">₹2,999</td><td class="r num">500</td><td class="r num">₹6.50</td><td class="r num">5</td><td class="r num">4</td><td class="r num">10</td><td class="r num">21</td></tr>
+        <tr><td><b>Enterprise</b></td><td class="r num">Custom</td><td class="r num">Custom</td><td class="r num">From ₹5.00</td><td class="r num">∞</td><td class="r num">Custom</td><td class="r num">∞</td><td class="r num">3</td></tr></table>
+      <div class="box mark x"><span class="pin">EDIT · GROWTH</span><div class="grid4"><div class="field"><label>Monthly fee</label><div class="inp">₹2,999</div></div><div class="field"><label>Included minutes</label><div class="inp">500</div></div><div class="field"><label>Assistant rate</label><div class="inp">₹6.50/min</div></div><div class="field"><label>Announcement rate</label><div class="inp">₹3.00/min</div></div></div>
+        <div class="grid4" style="margin-top:8px"><div class="field"><label>Billing step</label><div class="inp">Per second, min 30 s ▾</div></div><div class="field"><label>Unanswered calls</label><div class="inp">Free ▾</div></div><div class="field"><label>Knowledge size</label><div class="inp">200 pages</div></div><div class="field"><label>Trial</label><div class="inp">14 days, ₹100 credit</div></div></div></div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Create and edit plans: fee, included minutes, per-minute rates by agent type, billing step, limits, trial.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Price changes apply to new billing months only; old invoices never change.</li><li>A plan in use cannot be deleted, only hidden from new sign-ups.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Plan names and prices to start with?</li><li>Bill per second, per started minute, or per 30 seconds?</li><li>Are unanswered calls free?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b6">
+  <div class="screen-head"><span class="no">B6</span><h2>Custom pricing for one client</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/clients/:id → Plan &amp; pricing</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span class="on">Clients</span><span>Plans & pricing</span><span>AI providers</span><span>Wallets</span><span>Number pool</span><span>Costs & margin</span><span>Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Sunrise Realty · pricing</h3><p>Plan: Growth. Overrides below apply only to this client.</p></div><span class="btn pri">Save overrides</span></div>
+      <table class="tbl"><tr><th>Item</th><th>Plan value</th><th>This client</th><th>Valid</th></tr>
+        <tr><td>Assistant rate / min</td><td class="num">₹6.50</td><td><div class="inp num" style="display:inline-block">₹7.00</div></td><td>Always</td></tr>
+        <tr><td>Monthly fee</td><td class="num">₹2,999</td><td><div class="inp num" style="display:inline-block">₹1,999</div> <span class="chip o">−33%</span></td><td>Till 31 Mar 2027</td></tr>
+        <tr><td>Lines</td><td class="num">4</td><td><div class="inp num" style="display:inline-block">6</div></td><td>Always</td></tr>
+        <tr><td>Number rent / month</td><td class="num">₹499</td><td>Same as plan</td><td>-</td></tr></table>
+      <div class="alert w">At ₹7.00/min this client's estimated margin is 51%. Minimum allowed margin: 25% (warning shown below it).</div>
+      <div class="field"><label>Reason for custom price (saved in audit log)</label><div class="inp">Annual contract signed by Rahul on 1 Nov</div></div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Per-client overrides of rates, fee, limits and rent, each with an end date and a reason.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Shows the estimated margin before saving; warns below the minimum margin you set.</li><li>Every override and its reason are logged (B10).</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>What is the lowest margin sales may agree to without Super admin approval?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b7">
+  <div class="screen-head"><span class="no">B7</span><h2>AI providers, costs &amp; model access</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/providers</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span>Clients</span><span>Plans & pricing</span><span class="on">AI providers</span><span>Wallets</span><span>Number pool</span><span>Costs & margin</span><span>Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>AI providers</h3><p>What each provider costs Voxura, and which plans may use it.</p></div><span class="btn pri">+ Add provider</span></div>
+      <table class="tbl"><tr><th>Job</th><th>Provider · model</th><th>Cost unit</th><th class="r">≈ ₹/min</th><th>Plans allowed</th><th>Status</th></tr>
+        <tr><td>Brain</td><td>Anthropic · Claude Haiku</td><td class="num">1M tokens</td><td class="r num">0.40</td><td>All</td><td><span class="chip g">On</span></td></tr>
+        <tr><td>Brain</td><td>Anthropic · Claude Sonnet</td><td class="num">1M tokens</td><td class="r num">1.10</td><td>Growth, Ent.</td><td><span class="chip g">On</span></td></tr>
+        <tr><td>Brain</td><td>OpenAI · GPT mini</td><td class="num">1M tokens</td><td class="r num">0.35</td><td>Enterprise</td><td><span class="chip n">Key missing</span></td></tr>
+        <tr><td>Brain</td><td>Google · Gemini Flash</td><td class="num">1M tokens</td><td class="r num">0.30</td><td>-</td><td><span class="chip n">Off</span></td></tr>
+        <tr><td>Speech → text</td><td>Deepgram · Nova</td><td class="num">audio min</td><td class="r num">0.35</td><td>All</td><td><span class="chip g">On</span></td></tr>
+        <tr><td>Text → speech</td><td>Sarvam · Bulbul</td><td class="num">10k chars</td><td class="r num">0.50</td><td>All</td><td><span class="chip g">On</span></td></tr>
+        <tr><td>Telephony</td><td>SIP provider (India)</td><td class="num">min + rent</td><td class="r num">0.60</td><td>All</td><td><span class="chip o">Not chosen</span></td></tr></table>
+      <div class="grid2"><div class="box"><h5>Monthly budget alerts</h5><div class="sub">Sarvam ₹40,000 · alert at 80% · now 82%</div></div><div class="box"><h5>API keys</h5><div class="sub">Stored encrypted on the server, never shown again after saving. Rotating a key is logged.</div></div></div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Provider catalogue: unit costs (tokens, audio minutes, characters, telephony minutes), on/off, which plans may use each model, budgets.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Unit costs are dated: a price change applies from its date, so past call costs stay correct.</li><li>Clients only see models their plan or client override allows (B6).</li></ul></div>
+      <div><h4>Real data from</h4><ul><li>Rates you enter; ≈ ₹/min is calculated from real usage once calls run.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Which providers do you want at launch?</li><li>Who may add or change API keys (Super admin only?)</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b8">
+  <div class="screen-head"><span class="no">B8</span><h2>Wallet management (credits, debits, history)</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/wallets · /admin/clients/:id → Wallet</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span>Clients</span><span>Plans & pricing</span><span>AI providers</span><span class="on">Wallets</span><span>Number pool</span><span>Costs & margin</span><span>Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Sunrise Realty · wallet</h3><p>Balance <b class="num">₹40.00</b> · alert at ₹200</p></div><div class="row"><span class="btn">Debit</span><span class="btn pri">Credit</span></div></div>
+      <div class="grid2">
+        <div class="dialog"><b>Credit wallet</b><div class="grid2"><div class="field"><label>Amount</label><div class="inp num">₹5,000</div></div><div class="field"><label>Type</label><div class="inp">Bank transfer received ▾</div></div></div><div class="field"><label>Reference (required)</label><div class="inp">NEFT UTR 2026110412345</div></div><div class="alert w">Above ₹10,000 needs a second approver (Finance).</div><div class="row" style="justify-content:flex-end"><span class="btn">Cancel</span><span class="btn pri">Add ₹5,000</span></div></div>
+        <table class="tbl"><tr><th>When</th><th>Type</th><th class="r">Amount</th><th class="r">Balance</th><th>By</th></tr>
+          <tr><td class="num">4 Nov 10:02</td><td><span class="chip">Call</span> Ravi T. 2m 5s</td><td class="r num">−₹14.58</td><td class="r num">₹40.00</td><td>System</td></tr>
+          <tr><td class="num">1 Nov 00:00</td><td><span class="chip b">Plan</span> Growth (custom)</td><td class="r num">−₹1,999</td><td class="r num">₹54.58</td><td>System</td></tr>
+          <tr><td class="num">28 Oct 3:12</td><td><span class="chip g">Top-up</span> Razorpay</td><td class="r num">+₹2,000</td><td class="r num">₹2,053.58</td><td>Client</td></tr>
+          <tr><td class="num">20 Oct 11:40</td><td><span class="chip o">Credit</span> Goodwill · ticket #1998</td><td class="r num">+₹200</td><td class="r num">₹53.58</td><td>Priya (Support)</td></tr></table>
+      </div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Manual credit and debit with type, reference and reason; full ledger per client and platform-wide; CSV export.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Money is never edited or deleted: mistakes are fixed with a reversing entry.</li><li>Large adjustments need a second approver; all adjustments are in the audit log and visible to the client as "Adjustment".</li></ul></div>
+      <div><h4>Real data from</h4><ul><li>The existing wallet ledger (already built and race-safe), plus new adjustment types.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Above what amount should a second approver be required?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b9">
+  <div class="screen-head"><span class="no">B9</span><h2>Phone number pool &amp; assignment</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/numbers</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span>Clients</span><span>Plans & pricing</span><span>AI providers</span><span>Wallets</span><span class="on">Number pool</span><span>Costs & margin</span><span>Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Number pool</h3><p>Numbers bought from the SIP provider. <span class="chip g">Already built</span> · extras below are new.</p></div><span class="btn pri">+ Add number</span></div>
+      <div class="grid4"><div class="box"><h5>Total</h5><div class="big num">56</div></div><div class="box"><h5>Free</h5><div class="big num">9</div></div><div class="box"><h5>Rent / month</h5><div class="big num">₹23,450</div><div class="sub">charged to clients</div></div><div class="box"><h5>Our cost</h5><div class="big num">₹14,000</div></div></div>
+      <table class="tbl"><tr><th>Number</th><th>Lines</th><th>Client</th><th class="r">Rent</th><th class="r">Our cost</th><th>Renews</th><th></th></tr>
+        <tr><td class="num">+91 80456 78901</td><td>2</td><td>Brightlane Software</td><td class="r num">₹499</td><td class="r num">₹300</td><td>5 Dec · auto-charge</td><td><span class="btn">Take back</span></td></tr>
+        <tr><td class="num">+91 1800 123 4567</td><td>4</td><td><span class="chip n">Free</span></td><td class="r num">₹1,499</td><td class="r num">₹900</td><td>-</td><td><span class="btn">Assign</span></td></tr></table>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Built today: add, assign with renewal date, take back, delete free numbers.</li><li>New: our cost per number, automatic monthly rent charge to the client wallet, rent overdue → number paused (not taken away).</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Numbers are global (one company at a time); taking back stops that company's agents using it.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>If rent can't be charged (empty wallet), pause the number after how many days?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b10">
+  <div class="screen-head"><span class="no">B10</span><h2>Audit log</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/audit</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span>Clients</span><span>Plans & pricing</span><span>AI providers</span><span>Wallets</span><span>Number pool</span><span>Costs & margin</span><span>Support access</span><span class="on">Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Audit log</h3><p>Every important Super Admin action. Cannot be edited or deleted.</p></div><div class="row"><div class="inp ph-t">Filter: person, client, action</div><span class="btn">Export</span></div></div>
+      <table class="tbl"><tr><th>When</th><th>Who</th><th>Action</th><th>Client</th><th>Details</th></tr>
+        <tr><td class="num">4 Nov 11:05</td><td>Rahul (Finance)</td><td><span class="chip o">Wallet credit</span></td><td>Sunrise Realty</td><td>+₹5,000 · NEFT UTR 2026…345 · approved by Anita</td></tr>
+        <tr><td class="num">4 Nov 10:40</td><td>Anita (Super admin)</td><td><span class="chip b">Price change</span></td><td>Sunrise Realty</td><td>Rate ₹6.50 → ₹7.00 · "annual contract"</td></tr>
+        <tr><td class="num">3 Nov 4:12</td><td>Priya (Support)</td><td><span class="chip">Support session</span></td><td>Brightlane</td><td>View-only · 38 min · 14 pages opened <span class="btn">Open</span></td></tr>
+        <tr><td class="num">3 Nov 9:00</td><td>Anita (Super admin)</td><td><span class="chip r">Suspended</span></td><td>Old Test Co</td><td>Reason: unpaid · owner emailed</td></tr>
+        <tr><td class="num">2 Nov 6:30</td><td>Anita (Super admin)</td><td><span class="chip n">API key</span></td><td>-</td><td>Deepgram key replaced</td></tr></table>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Who did what, when, to which client, with before → after values, reason and sign-in address.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Written in the same database step as the change itself, so an action can't happen without its log line.</li><li>Append-only: no screen or API can edit or delete entries; kept for at least 3 years.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>How long must audit records be kept?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b11">
+  <div class="screen-head"><span class="no">B11</span><h2>Secure client-support access</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/support</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span>Clients</span><span>Plans & pricing</span><span>AI providers</span><span>Wallets</span><span>Number pool</span><span>Costs & margin</span><span class="on">Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Support access</h3><p>Open a client's workspace only with the owner's approval (A5).</p></div><span class="btn pri">+ Request access</span></div>
+      <table class="tbl"><tr><th>Client</th><th>Requested by</th><th>Access</th><th>Status</th><th></th></tr>
+        <tr><td>Brightlane Software</td><td>Priya · ticket #2041</td><td>View only · 2 h</td><td><span class="chip g">Approved · 1h 22m left</span></td><td><span class="btn pri">Open workspace</span></td></tr>
+        <tr><td>Metro Loans</td><td>Amit · ticket #2044</td><td>Edit · 30 min</td><td><span class="chip o">Waiting for owner</span></td><td></td></tr>
+        <tr class="muted"><td>Sunrise Realty</td><td>Priya</td><td>View only</td><td>Declined by owner</td><td></td></tr></table>
+      <div class="supbar"><span>⚠ You are viewing <b>Brightlane Software</b> as Voxura support · view only · every page is recorded</span><span>Ends in 1h 22m · <u>Leave</u></span></div>
+      <div class="sub">This purple bar stays on every page while in a client's workspace. Recordings and transcripts need the "include call recordings" option in the request.</div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Request access with ticket number, scope (view only / edit, recordings yes/no) and duration; client Owner approves (A5).</li><li>Inside the client workspace a permanent banner shows; every page and change is logged on both sides.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>No access without approval; no permanent access; Voxura staff never see client passwords.</li><li>Emergency access (e.g. abuse) only by Super admin with a written reason, and the client is told.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Should emergency access exist at all?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b12">
+  <div class="screen-head"><span class="no">B12</span><h2>Voxura admin team &amp; roles</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/team</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span>Clients</span><span>Plans & pricing</span><span>AI providers</span><span>Wallets</span><span>Number pool</span><span>Costs & margin</span><span>Support access</span><span>Audit log</span><span class="on">Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Voxura admin team</h3><p>People at Voxura who can use this admin area.</p></div><span class="btn pri">+ Add admin user</span></div>
+      <table class="tbl perm"><tr><th>Can…</th><th>Super admin</th><th>Finance</th><th>Support</th><th>Read-only</th></tr>
+        <tr><td>See clients and dashboard</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+        <tr><td>See revenue, costs, margin</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✕</td><td class="no">✕</td></tr>
+        <tr><td>Wallet credit / debit</td><td class="ok">✓</td><td class="ok">✓</td><td>small only</td><td class="no">✕</td></tr>
+        <tr><td>Plans, prices, providers, API keys</td><td class="ok">✓</td><td class="no">✕</td><td class="no">✕</td><td class="no">✕</td></tr>
+        <tr><td>Suspend / reactivate clients</td><td class="ok">✓</td><td class="ok">✓</td><td class="no">✕</td><td class="no">✕</td></tr>
+        <tr><td>Request support access</td><td class="ok">✓</td><td class="no">✕</td><td class="ok">✓</td><td class="no">✕</td></tr>
+        <tr><td>Number pool</td><td class="ok">✓</td><td class="no">✕</td><td class="ok">✓</td><td class="no">✕</td></tr>
+        <tr><td>Manage admin users</td><td class="ok">✓</td><td class="no">✕</td><td class="no">✕</td><td class="no">✕</td></tr></table>
+      <div class="sub">Admin users sign in with two-step sign-in required.</div>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Separate admin roles so finance, support and owners of the business have only what they need.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Two-step sign-in required for all admin users; admin sessions time out after 30 minutes idle.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Which Voxura people need which role at launch?</li></ul></div>
+    </aside>
+  </div>
+</section>
+<section class="screen" id="b13">
+  <div class="screen-head"><span class="no">B13</span><h2>Costs &amp; margin per call, client and provider</h2><span class="tag t-adm">Super admin</span><span class="url">/admin/costs</span></div>
+  <div class="screen-body">
+    <div class="mock-area"><div class="app"><div class="side adm"><div class="logo"><i></i>Voxura Admin</div><div class="grp">Voxura admin</div><span>Dashboard</span><span>Clients</span><span>Plans & pricing</span><span>AI providers</span><span>Wallets</span><span>Number pool</span><span class="on">Costs & margin</span><span>Support access</span><span>Audit log</span><span>Admin team</span></div><div class="main">
+
+      <div class="ph"><div><h3>Costs &amp; margin · November</h3><p>Every call's real provider cost next to what the client was charged.</p></div><div class="seg"><b class="on">By client</b><b>By provider</b><b>By call</b></div></div>
+      <div class="money" style="grid-template-columns:repeat(3,1fr)">
+        <div class="cost">AI brain<b class="num">₹38,600</b></div><div class="cost">Speech→text<b class="num">₹18,300</b></div><div class="cost">Text→speech<b class="num">₹26,200</b></div><div class="cost">Telephony<b class="num">₹58,100</b></div><div class="rev">Charged<b class="num">₹2,61,400</b></div><div class="mar">Margin<b class="num">₹1,20,200</b></div></div>
+      <table class="tbl"><tr><th>Call · Brightlane · Ravi Traders · 2m 5s</th><th class="r">Usage</th><th class="r">Cost</th></tr>
+        <tr><td>Claude Haiku</td><td class="r num">3,760 tokens</td><td class="r num">₹0.62</td></tr>
+        <tr><td>Deepgram Nova</td><td class="r num">2.1 audio min</td><td class="r num">₹0.74</td></tr>
+        <tr><td>Sarvam Bulbul</td><td class="r num">1,840 chars</td><td class="r num">₹0.92</td></tr>
+        <tr><td>SIP telephony</td><td class="r num">2.1 min</td><td class="r num">₹1.26</td></tr>
+        <tr><td><b>Total cost</b></td><td></td><td class="r num"><b>₹3.54</b></td></tr><tr><td>Charged ₹12.50 (₹6.00/min) → <b>margin ₹8.96 (72%)</b></td><td></td><td></td></tr></table>
+    </div></div></div>
+    <aside class="notes">
+      <div><h4>What it does</h4><ul><li>Cost split into AI, speech-to-text, text-to-speech and telephony; compared with customer charges; margin by client, provider and single call.</li></ul></div>
+      <div><h4>Rules</h4><ul><li>Costs are calculated from measured usage × the provider rate valid on that date (B7).</li><li>Customers never see Voxura's costs or margin.</li></ul></div>
+      <div><h4>Real data from</h4><ul><li>Per-call usage recorded by the voice engine (tokens, audio minutes, characters, telephony minutes).</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Do you also want monthly provider bills reconciled against these totals?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<section class="screen" id="c1">
+  <div class="screen-head"><span class="no">C1</span><h2>Multi-tenant data model (how company data stays separate)</h2><span class="tag t-exp">Architecture</span></div>
+  <div style="padding:18px 20px;display:grid;gap:12px">
+    <div class="arch">
+      <div class="layer"><h4>Platform level (Voxura only)</h4><div class="ents"><span>Plan</span><span>PlanRate</span><span>Provider</span><span>ProviderRate (dated)</span><span>PhoneNumber (pool)</span><span>AdminUser + AdminRole</span><span class="c">AuditLog (append-only)</span><span>SupportAccessGrant</span></div></div>
+      <div class="layer"><h4>Company level: every row carries workspaceId</h4><div class="ents"><span class="k">Workspace (status, plan, overrides)</span><span>User + Role</span><span>Invite</span><span>Agent</span><span>Service / Product</span><span>Lead</span><span>Campaign</span><span>Call</span><span>Transcript</span><span>Recording</span><span>FollowUp</span><span class="c">WalletTransaction</span><span class="c">CallCost lines</span><span>ActivityLog</span></div></div>
+    </div>
+    <ul class="sub" style="margin:0;padding-left:18px;display:grid;gap:4px">
+      <li><b>Already in place:</b> every company record has <code>workspaceId</code>; every query in the built app filters by it, and linked ids are checked to belong to the same company. Automated tests check that company B gets "not found" for company A's records.</li>
+      <li><b>Added for Super Admin:</b> admin users are separate from company users (an admin is not a member of any company); admin screens see totals, and see a company's leads/calls/recordings only through an approved, time-limited support grant.</li>
+      <li><b>Recordings</b> are stored per company folder with short-lived signed links, never public URLs.</li>
+      <li><b>Uniqueness</b> (agent names, lead phones, campaign names) is per company; phone numbers are platform-wide.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="screen" id="c2">
+  <div class="screen-head"><span class="no">C2</span><h2>Billing architecture (cost, charge and margin per call)</h2><span class="tag t-exp">Architecture</span></div>
+  <div style="padding:18px 20px;display:grid;gap:12px">
+    <div class="wf">
+      <div class="n t"><b>1. Call ends.</b> The voice engine reports measured usage: brain tokens in/out, speech-to-text audio seconds, text-to-speech characters, telephony seconds.</div><div class="ln"></div>
+      <div class="n"><b>2. Cost lines.</b> One <code>CallCost</code> row per provider: usage × ProviderRate valid at call time → Voxura's real cost (AI, STT, TTS, telephony).</div><div class="ln"></div>
+      <div class="n"><b>3. Customer charge.</b> Billable time × the client's rate (plan or override, B5/B6), using the plan's billing step; unanswered calls free if the plan says so.</div><div class="ln"></div>
+      <div class="n a"><b>4. Wallet.</b> One <code>WalletTransaction</code> per call (already built: atomic, once per call, can't double-charge).</div><div class="ln"></div>
+      <div class="n c"><b>5. Margin</b> = customer charge − sum of cost lines, stored on the call, summed for B1 and B13.</div>
+    </div>
+    <div class="money"><div class="cost">AI brain cost</div><div class="cost">Speech-to-text cost</div><div class="cost">Text-to-speech cost</div><div class="cost">Telephony cost</div><div class="rev">Customer charge</div><div class="mar">Profit margin</div></div>
+    <ul class="sub" style="margin:0;padding-left:18px;display:grid;gap:4px">
+      <li>Plan fees and number rent are separate wallet entries with their own cost (number cost from B9).</li>
+      <li>Rates are dated, so re-pricing never changes past calls; money entries are never edited, only reversed.</li>
+      <li><b>No dummy data:</b> every dashboard figure is a sum over these tables. Until real calls and payments exist the screens show zero and say so.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="end" id="next">
+  <h2>Build order after approval</h2>
+  <ol>
+    <li><b>Team &amp; Settings (A1–A5):</b> team invites and roles, company profile, password reset, sign-in protection, support-access approval.</li>
+    <li><b>Super Admin foundation (B1–B13, C1–C2):</b> admin users and roles, audit log, clients and status, plans and custom pricing, provider rates and access, wallet adjustments, number rent, support access, dashboard and cost/margin reports from real ledgers.</li>
+    <li><b>Voice engine and Live call</b>, which starts producing the real usage and cost data these screens report.</li>
+  </ol>
+  <h2>Questions for you</h2>
+  <ol>
+    <li>Self sign-up for new companies, Voxura-added only, or both?</li>
+    <li>Plans, prices, billing step (per second / per minute) and whether unanswered calls are free.</li>
+    <li>Wallet adjustment amount that needs a second approver; lowest margin sales may offer.</li>
+    <li>Support access: view-only only, or also edit? Emergency access allowed?</li>
+    <li>Which Voxura people get Super admin, Finance, Support and Read-only roles?</li>
+    <li>How long to keep audit logs, call recordings and transcripts (data-privacy rules)?</li>
+  </ol>
+  <p class="sub">The figures in these mock screens are illustrative only. In the built app, dashboards and reports read only from the database; no hard-coded numbers.</p>
+</section>
+  </main>
+</div>
+</body>
+</html>

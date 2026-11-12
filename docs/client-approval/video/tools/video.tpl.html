@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Voxura · Product walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* 1920x1080 stage. Deep night-violet ground, Voxura violet for the daily flow, teal for setup, green for results.
+   Every visual is a pure function of time: seek(t) sets the frame, so rendering is exact and repeatable. */
+:root{
+  --bg1:#0b0a1c; --bg2:#151131; --ink:#f4f2ff; --muted:#b4add6; --line:rgba(255,255,255,.12);
+  --violet:#7c5cff; --violet-d:#4b2bb3; --teal:#19b3c7; --ok:#2fd27e; --sys:#5aa2ff; --warn:#f5b54a;
+  --display:"Bricolage Grotesque","Segoe UI",sans-serif; --body:"IBM Plex Sans","Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg1)}
+body{font-family:var(--body);color:var(--ink)}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1400px 900px at 70% 20%,#1d1745 0%,var(--bg1) 60%)}
+#glow1,#glow2{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55}
+#glow1{width:900px;height:900px;background:radial-gradient(circle,#4b2bb3 0%,transparent 70%)}
+#glow2{width:700px;height:700px;background:radial-gradient(circle,#0e6f80 0%,transparent 70%)}
+#grid{position:absolute;inset:-100px;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:80px 80px;opacity:.18;mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%)}
+/* chrome */
+#brand{position:absolute;left:64px;top:44px;display:flex;align-items:center;gap:12px;font:800 26px var(--display);z-index:20}
+.logo{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:linear-gradient(140deg,#8e72ff,#4b2bb3);font:800 22px var(--display);color:#fff;box-shadow:0 6px 24px rgba(124,92,255,.45)}
+#chapter{position:absolute;right:64px;top:50px;font:600 17px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);z-index:20}
+#bar{position:absolute;left:0;top:0;height:5px;background:linear-gradient(90deg,var(--teal),var(--violet));z-index:20}
+#cap{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);max-width:1500px;text-align:center;font:500 31px/1.35 var(--body);color:#fff;background:rgba(8,7,22,.78);border:1px solid rgba(255,255,255,.08);padding:12px 28px;border-radius:14px;z-index:30;backdrop-filter:blur(6px)}
+/* scenes */
+.scene{position:absolute;inset:0;display:none}
+.scene.on{display:block}
+.kicker{display:inline-flex;align-items:center;gap:10px;font:700 18px var(--body);letter-spacing:.14em;text-transform:uppercase;padding:8px 16px;border-radius:999px;background:rgba(124,92,255,.18);color:#cfc2ff;border:1px solid rgba(124,92,255,.35)}
+.c-setup .kicker{background:rgba(25,179,199,.16);color:#8fe6f1;border-color:rgba(25,179,199,.4)}
+.c-staff .kicker{background:rgba(255,255,255,.08);color:#ddd8f2;border-color:rgba(255,255,255,.2)}
+.c-ok .kicker{background:rgba(47,210,126,.16);color:#8ef0bd;border-color:rgba(47,210,126,.4)}
+h1{font:800 64px/1.05 var(--display);letter-spacing:-.01em}
+h2{font:800 46px/1.1 var(--display)}
+/* intro / outro */
+.center{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.biglogo{width:150px;height:150px;border-radius:38px;display:grid;place-items:center;font:800 92px var(--display);background:linear-gradient(140deg,#9a80ff,#4b2bb3);box-shadow:0 30px 90px rgba(124,92,255,.55);margin:0 auto 34px}
+.ring{position:absolute;left:50%;top:50%;border:1.5px solid rgba(160,140,255,.25);border-radius:50%}
+.word{font:800 120px var(--display);letter-spacing:-.02em}
+.tag{font:500 34px var(--body);color:var(--muted);margin-top:14px}
+.subtag{display:inline-block;margin-top:34px;font:600 20px var(--body);letter-spacing:.16em;text-transform:uppercase;color:#cfc2ff;border:1px solid rgba(124,92,255,.4);padding:10px 20px;border-radius:999px}
+/* cards */
+.top{position:absolute;left:120px;top:150px;right:120px}
+.top h1{margin-top:22px}
+.cards{position:absolute;left:120px;right:120px;top:400px;display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:38px 36px;min-height:230px}
+.card .ic{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;background:rgba(245,181,74,.15);color:var(--warn);font:800 30px var(--display);margin-bottom:22px}
+.card h3{font:700 32px var(--display);margin-bottom:12px}
+.card p{font:400 24px/1.4 var(--body);color:var(--muted)}
+.endbar{position:absolute;left:120px;right:120px;top:720px;display:flex;align-items:center;justify-content:center;gap:20px;padding:26px;border-radius:22px;background:linear-gradient(90deg,rgba(25,179,199,.22),rgba(124,92,255,.3));border:1px solid rgba(124,92,255,.5);font:700 36px var(--display)}
+/* six steps */
+.six{position:absolute;left:100px;right:100px;top:420px;display:grid;grid-template-columns:repeat(6,1fr);gap:0}
+.six .n{position:relative;text-align:center;padding:0 10px}
+.six .dot{width:120px;height:120px;border-radius:50%;margin:0 auto 26px;display:grid;place-items:center;font:800 50px var(--display);background:rgba(124,92,255,.15);border:2px solid rgba(124,92,255,.6);color:#d8ceff}
+.six .n.setup .dot{background:rgba(25,179,199,.15);border-color:rgba(25,179,199,.7);color:#9be9f3}
+.six .n.won .dot{background:rgba(47,210,126,.16);border-color:rgba(47,210,126,.7);color:#9af2c4}
+.six .n.act .dot{box-shadow:0 0 0 10px rgba(124,92,255,.18),0 0 60px rgba(124,92,255,.6);transform:scale(1.08)}
+.six .n.setup.act .dot{box-shadow:0 0 0 10px rgba(25,179,199,.18),0 0 60px rgba(25,179,199,.6)}
+.six .n.won.act .dot{box-shadow:0 0 0 10px rgba(47,210,126,.18),0 0 60px rgba(47,210,126,.6)}
+.six h3{font:700 32px var(--display)} .six p{font:400 21px/1.35 var(--body);color:var(--muted);margin-top:8px}
+.six .con{position:absolute;top:60px;left:calc(50% + 70px);width:calc(100% - 140px);height:3px;background:linear-gradient(90deg,var(--violet),rgba(124,92,255,.3));transform-origin:left}
+/* two flows */
+.flows{position:absolute;left:120px;right:120px;top:300px;display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.flow{border-radius:26px;padding:34px 38px;border:2px solid rgba(124,92,255,.55);background:rgba(124,92,255,.07)}
+.flow.setup{border-color:rgba(25,179,199,.6);background:rgba(25,179,199,.06)}
+.flow h3{font:800 38px var(--display);display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.when{font:700 16px var(--body);letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;border-radius:8px;background:var(--violet-d);color:#fff}
+.flow.setup .when{background:#0f7f8f}
+.fl{list-style:none;display:grid;gap:13px}
+.fl li{display:flex;align-items:center;gap:16px;font:500 25px var(--body)}
+.fl li i{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font:800 18px var(--display);font-style:normal;background:var(--violet-d)}
+.flow.setup .fl li i{background:#0f7f8f}
+.fl li em{font-style:normal;font-size:16px;color:var(--sys);border:1px solid rgba(90,162,255,.45);padding:2px 9px;border-radius:99px;margin-left:4px}
+/* section */
+.sec{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.sec .big{font:800 150px/1 var(--display);letter-spacing:-.02em;margin:26px 0 18px}
+.sec .sub{font:500 34px var(--body);color:var(--muted)}
+.sec .line{height:4px;width:420px;margin:30px auto 0;border-radius:4px;background:linear-gradient(90deg,transparent,var(--violet),transparent);transform-origin:center}
+.c-setup .sec .line{background:linear-gradient(90deg,transparent,var(--teal),transparent)}
+.c-ok .sec .line{background:linear-gradient(90deg,transparent,var(--ok),transparent)}
+.c-ok .sec .big{color:#bff7d9}
+/* screen */
+.left{position:absolute;left:84px;top:150px;width:560px}
+.left h2{margin:22px 0 30px}
+.steps{list-style:none;display:grid;gap:16px}
+.steps li{display:flex;gap:16px;align-items:flex-start;font:500 24px/1.35 var(--body)}
+.steps li b{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:800 19px var(--display);background:var(--violet-d);margin-top:-3px}
+.c-setup .steps li b{background:#0f7f8f} .c-staff .steps li b{background:#4a4660}
+.steps li.cur{color:#fff} .steps li.past{color:#cfcae6}
+.sys{margin-top:30px;display:flex;gap:14px;align-items:flex-start;padding:18px 20px;border-radius:16px;background:rgba(90,162,255,.12);border:1px solid rgba(90,162,255,.35);font:500 22px/1.4 var(--body)}
+.sys span{flex:none;font:700 14px var(--body);letter-spacing:.12em;text-transform:uppercase;background:var(--sys);color:#06122a;padding:5px 10px;border-radius:7px;margin-top:3px}
+.browser{position:absolute;left:690px;top:170px;width:1166px;border-radius:18px;overflow:hidden;background:#1b1838;border:1px solid rgba(255,255,255,.14);box-shadow:0 40px 120px rgba(0,0,0,.55),0 0 0 1px rgba(124,92,255,.15)}
+.chromebar{height:46px;display:flex;align-items:center;gap:9px;padding:0 18px;background:#221e44;border-bottom:1px solid rgba(255,255,255,.08)}
+.chromebar i{width:13px;height:13px;border-radius:50%;background:#4a4570}
+.url{margin-left:16px;flex:1;height:28px;border-radius:8px;background:rgba(255,255,255,.06);font:500 15px var(--body);color:#a9a3cc;display:flex;align-items:center;padding:0 14px}
+.badge{font:700 14px var(--body);letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:99px;display:flex;align-items:center;gap:8px}
+.badge::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor}
+.badge.live{background:rgba(47,210,126,.16);color:#7ff0b4}
+.badge.design{background:rgba(90,162,255,.16);color:#9cc5ff}
+.vp{position:relative;width:1166px;height:656px;overflow:hidden;background:#f5f4f9}
+.vp img{position:absolute;left:0;top:0;width:1600px;height:1000px;transform-origin:0 0;max-width:none}
+.co{position:absolute;left:0;top:0;pointer-events:none}
+.co .ringp{position:absolute;left:-16px;top:-16px;width:32px;height:32px;border-radius:50%;border:3px solid #ff5fa2;box-shadow:0 0 0 6px rgba(255,95,162,.25)}
+.co .lbl{position:absolute;left:22px;top:-24px;white-space:nowrap;font:700 21px var(--body);color:#fff;background:#e23d86;padding:8px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(226,61,134,.45)}
+/* status diagram */
+.diag{position:absolute;left:690px;top:200px;width:1150px;height:600px}
+.node{position:absolute;width:230px;height:84px;border-radius:18px;display:grid;place-items:center;font:700 28px var(--display);border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:#d8d4ee}
+.node.on{color:#fff}
+.node.n-draft.on{border-color:#a9a3cc;background:rgba(169,163,204,.18)}
+.node.n-sch.on{border-color:var(--sys);background:rgba(90,162,255,.2)}
+.node.n-run.on{border-color:var(--violet);background:rgba(124,92,255,.28);box-shadow:0 0 50px rgba(124,92,255,.5)}
+.node.n-done.on{border-color:var(--ok);background:rgba(47,210,126,.2)}
+.node.n-pause.on{border-color:var(--warn);background:rgba(245,181,74,.16)}
+.node.n-cancel.on{border-color:#ff6b6b;background:rgba(255,107,107,.15)}
+.diag svg{position:absolute;inset:0;overflow:visible}
+.diag svg path,.diag svg line{stroke:rgba(200,190,255,.55);stroke-width:3;fill:none}
+.diag svg text{fill:#c9c2ee;font:600 19px var(--body)}
+.pulse{position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 0 24px 8px rgba(124,92,255,.8);margin:-10px 0 0 -10px}
+/* ai call */
+.cols{position:absolute;left:120px;right:120px;top:330px;display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.col{border-radius:24px;padding:32px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);min-height:470px}
+.col.act{border-color:rgba(124,92,255,.7);background:rgba(124,92,255,.12);box-shadow:0 0 60px rgba(124,92,255,.25)}
+.col h3{font:800 34px var(--display);display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.col h3 b{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--violet-d);font-size:22px}
+.col ul{list-style:none;display:grid;gap:14px}
+.col li{font:500 23px/1.35 var(--body);display:flex;gap:12px}
+.col li::before{content:"✓";color:var(--ok);font-weight:800}
+.wave{display:flex;gap:6px;align-items:center;height:60px;margin-top:22px}
+.wave span{width:8px;border-radius:4px;background:linear-gradient(var(--violet),var(--teal))}
+.note{position:absolute;left:50%;top:868px;transform:translateX(-50%);font:600 22px var(--body);color:#ffd99a;background:rgba(245,181,74,.12);border:1px solid rgba(245,181,74,.4);padding:10px 20px;border-radius:999px;white-space:nowrap}
+/* rules / roles / stats */
+.tiles{position:absolute;left:120px;right:120px;top:350px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.tile{border-radius:22px;padding:30px 32px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);display:flex;gap:20px;align-items:center}
+.tile .ti{flex:none;width:62px;height:62px;border-radius:18px;display:grid;place-items:center;font:800 28px var(--display);background:rgba(47,210,126,.15);color:var(--ok)}
+.tile h3{font:700 28px var(--display)} .tile p{font:400 20px var(--body);color:var(--muted);margin-top:4px}
+.matrix{position:absolute;left:220px;right:220px;top:330px;border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,.14)}
+.mrow{display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr;align-items:center;border-top:1px solid rgba(255,255,255,.1);font:500 26px var(--body);padding:20px 34px;background:rgba(255,255,255,.03)}
+.mrow.h{border-top:0;background:rgba(124,92,255,.2);font:800 28px var(--display)}
+.mrow div:not(:first-child){text-align:center}
+.yes{color:var(--ok);font-weight:800} .nop{color:#6e6890}
+.stats{position:absolute;left:120px;right:120px;top:360px;display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
+.stat{text-align:center;border-radius:26px;padding:44px 20px;background:linear-gradient(170deg,rgba(124,92,255,.18),rgba(255,255,255,.03));border:1px solid rgba(124,92,255,.35)}
+.stat b{display:block;font:800 110px/1 var(--display);background:linear-gradient(180deg,#fff,#b9a8ff);-webkit-background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:16px;font:600 26px var(--body);color:#ddd6ff}
+.stat small{display:block;margin-top:6px;font:400 19px var(--body);color:var(--muted)}
+.foot{position:absolute;left:0;right:0;top:760px;text-align:center;font:500 26px var(--body);color:var(--muted)}
+#fade{position:absolute;inset:0;background:#000;z-index:40;opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="glow1"></div><div id="glow2"></div><div id="grid"></div>
+  <div id="bar"></div>
+  <div id="brand"><span class="logo">V</span>Voxura</div>
+  <div id="chapter"></div>
+  <div id="scenes"></div>
+  <div id="cap"></div>
+  <div id="fade"></div>
+</div>
+<script>
+const DATA = /*DATA*/null;
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const ease = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+
+// ---------- scene builders ----------
+// data-f = when the element appears, as a fraction of the scene; data-fx = how.
+const A = (f, fx = "up") => `data-f="${f}" data-fx="${fx}"`;
+function build(s) {
+  const el = document.createElement("section");
+  el.className = "scene c-" + (s.color || "daily"); el.id = s.id;
+  const H = {
+    intro: () => `<div class="center"><div><div class="ring" id="r1"></div><div class="ring" id="r2"></div><div class="ring" id="r3"></div>
+      <div class="biglogo" ${A(.02, "scale")}>V</div><div class="word" ${A(.12)}>Voxura</div>
+      <div class="tag" ${A(.3)}>The AI calling platform for growing businesses</div>
+      <div class="subtag" ${A(.55, "fade")}>Product walkthrough · Setup flow & Daily flow</div></div></div>`,
+    cards: () => `<div class="top"><span class="kicker" ${A(.02, "fade")}>${esc(s.kicker)}</span><h1 ${A(.05)}>${esc(s.title)}</h1></div>
+      <div class="cards">${s.cards.map((c, i) => `<div class="card" ${A(.14 + i * .17)}><div class="ic">${i + 1}</div><h3>${esc(c.h)}</h3><p>${esc(c.p)}</p></div>`).join("")}</div>
+      <div class="endbar" ${A(.74, "scale")}>→ ${esc(s.end)}</div>`,
+    six: () => `<div class="top"><span class="kicker" ${A(.02, "fade")}>The customer's view</span><h1 ${A(.05)}>Six simple steps</h1></div>
+      <div class="six">${[["1", "Set up", "account, services, AI agent", "setup"], ["2", "Add leads", "typed, Excel or ads", ""], ["3", "Campaign", "who, when, which agent", ""], ["4", "AI calls", "talks, records, charges", ""], ["5", "Follow up", "callbacks and tasks", ""], ["✓", "Customer won", "lead moves to Won", "won"]]
+        .map((n, i) => `<div class="n ${n[3]}" data-six="${i}" ${A(.2 + i * .12)}><div class="dot">${n[0]}</div><h3>${n[1]}</h3><p>${n[2]}</p>${i < 5 ? `<div class="con" data-f="${.26 + i * .12}" data-fx="grow"></div>` : ""}</div>`).join("")}</div>`,
+    twoflows: () => `<div class="top" style="top:140px"><span class="kicker" ${A(.02, "fade")}>Two flows behind the six steps</span></div>
+      <div class="flows">
+       <div class="flow setup" ${A(.12, "left")}><h3><span class="when">Once</span>Setup flow</h3><ul class="fl">${["Create the company account", "Add money to the wallet", "Get a phone number", "Add services and products", "Create the AI agent", "Invite the team <em>next</em>", "Connect lead sources <em>next</em>"].map((t, i) => `<li ${A(.2 + i * .04)}><i>${i + 1}</i>${t}</li>`).join("")}</ul></div>
+       <div class="flow" ${A(.4, "right")}><h3><span class="when">Every day</span>Daily flow</h3><ul class="fl">${["Start on the Dashboard", "Add new leads", "Create a campaign", "The AI makes the calls", "Check the call results", "Follow up", "Move the lead to Won"].map((t, i) => `<li ${A(.48 + i * .04)}><i>${i + 1}</i>${t}</li>`).join("")}</ul></div></div>`,
+    section: () => `<div class="sec"><div><span class="kicker" ${A(.05, "fade")}>${esc(s.kicker)}</span><div class="big" ${A(.12, "scale")}>${esc(s.title)}</div><div class="sub" ${A(.3)}>${esc(s.sub)}</div><div class="line" data-f=".35" data-fx="grow"></div></div></div>`,
+    screen: () => {
+      const n = s.steps.length, f0 = .12, f1 = .78;
+      return `<div class="left"><span class="kicker" ${A(.02, "fade")}>${esc(s.kicker)}</span><h2 ${A(.04)}>${esc(s.title)}</h2>
+        <ul class="steps">${s.steps.map((t, i) => `<li data-step="${i}" ${A(f0 + (f1 - f0) * i / n)}><b>${i + 1}</b><span>${esc(t)}</span></li>`).join("")}</ul>
+        <div class="sys" ${A(.8)}><span>System</span><div>${esc(s.sys)}</div></div></div>
+        <div class="browser" ${A(.03, "right")}><div class="chromebar"><i></i><i></i><i></i><div class="url">voxura · ${esc(s.title)}</div>
+        <span class="badge ${s.badge}">${s.badge === "live" ? "Live software" : "Approved design"}</span></div>
+        <div class="vp"><img class="im1" src="${s.img}">${s.img2 ? `<img class="im2" src="${s.img2}">` : ""}
+        ${(s.callouts || []).map((c, i) => `<div class="co" data-co="${i}"><div class="ringp"></div><div class="lbl">${esc(c[3])}</div></div>`).join("")}</div></div>`;
+    },
+    status: () => `<div class="left"><span class="kicker" ${A(.02, "fade")}>${esc(s.kicker)}</span><h2 ${A(.04)}>${esc(s.title)}</h2>
+      <ul class="steps">${s.steps.map((t, i) => `<li ${A(.08 + i * .07)}><b>${i + 1}</b><span>${esc(t)}</span></li>`).join("")}</ul></div>
+      <div class="diag" ${A(.3, "fade")}>
+        <svg viewBox="0 0 1150 600"><path d="M230 120 H300"/><path d="M530 120 H600"/><path d="M830 120 H900"/>
+          <path d="M715 162 V300 H530"/><path d="M415 342 V250 Q415 205 415 162"/><path d="M715 384 H900 V460"/>
+          <text x="248" y="105">Start</text><text x="545" y="105">time</text><text x="845" y="105">done</text>
+          <text x="560" y="290">Pause</text><text x="425" y="240">Start again</text><text x="740" y="420">Cancel</text></svg>
+        <div class="node n-draft" style="left:0;top:78px" data-node="0">Draft</div>
+        <div class="node n-sch" style="left:300px;top:78px" data-node="1">Scheduled</div>
+        <div class="node n-run" style="left:600px;top:78px" data-node="2">Running</div>
+        <div class="node n-done" style="left:900px;top:78px" data-node="3">Completed</div>
+        <div class="node n-pause" style="left:300px;top:300px" data-node="4">Paused</div>
+        <div class="node n-cancel" style="left:900px;top:460px" data-node="5">Cancelled</div>
+        <div class="pulse" id="pulse"></div></div>`,
+    aicall: () => `<div class="top" style="top:130px"><span class="kicker" ${A(.01, "fade")}>${esc(s.kicker)}</span><h1 ${A(.03)}>${esc(s.title)}</h1></div>
+      <div class="cols">
+       <div class="col" data-col="0" ${A(.06)}><h3><b>1</b>Before dialling</h3><ul>${["Inside calling hours?", "Not on DND?", "Wallet above ₹0?", "Below the call limit?"].map((t, i) => `<li ${A(.1 + i * .045)}>${t}</li>`).join("")}</ul></div>
+       <div class="col" data-col="1" ${A(.3)}><h3><b>2</b>During the call</h3><ul>${["Listens to the customer", "Understands the question", "Replies in their language", "Uses only approved information"].map((t, i) => `<li ${A(.34 + i * .045)}>${t}</li>`).join("")}</ul><div class="wave">${Array.from({ length: 22 }, () => "<span></span>").join("")}</div></div>
+       <div class="col" data-col="2" ${A(.55)}><h3><b>3</b>After the call</h3><ul>${["Saves recording and transcript", "Saves the outcome", "Charges talk time once", "Retry or callback if needed"].map((t, i) => `<li ${A(.58 + i * .05)}>${t}</li>`).join("")}</ul></div></div>
+      <div class="note" ${A(.83, "fade")}>Next build step · starts when the provider accounts are ready</div>`,
+    rules: () => `<div class="top"><span class="kicker" ${A(.01, "fade")}>${esc(s.kicker)}</span><h1 ${A(.03)}>${esc(s.title)}</h1></div>
+      <div class="tiles">${[["☎", "Numbers cleaned", "Any format → one standard"], ["⧉", "Duplicates blocked", "One lead per number, per company"], ["⦸", "DND respected", "Skipped by default, never called back"], ["₹", "Cost checked first", "Count, estimate and wallet before start"], ["1×", "Charged once", "One charge per call, to the paisa"], ["🔒", "Data stays private", "Every company sees only its own data"]]
+        .map((t, i) => `<div class="tile" ${A(.1 + i * .11)}><div class="ti">${t[0]}</div><div><h3>${t[1]}</h3><p>${t[2]}</p></div></div>`).join("")}</div>
+      <div class="note" style="top:820px;color:#9cc5ff;background:rgba(90,162,255,.12);border-color:rgba(90,162,255,.4)" ${A(.82, "fade")}>Coming next · scheduled reminders, emails and automatic callbacks</div>`,
+    roles: () => `<div class="top"><span class="kicker" ${A(.01, "fade")}>${esc(s.kicker)}</span><h1 ${A(.03)}>${esc(s.title)}</h1></div>
+      <div class="matrix"><div class="mrow h" ${A(.08, "fade")}><div>Action</div><div>Owner</div><div>Admin</div><div>Staff</div></div>
+      ${[["Manage agents and campaigns", 1, 1, 0], ["Add funds to the wallet", 1, 1, 0], ["Import and delete leads", 1, 1, 0], ["Work leads and team tasks", 1, 1, 1], ["View calls, numbers, billing", 1, 1, 1]]
+        .map((r, i) => `<div class="mrow" ${A(.16 + i * .1)}><div>${r[0]}</div>${r.slice(1).map(v => v ? `<div class="yes">✓</div>` : `<div class="nop">view</div>`).join("")}</div>`).join("")}</div>
+      <div class="note" style="top:880px;color:#bff7d9;background:rgba(47,210,126,.12);border-color:rgba(47,210,126,.4)" ${A(.75, "fade")}>Checked on the server, for every action</div>`,
+    stats: () => `<div class="top"><span class="kicker" ${A(.01, "fade")}>${esc(s.kicker)}</span><h1 ${A(.03)}>${esc(s.title)}</h1></div>
+      <div class="stats">${[[12, "modules built", "working in the software"], [42, "workflows ready", "of 54 documented"], [285, "automated checks", "all passing"], [57, "screens designed", "client + Super Admin"]]
+        .map((x, i) => `<div class="stat" ${A(.08 + i * .18, "scale")}><b data-count="${x[0]}" data-cf="${.08 + i * .18}">0</b><span>${x[1]}</span><small>${x[2]}</small></div>`).join("")}</div>
+      <div class="foot" ${A(.85, "fade")}>16 modules · 54 workflows · Setup flow + Daily flow + Super Admin</div>`,
+    outro: () => `<div class="center"><div><div class="ring" id="r1"></div><div class="ring" id="r2"></div>
+      <div class="biglogo" ${A(.02, "scale")}>V</div><div class="word" ${A(.1)}>Voxura</div>
+      <div class="tag" ${A(.25)}>Set up once. Grow every day.</div>
+      <div class="subtag" ${A(.45, "fade")}>AI calling platform · built for India</div></div></div>`,
+  };
+  el.innerHTML = H[s.tpl]();
+  return el;
+}
+
+// ---------- timeline ----------
+const S = DATA.scenes, TOTAL = DATA.total;
+const root = $("#scenes");
+S.forEach(s => { s.el = build(s); root.appendChild(s.el); s.items = $$("[data-f]", s.el); });
+
+function camAt(cam, f) {
+  if (!cam) return [0, 0, 1600, 900];
+  let a = cam[0], b = cam[cam.length - 1];
+  for (let i = 0; i < cam.length - 1; i++) if (f >= cam[i][0] && f <= cam[i + 1][0]) { a = cam[i]; b = cam[i + 1]; break; }
+  if (f <= cam[0][0]) return cam[0].slice(1);
+  if (f >= b[0] && b === cam[cam.length - 1]) return b.slice(1);
+  const k = b[0] - a[0] < .02 ? 1 : ease((f - a[0]) / (b[0] - a[0]));
+  return [1, 2, 3, 4].map(j => a[j] + (b[j] - a[j]) * k);
+}
+
+function seek(T) {
+  let s = S[S.length - 1];
+  for (const x of S) if (T >= x.start && T < x.start + x.dur) { s = x; break; }
+  const t = T - s.start, D = s.dur, f = t / D;
+  S.forEach(x => x.el.classList.toggle("on", x === s));
+  // scene in/out
+  const fin = ease(t / .7), fout = ease((D - t) / .5);
+  s.el.style.opacity = Math.min(fin, fout);
+  s.el.style.transform = `scale(${1.025 - .025 * fin})`;
+  // appear animations
+  for (const e of s.items) {
+    const p = ease((f - +e.dataset.f) * D / .75), fx = e.dataset.fx;
+    if (fx === "grow") { e.style.transform = `scaleX(${p})`; e.style.opacity = p > 0 ? 1 : 0; continue; }
+    e.style.opacity = p;
+    e.style.transform = fx === "up" ? `translateY(${(1 - p) * 26}px)` : fx === "scale" ? `scale(${.85 + .15 * p})` : fx === "left" ? `translateX(${(p - 1) * 60}px)` : fx === "right" ? `translateX(${(1 - p) * 60}px)` : "";
+  }
+  // chrome
+  const hide = s.tpl === "intro" || s.tpl === "outro";
+  $("#brand").style.opacity = hide ? 0 : 1;
+  $("#chapter").textContent = s.chapter || "";
+  $("#bar").style.width = (T / TOTAL * 1920) + "px";
+  $("#glow1").style.transform = `translate(${900 + 260 * Math.sin(T / 9)}px, ${-200 + 160 * Math.cos(T / 11)}px)`;
+  $("#glow2").style.transform = `translate(${-150 + 200 * Math.cos(T / 13)}px, ${520 + 120 * Math.sin(T / 8)}px)`;
+  $("#grid").style.transform = `translate(${(T * 6) % 80}px, ${(T * 3) % 80}px)`;
+  // captions
+  const c = s.caps.find(c => t >= c.a && t < c.b);
+  const cap = $("#cap"); cap.textContent = c ? c.text : ""; cap.style.opacity = c ? 1 : 0;
+  // fade from / to black at the very start and end
+  $("#fade").style.opacity = Math.max(1 - ease(T / 1.2), 1 - ease((TOTAL - T) / 1.5));
+  // template extras
+  if (s.tpl === "intro" || s.tpl === "outro") ["#r1", "#r2", "#r3"].forEach((id, i) => { const r = $(id, s.el); if (!r) return; const z = 320 + i * 190 + 30 * Math.sin(t * .8 + i); r.style.width = r.style.height = z + "px"; r.style.marginLeft = r.style.marginTop = (-z / 2) + "px"; r.style.opacity = ease(t / 1.5) * (.9 - i * .25); r.style.transform = `rotate(${t * (8 + i * 5)}deg)`; });
+  if (s.tpl === "six") { const k = clamp(Math.floor((f - .2) / .12), -1, 5); $$("[data-six]", s.el).forEach(n => n.classList.toggle("act", +n.dataset.six === k)); }
+  if (s.tpl === "screen") {
+    const n = s.steps.length, k = Math.floor((f - .12) / ((.78 - .12) / n));
+    $$("[data-step]", s.el).forEach(li => { const i = +li.dataset.step; li.classList.toggle("cur", i === k); li.classList.toggle("past", i < k); });
+    const [cx, cy, cw] = camAt(s.cam, f), sc = 1166 / cw;
+    const im1 = $(".im1", s.el), im2 = $(".im2", s.el);
+    const second = im2 && f >= s.swap;
+    const xf = im2 ? clamp((f - s.swap) * D / .5) : 0;
+    [im1, im2].forEach(im => { if (im) im.style.transform = `translate(${-cx * sc}px, ${-cy * sc}px) scale(${sc})`; });
+    if (im2) { im2.style.opacity = xf; im1.style.opacity = 1 - xf; }
+    (s.callouts || []).forEach((co, i) => {
+      const el = $(`[data-co="${i}"]`, s.el), on = f >= co[0] && f < co[0] + Math.max(.18, 3 / D) && (!im2 || (co[0] >= s.swap) === second);
+      const p = on ? ease((f - co[0]) * D / .5) : 0;
+      el.style.opacity = p; el.style.transform = `translate(${(co[1] - cx) * sc}px, ${(co[2] - cy) * sc}px) scale(${.8 + .2 * p})`;
+      $(".ringp", el).style.boxShadow = `0 0 0 ${6 + 6 * Math.abs(Math.sin(t * 3))}px rgba(255,95,162,.25)`;
+    });
+  }
+  if (s.tpl === "status") {
+    const order = [0, 1, 2, 4, 2, 3, 5], k = clamp(Math.floor((f - .42) / .075), -1, order.length - 1);
+    const lit = new Set(order.slice(0, k + 1));
+    $$("[data-node]", s.el).forEach(n => n.classList.toggle("on", lit.has(+n.dataset.node)));
+    const pos = [[115, 120], [415, 120], [715, 120], [1015, 120], [415, 342], [1015, 502]], cur = pos[order[Math.max(0, k)]];
+    const pl = $("#pulse", s.el); pl.style.left = cur[0] + "px"; pl.style.top = cur[1] + "px"; pl.style.opacity = k >= 0 ? .6 + .4 * Math.abs(Math.sin(t * 4)) : 0;
+  }
+  if (s.tpl === "aicall") {
+    const k = f < .3 ? 0 : f < .55 ? 1 : f < .85 ? 2 : -1;
+    $$("[data-col]", s.el).forEach(c => c.classList.toggle("act", +c.dataset.col === k));
+    $$(".wave span", s.el).forEach((b, i) => b.style.height = (k === 1 ? 12 + 44 * Math.abs(Math.sin(t * 5 + i * .7) * Math.cos(t * 2.3 + i * .3)) : 8) + "px");
+  }
+  if (s.tpl === "stats") $$("[data-count]", s.el).forEach(b => { b.textContent = Math.round(+b.dataset.count * ease((f - +b.dataset.cf) * D / 1.6)); });
+}
+window.seek = seek; window.TOTAL = TOTAL;
+seek(+(location.hash.slice(1) || 0));
+</script>
+</body>
+</html>

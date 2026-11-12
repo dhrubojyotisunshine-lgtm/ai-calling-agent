@@ -1,0 +1,504 @@
+1
+00:00:02,600 --> 00:00:03,700
+This is Voxura.
+
+2
+00:00:03,700 --> 00:00:08,220
+An AI calling platform that helps businesses reach every lead,
+
+3
+00:00:08,220 --> 00:00:12,680
+in their own language, and turn conversations into customers.
+
+4
+00:00:14,480 --> 00:00:17,530
+Every business faces the same problem.
+
+5
+00:00:17,530 --> 00:00:19,930
+Leads arrive from many places.
+
+6
+00:00:19,930 --> 00:00:22,260
+Calling each one takes hours.
+
+7
+00:00:22,260 --> 00:00:24,590
+And follow-ups get forgotten.
+
+8
+00:00:24,590 --> 00:00:28,600
+Voxura brings all of it into one connected system.
+
+9
+00:00:30,400 --> 00:00:36,040
+From the customer's side, Voxura works in six simple steps.
+
+10
+00:00:36,040 --> 00:00:37,180
+Set up once.
+
+11
+00:00:37,180 --> 00:00:38,620
+Add your leads.
+
+12
+00:00:38,620 --> 00:00:40,240
+Start a campaign.
+
+13
+00:00:40,240 --> 00:00:42,340
+Let the AI agent call.
+
+14
+00:00:42,340 --> 00:00:43,300
+Follow up.
+
+15
+00:00:43,300 --> 00:00:45,310
+And win the customer.
+
+16
+00:00:47,110 --> 00:00:50,160
+Behind these six steps are two flows.
+
+17
+00:00:50,160 --> 00:00:52,880
+The setup flow is done only once.
+
+18
+00:00:52,880 --> 00:00:55,600
+The daily flow repeats every day.
+
+19
+00:00:55,600 --> 00:00:58,740
+Let's walk through both, step by step.
+
+20
+00:01:00,540 --> 00:01:03,290
+First, the setup flow.
+
+21
+00:01:05,090 --> 00:01:05,750
+Step one.
+
+22
+00:01:05,750 --> 00:01:08,150
+The business creates its account.
+
+23
+00:01:08,150 --> 00:01:12,740
+It enters the company name, the owner's details and a password.
+
+24
+00:01:12,740 --> 00:01:16,530
+Voxura creates a private workspace for that company,
+
+25
+00:01:16,530 --> 00:01:19,880
+and the person who signs up becomes the owner.
+
+26
+00:01:19,880 --> 00:01:22,580
+Every company sees only its own data.
+
+27
+00:01:24,380 --> 00:01:25,030
+Step two.
+
+28
+00:01:25,030 --> 00:01:26,780
+Add money to the wallet.
+
+29
+00:01:26,780 --> 00:01:28,090
+Voxura is prepaid.
+
+30
+00:01:28,090 --> 00:01:32,300
+Every top-up and every call charge is written to a ledger,
+
+31
+00:01:32,300 --> 00:01:35,350
+so the balance always matches the history.
+
+32
+00:01:35,350 --> 00:01:39,790
+A low-balance alert warns the team before the money runs out.
+
+33
+00:01:39,790 --> 00:01:43,270
+Online payment will be connected before go-live.
+
+34
+00:01:45,070 --> 00:01:45,850
+Step three.
+
+35
+00:01:45,850 --> 00:01:47,840
+Get a business phone number.
+
+36
+00:01:47,840 --> 00:01:53,230
+Voxura's team adds numbers to a central pool and assigns one to the company.
+
+37
+00:01:53,230 --> 00:01:58,270
+The company then sees its lines, the monthly rent and the renewal date,
+
+38
+00:01:58,270 --> 00:02:01,810
+and chooses which AI agent answers incoming calls.
+
+39
+00:02:03,610 --> 00:02:04,350
+Step four.
+
+40
+00:02:04,350 --> 00:02:06,280
+Add services and products.
+
+41
+00:02:06,280 --> 00:02:11,550
+For each one, the business decides what the AI may say about the price,
+
+42
+00:02:11,550 --> 00:02:15,330
+when to offer it, and what the next step should be,
+
+43
+00:02:15,330 --> 00:02:17,040
+such as booking a demo.
+
+44
+00:02:18,840 --> 00:02:19,620
+Step five.
+
+45
+00:02:19,620 --> 00:02:22,760
+Create the AI agent, in six short steps.
+
+46
+00:02:22,760 --> 00:02:25,030
+Give it a name and a purpose.
+
+47
+00:02:25,030 --> 00:02:26,990
+Write what it should say.
+
+48
+00:02:26,990 --> 00:02:28,870
+Choose what it may sell.
+
+49
+00:02:28,870 --> 00:02:32,240
+Add company knowledge and common questions.
+
+50
+00:02:32,240 --> 00:02:36,010
+Pick one of eleven Indian languages and a voice.
+
+51
+00:02:36,010 --> 00:02:39,770
+Then set options like call recording and memory.
+
+52
+00:02:41,570 --> 00:02:45,000
+Steps six and seven are designed, and come next.
+
+53
+00:02:45,000 --> 00:02:48,280
+The owner will invite team members with roles,
+
+54
+00:02:48,280 --> 00:02:52,000
+and connect lead sources like the website, Facebook,
+
+55
+00:02:52,000 --> 00:02:56,640
+Google Ads and IndiaMART, so that new leads arrive automatically.
+
+56
+00:02:58,440 --> 00:03:03,160
+With setup complete, the AI agent is ready to start calling.
+
+57
+00:03:04,960 --> 00:03:06,710
+Now, the daily flow.
+
+58
+00:03:06,710 --> 00:03:09,950
+This is what the team does every day.
+
+59
+00:03:11,750 --> 00:03:14,020
+The day starts on the dashboard.
+
+60
+00:03:14,020 --> 00:03:18,630
+In one view, the team sees the wallet balance, calls and minutes,
+
+61
+00:03:18,630 --> 00:03:23,240
+the running campaign, and the follow-ups that are due or overdue.
+
+62
+00:03:23,240 --> 00:03:26,640
+Every figure opens the full page with one click.
+
+63
+00:03:28,440 --> 00:03:30,120
+Next, leads are added.
+
+64
+00:03:30,120 --> 00:03:31,720
+When a lead is saved,
+
+65
+00:03:31,720 --> 00:03:37,660
+Voxura cleans the phone number into one standard format and blocks duplicates.
+
+66
+00:03:37,660 --> 00:03:43,370
+Each lead then moves across six stages, from New to Won, on a simple board.
+
+67
+00:03:45,170 --> 00:03:49,060
+Thousands of leads can be imported from Excel at once.
+
+68
+00:03:49,060 --> 00:03:53,160
+Voxura finds the right columns, shows a preview of valid,
+
+69
+00:03:53,160 --> 00:03:57,830
+invalid and repeated rows, and never overwrites an existing lead.
+
+70
+00:03:57,830 --> 00:04:01,500
+One click then sends the new leads into a campaign.
+
+71
+00:04:03,300 --> 00:04:05,280
+Then a campaign is created.
+
+72
+00:04:05,280 --> 00:04:11,020
+The team picks the AI agent, and chooses who to call, by stage, city or owner.
+
+73
+00:04:11,020 --> 00:04:14,990
+Voxura instantly shows how many people will be called,
+
+74
+00:04:14,990 --> 00:04:18,880
+the estimated cost, and whether the wallet is enough.
+
+75
+00:04:18,880 --> 00:04:22,260
+Do-not-disturb numbers are skipped by default.
+
+76
+00:04:24,060 --> 00:04:28,130
+The team sets the start time, the daily calling hours,
+
+77
+00:04:28,130 --> 00:04:32,430
+how many calls run at once, and how many retries to make.
+
+78
+00:04:32,430 --> 00:04:36,500
+A campaign moves from draft, to scheduled, to running,
+
+79
+00:04:36,500 --> 00:04:38,380
+and finally to completed.
+
+80
+00:04:38,380 --> 00:04:42,450
+It can be paused, restarted, or cancelled at any time.
+
+81
+00:04:44,250 --> 00:04:46,090
+Now the AI makes the call.
+
+82
+00:04:46,090 --> 00:04:50,410
+Before dialling, it checks the calling hours, do-not-disturb,
+
+83
+00:04:50,410 --> 00:04:52,600
+the wallet, and the call limit.
+
+84
+00:04:52,600 --> 00:04:55,510
+During the call, it listens, understands,
+
+85
+00:04:55,510 --> 00:04:57,990
+and replies in the chosen language,
+
+86
+00:04:57,990 --> 00:05:01,240
+using only the company's approved information.
+
+87
+00:05:01,240 --> 00:05:06,270
+After the call, it saves the recording, the transcript and the outcome,
+
+88
+00:05:06,270 --> 00:05:08,180
+charges the talk time once,
+
+89
+00:05:08,180 --> 00:05:11,440
+and schedules a retry or a callback if needed.
+
+90
+00:05:11,440 --> 00:05:14,980
+This live voice connection is the next build step,
+
+91
+00:05:14,980 --> 00:05:17,600
+once the provider accounts are ready.
+
+92
+00:05:19,400 --> 00:05:24,110
+Every call appears in call history, with names instead of codes.
+
+93
+00:05:24,110 --> 00:05:28,750
+Opening a call shows the result, the summary, the conversation,
+
+94
+00:05:28,750 --> 00:05:30,590
+and exactly what it cost.
+
+95
+00:05:30,590 --> 00:05:33,160
+Unanswered calls are never charged.
+
+96
+00:05:34,960 --> 00:05:37,920
+Follow-ups make sure no lead is forgotten.
+
+97
+00:05:37,920 --> 00:05:41,030
+A follow-up can be a task for a team member,
+
+98
+00:05:41,030 --> 00:05:43,570
+or a callback that the AI will make.
+
+99
+00:05:43,570 --> 00:05:47,030
+They are sorted into overdue, today and upcoming,
+
+100
+00:05:47,030 --> 00:05:49,780
+and late items appear on the dashboard.
+
+101
+00:05:51,580 --> 00:05:56,130
+Finally, the team moves the lead forward, stage by stage,
+
+102
+00:05:56,130 --> 00:05:58,200
+until the customer is won.
+
+103
+00:05:58,200 --> 00:06:01,480
+And the next day, the cycle begins again.
+
+104
+00:06:03,280 --> 00:06:07,500
+Behind every screen, business rules run automatically.
+
+105
+00:06:07,500 --> 00:06:09,530
+Phone numbers are cleaned.
+
+106
+00:06:09,530 --> 00:06:11,330
+Duplicates are blocked.
+
+107
+00:06:11,330 --> 00:06:13,520
+Do-not-disturb is respected.
+
+108
+00:06:13,520 --> 00:06:16,880
+Costs are checked before a campaign starts.
+
+109
+00:06:16,880 --> 00:06:19,300
+Each call is charged only once.
+
+110
+00:06:19,300 --> 00:06:22,350
+And every company's data stays private.
+
+111
+00:06:22,350 --> 00:06:28,450
+Scheduled automation, such as reminders and emails, comes with the next phase.
+
+112
+00:06:30,250 --> 00:06:32,490
+Access is controlled by role.
+
+113
+00:06:32,490 --> 00:06:36,600
+Owners and admins manage agents, campaigns and money.
+
+114
+00:06:36,600 --> 00:06:39,070
+Staff work with leads and tasks.
+
+115
+00:06:39,070 --> 00:06:43,950
+These rules are checked on the server, for every single action.
+
+116
+00:06:45,750 --> 00:06:49,970
+Voxura's own team runs the platform from the Super Admin.
+
+117
+00:06:49,970 --> 00:06:54,410
+It is designed to manage client companies, plans and prices,
+
+118
+00:06:54,410 --> 00:06:58,700
+wallets with a second approval, provider costs and margin,
+
+119
+00:06:58,700 --> 00:07:00,550
+and a complete audit log.
+
+120
+00:07:00,550 --> 00:07:03,430
+The phone number pool is already built.
+
+121
+00:07:05,230 --> 00:07:08,430
+So far, twelve modules are built and working,
+
+122
+00:07:08,430 --> 00:07:10,500
+covering forty-two workflows,
+
+123
+00:07:10,500 --> 00:07:14,840
+and verified by two hundred and eighty-five automated checks.
+
+124
+00:07:14,840 --> 00:07:19,040
+Fifty-seven screens are designed for the complete platform.
+
+125
+00:07:20,840 --> 00:07:21,630
+Voxura.
+
+126
+00:07:21,630 --> 00:07:25,230
+Set up once, and grow every day.
+

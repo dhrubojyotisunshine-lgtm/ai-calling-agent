@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Voxura – Overall Workflow</title>
+<style>
+@page { size: A4; margin: 14mm 13mm 16mm; }
+:root { --brand:#4a2c9e; --soft:#efeafb; --ink:#1d1a2b; --muted:#625e75; --line:#dcd8e8; --ok:#0f8a4f; --oks:#e3f6ec; --warn:#b05d00; --warns:#fff1dc; --info:#1a5cc8; --infos:#e6effd; --exp:#7b2cbf; --exps:#f3e8ff; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 10.2pt/1.5 "Segoe UI", system-ui, Arial, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+h1, h2, h3 { margin: 0; line-height: 1.2; }
+h2 { font-size: 16pt; color: var(--brand); margin: 0 0 4px; }
+h3 { font-size: 11pt; margin: 12px 0 6px; }
+p { margin: 0 0 8px; }
+.page { break-after: page; }
+.page:last-child { break-after: auto; }
+.lead { color: var(--muted); margin-bottom: 12px; }
+.cover { height: 265mm; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(160deg, #2a1660 0%, #4a2c9e 60%, #6b46d6 100%); color: #fff; border-radius: 10px; padding: 26mm 18mm 18mm; }
+.cover h1 { font-size: 34pt; letter-spacing: -0.5px; }
+.cover .sub { font-size: 14pt; color: #ddd4fb; margin-top: 8px; }
+.cover .meta { font-size: 10pt; color: #cfc4f6; display: grid; gap: 4px; }
+.cover .who { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 24px; }
+.cover .who div { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.25); border-radius: 8px; padding: 9px 10px; font-size: 9pt; color: #ece6ff; }
+.cover .who b { display: block; color: #fff; font-size: 10pt; }
+.legend { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 10px; }
+.tag { display: inline-block; font-size: 7.6pt; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; vertical-align: 1px; }
+.b { background: var(--oks); color: var(--ok); }
+.d { background: var(--exps); color: var(--exp); }
+.k { background: var(--warns); color: var(--warn); }
+.flow { display: grid; gap: 0; }
+.step { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start; }
+.num { width: 30px; height: 30px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 800; display: grid; place-items: center; font-size: 10pt; }
+.box { border: 1px solid var(--line); border-radius: 9px; padding: 8px 11px; background: #fff; break-inside: avoid; }
+.box b.t { font-size: 10.5pt; }
+.box ul { margin: 4px 0 0; padding-left: 16px; }
+.box li { margin: 1px 0; }
+.arrow { margin-left: 14px; width: 2px; height: 10px; background: #bdb6d6; }
+.row { display: flex; align-items: stretch; gap: 6px; }
+.row .c { flex: 1; border: 1px solid var(--line); border-radius: 8px; padding: 7px 8px; font-size: 8.8pt; background: #faf9fd; break-inside: avoid; }
+.row .c b { display: block; font-size: 9.5pt; color: var(--brand); margin-bottom: 2px; }
+.row .c.built { background: var(--oks); border-color: #bfe6cf; }
+.row .c.prop { background: var(--exps); border-color: #e2cdf6; }
+.row .x { align-self: center; color: #9a93b6; font-weight: 800; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: 9.2pt; break-inside: auto; }
+th { text-align: left; background: var(--soft); color: var(--brand); font-size: 8.4pt; letter-spacing: .04em; text-transform: uppercase; padding: 6px 7px; }
+td { padding: 6px 7px; border-bottom: 1px solid #ece9f4; vertical-align: top; }
+tr { break-inside: avoid; }
+.note { background: var(--infos); border-radius: 8px; padding: 8px 11px; font-size: 9.2pt; color: #163f87; break-inside: avoid; }
+.warnbox { background: var(--warns); border-radius: 8px; padding: 8px 11px; font-size: 9.2pt; color: #6b3b00; break-inside: avoid; }
+.money { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 6px; align-items: center; }
+.money .m { border-radius: 8px; padding: 8px; text-align: center; font-size: 9pt; border: 1px solid var(--line); }
+.money .m b { display: block; font-size: 10pt; }
+.foot { margin-top: 10px; font-size: 8.4pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- ===================== COVER ===================== -->
+<section class="page">
+  <div class="cover">
+    <div>
+      <h1>Voxura</h1>
+      <div class="sub">AI Calling Agent &amp; Sales Automation Platform<br><b style="color:#fff">Overall workflow</b></div>
+      <div class="who">
+        <div><b>Voxura (you)</b>Run the platform: clients, plans, numbers, AI providers, money.</div>
+        <div><b>Client company</b>Owner, Admin and Staff use Voxura to call and sell.</div>
+        <div><b>AI agent</b>Calls leads, answers calls, qualifies, books follow-ups.</div>
+        <div><b>Lead / customer</b>The person being called, from first enquiry to paying client.</div>
+      </div>
+    </div>
+    <div class="meta">
+      <span>Version: 2 November 2026 · for client review</span>
+      <span>Related drafts: Draft screens v2 (core app), v3 (sales expansion), Super Admin draft</span>
+      <span>Status labels used in this document: <b style="color:#b9f0d2">Built</b> = working in the new app · <b style="color:#e7cffb">Designed</b> = in the draft screens, waiting for approval · <b style="color:#ffd9a3">Needs accounts</b> = waits for provider accounts</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 1. BIG PICTURE ===================== -->
+<section class="page">
+  <h2>1. The big picture</h2>
+  <p class="lead">Voxura is a SaaS platform: many companies use one app, each in its own private workspace. Every company's agents, leads, calls, recordings, wallet and usage are kept separate.</p>
+  <div class="legend"><span class="tag b">Built</span><span class="tag d">Designed</span><span class="tag k">Needs accounts</span></div>
+
+  <div class="flow">
+    <div class="step"><div class="num">1</div><div class="box"><b class="t">Sign up &amp; set up</b> <span class="tag b">Built</span> <span class="tag d">Team &amp; settings designed</span>
+      <ul><li>Company registers, gets a workspace and a ₹ wallet; adds funds.</li><li>Creates AI agents (script, voice, language), services &amp; products, uses a phone number from Voxura.</li></ul></div></div>
+    <div class="arrow"></div>
+    <div class="step"><div class="num">2</div><div class="box"><b class="t">Bring in leads</b> <span class="tag b">Excel / CSV / manual built</span> <span class="tag d">Facebook, Google, website forms designed</span>
+      <ul><li>Numbers cleaned automatically, duplicates caught, extra columns kept for the script ({name}, {city}, {loan_amount}…).</li></ul></div></div>
+    <div class="arrow"></div>
+    <div class="step"><div class="num">3</div><div class="box"><b class="t">Reach out</b> <span class="tag b">Campaigns built</span> <span class="tag k">Real calling needs accounts</span>
+      <ul><li>Campaign: pick agent and leads, calling hours, retries, skip Do-not-call; or instant call on a new enquiry; or answer incoming calls.</li></ul></div></div>
+    <div class="arrow"></div>
+    <div class="step"><div class="num">4</div><div class="box"><b class="t">AI conversation</b> <span class="tag k">Voice engine needs accounts</span>
+      <ul><li>The agent talks in the lead's language (Hindi, English, Hinglish…), answers from its knowledge, qualifies, and can hand over to a person.</li></ul></div></div>
+    <div class="arrow"></div>
+    <div class="step"><div class="num">5</div><div class="box"><b class="t">After every call</b> <span class="tag b">Storage &amp; screens built</span>
+      <ul><li>Transcript, summary, outcome, recording saved; lead stage updated; follow-ups created; wallet charged once.</li></ul></div></div>
+    <div class="arrow"></div>
+    <div class="step"><div class="num">6</div><div class="box"><b class="t">Follow up &amp; close</b> <span class="tag b">Callbacks &amp; tasks built</span> <span class="tag d">WhatsApp, email, meetings, quotes designed</span>
+      <ul><li>Agent callbacks and team tasks; later WhatsApp/email, meeting booking, quotes, onboarding of converted clients.</li></ul></div></div>
+    <div class="arrow"></div>
+    <div class="step"><div class="num">7</div><div class="box"><b class="t">Voxura runs the business</b> <span class="tag b">Number pool built</span> <span class="tag d">Super Admin designed</span>
+      <ul><li>Clients, plans and prices, AI provider costs, wallets, audit log, support access, revenue, cost and margin.</li></ul></div></div>
+  </div>
+</section>
+
+<!-- ===================== 2. CUSTOMER SETUP ===================== -->
+<section class="page">
+  <h2>2. A new client company: from sign-up to first campaign</h2>
+  <p class="lead">What a client does in the app, in order. Everything here works today except the items marked Designed.</p>
+  <table>
+    <tr><th style="width:24px">#</th><th style="width:150px">Step</th><th>What happens</th><th style="width:92px">Status</th></tr>
+    <tr><td>1</td><td><b>Register</b></td><td>Company name, owner name, email, mobile, password. A private workspace is created with a ₹0 wallet.</td><td><span class="tag b">Built</span></td></tr>
+    <tr><td>2</td><td><b>Add funds</b></td><td>Top up the prepaid wallet (₹10 – ₹1,00,000). Every call is charged from it; low-balance alert. Test mode now; Razorpay later.</td><td><span class="tag b">Built</span> <span class="tag d">Razorpay</span></td></tr>
+    <tr><td>3</td><td><b>Get a phone number</b></td><td>Voxura assigns a number from its pool; the client chooses which agent answers it and which agents call out from it.</td><td><span class="tag b">Built</span></td></tr>
+    <tr><td>4</td><td><b>Services &amp; products</b></td><td>What the agent may offer, price it may quote, when to offer it, next action (book demo, send link).</td><td><span class="tag b">Built</span></td></tr>
+    <tr><td>5</td><td><b>Create an agent</b></td><td>6 steps: identity, what to say (greeting, script), FAQs and knowledge, voice and language, AI model, limits and memory.</td><td><span class="tag b">Built</span> <span class="tag d">Voice preview, PDFs</span></td></tr>
+    <tr><td>6</td><td><b>Invite the team</b></td><td>Owner / Admin / Staff roles; company profile, GST, calling defaults; password reset, two-step sign-in.</td><td><span class="tag d">Designed</span></td></tr>
+    <tr><td>7</td><td><b>Import leads</b></td><td>CSV / Excel up to 10,000 rows; preview with valid / invalid / repeated counts; nothing saved until confirmed.</td><td><span class="tag b">Built</span></td></tr>
+    <tr><td>8</td><td><b>Test the agent</b></td><td>Talk to the agent in the browser before calling real people (Live call screen).</td><td><span class="tag k">Needs accounts</span></td></tr>
+    <tr><td>9</td><td><b>Start a campaign</b></td><td>Choose agent and leads; see how many will be called and an estimated cost; set calling hours, retries; save as draft or start.</td><td><span class="tag b">Built</span></td></tr>
+    <tr><td>10</td><td><b>Watch and act</b></td><td>Campaign progress, call history with transcripts, leads board, follow-ups due today and overdue, billing ledger.</td><td><span class="tag b">Built</span></td></tr>
+  </table>
+  <div class="note" style="margin-top:10px"><b>Roles inside a client company:</b> Owner and Admin manage everything (agents, campaigns, imports, billing, team). Staff work leads and team tasks, and can view calls and campaigns. These rules are enforced on every screen and every action, not only by hiding buttons.</div>
+</section>
+
+<!-- ===================== 3. CALL FLOW ===================== -->
+<section class="page">
+  <h2>3. How one AI call works</h2>
+  <p class="lead">The voice engine is the part that actually talks. The web app already stores everything it needs; the engine starts once the provider accounts are ready.</p>
+  <h3>Before dialling: safety checks</h3>
+  <div class="row">
+    <div class="c built"><b>Calling hours</b>Only inside the campaign's hours (India time).</div>
+    <div class="c built"><b>Do not call</b>DND leads skipped; callbacks to DND leads blocked.</div>
+    <div class="c built"><b>Wallet</b>Balance must be above ₹0; calls stop at ₹0.</div>
+    <div class="c built"><b>Lines</b>No more calls at once than the agent and number allow.</div>
+    <div class="c built"><b>No double calling</b>A lead in another active campaign is skipped.</div>
+  </div>
+  <h3>During the call</h3>
+  <div class="row">
+    <div class="c"><b>1. Connect</b>Phone line (SIP) or browser joins a live audio room (LiveKit).</div><div class="x">→</div>
+    <div class="c"><b>2. Listen</b>Speech to text (Deepgram / Sarvam), Hindi, English, Hinglish.</div><div class="x">→</div>
+    <div class="c"><b>3. Think</b>AI brain (Claude, optionally others) uses the script, knowledge, lead details and memory.</div><div class="x">→</div>
+    <div class="c"><b>4. Speak</b>Text to natural voice (Sarvam), in under a second.</div>
+  </div>
+  <div class="row" style="margin-top:6px">
+    <div class="c prop"><b>Qualify</b>Asks need, budget, timeline; scores Hot / Warm / Cold.</div>
+    <div class="c prop"><b>Book</b>Offers free calendar slots and books a meeting.</div>
+    <div class="c prop"><b>Hand over</b>Transfers to a salesperson with a short summary.</div>
+    <div class="c prop"><b>Live monitor</b>Staff can listen in or take over.</div>
+  </div>
+  <h3>After the call</h3>
+  <div class="row">
+    <div class="c built"><b>Saved</b>Transcript, summary, outcome, recording, duration.</div>
+    <div class="c built"><b>Lead updated</b>Stage, memory of the conversation, next follow-up.</div>
+    <div class="c built"><b>Charged once</b>Wallet charged per call; can never double-charge.</div>
+    <div class="c built"><b>Retry</b>No answer → tried again after the set gap, up to the set number of times.</div>
+  </div>
+  <div class="two" style="margin-top:12px">
+    <div class="box"><b class="t">Outgoing calls</b><ul><li>From a campaign, a scheduled agent callback, or (designed) instantly when a new enquiry arrives.</li></ul></div>
+    <div class="box"><b class="t">Incoming calls</b><ul><li>Each number has exactly one answering agent (rule already enforced). The agent greets, helps, takes messages, creates follow-ups.</li></ul></div>
+  </div>
+  <div class="warnbox" style="margin-top:10px"><b>Needs before real calls:</b> LiveKit, Deepgram, Sarvam and Claude API accounts (browser test calls); an Indian SIP provider for phone numbers; a server (VPS) to run it.</div>
+</section>
+
+<!-- ===================== 4. SALES JOURNEY ===================== -->
+<section class="page">
+  <h2>4. The sales journey: from first enquiry to paying client</h2>
+  <p class="lead">Requested on 2 Nov 2026: one AI sales team that manages the whole journey, not just one call. Green = built, purple = designed (draft screens v3).</p>
+  <div class="row">
+    <div class="c built"><b>Collect</b>Excel / CSV / manual, duplicates caught.</div><div class="x">→</div>
+    <div class="c prop"><b>Capture</b>Facebook, Google, website forms; call within 60 s.</div><div class="x">→</div>
+    <div class="c prop"><b>Qualify</b>Need, budget, timeline → Hot / Warm / Cold.</div><div class="x">→</div>
+    <div class="c built"><b>Follow up</b>Agent callbacks + team tasks.</div>
+  </div>
+  <div class="row" style="margin-top:6px">
+    <div class="c prop"><b>Message</b>WhatsApp + email sequences.</div><div class="x">→</div>
+    <div class="c prop"><b>Meet</b>Book, confirm, remind, reschedule.</div><div class="x">→</div>
+    <div class="c prop"><b>Close</b>Quotes, objections, hand over to a person.</div><div class="x">→</div>
+    <div class="c prop"><b>Onboard</b>Mark converted, welcome, stop sales calls.</div>
+  </div>
+  <h3>Lead stages (built)</h3>
+  <div class="row">
+    <div class="c built"><b>New</b></div><div class="x">→</div><div class="c built"><b>Contacted</b></div><div class="x">→</div><div class="c built"><b>Interested</b></div><div class="x">→</div><div class="c built"><b>Demo / proposal</b></div><div class="x">→</div><div class="c built"><b>Won</b> or <b>Lost</b></div>
+  </div>
+  <h3>Supporting features (designed, v3 draft)</h3>
+  <table>
+    <tr><th style="width:170px">Feature</th><th>What it adds</th></tr>
+    <tr><td>Automation workflows</td><td>When something happens (new lead, call ended, Hot score, missed meeting) → check conditions → call, message, create task, change stage, alert.</td></tr>
+    <tr><td>Voice studio</td><td>Voice preview, speed, tone, accent, Hinglish switching, a different voice per campaign.</td></tr>
+    <tr><td>AI models &amp; providers</td><td>Pick Claude, OpenAI or Gemini per job, with automatic fallback; speech and voice providers.</td></tr>
+    <tr><td>Knowledge base</td><td>Upload PDFs, Word, Excel, read the website; agent answers from these and says where from.</td></tr>
+    <tr><td>Sales dashboard</td><td>Booking rate, qualified leads, AI insights, sentiment, call queue, sync with an outside CRM.</td></tr>
+    <tr><td>Usage &amp; cost</td><td>Cost per call, per Hot lead and per client won; split into AI, speech, voice, telephony.</td></tr>
+  </table>
+</section>
+
+<!-- ===================== 5. MONEY + SUPER ADMIN ===================== -->
+<section class="page">
+  <h2>5. Money flow and the Super Admin</h2>
+  <p class="lead">How money moves, and how Voxura runs the business. Designed in the Super Admin draft; the wallet ledger already works.</p>
+  <h3>Money flow for every call</h3>
+  <div class="money">
+    <div class="m" style="background:var(--infos)"><b>Client pays in</b>Wallet top-up (Razorpay), plan fee, number rent</div><div>→</div>
+    <div class="m" style="background:var(--oks)"><b>Call is charged</b>Billable time × client's ₹/min rate, once per call</div><div>→</div>
+    <div class="m" style="background:#fde8e8"><b>Our real cost</b>AI brain + speech to text + voice + telephony</div>
+  </div>
+  <p style="margin-top:8px"><b>Margin = what the client was charged − what the providers cost us.</b> It is stored on every call and added up per client, provider and month. Provider rates are dated, so a price change never alters past calls. Money entries are never edited, only reversed.</p>
+
+  <h3>Super Admin (Voxura staff)</h3>
+  <table>
+    <tr><th style="width:170px">Area</th><th>What Voxura staff do</th><th style="width:80px">Status</th></tr>
+    <tr><td>Platform dashboard</td><td>Clients, customer charges, provider costs, margin, minutes, wallet money held, payments, alerts. From real data only.</td><td><span class="tag d">Designed</span></td></tr>
+    <tr><td>Clients</td><td>List, company profile, internal notes; activate, suspend (with reason) and reactivate.</td><td><span class="tag d">Designed</span></td></tr>
+    <tr><td>Plans &amp; pricing</td><td>Plans with fee, included minutes, ₹/min, limits; custom prices per client with end dates and margin warnings.</td><td><span class="tag d">Designed</span></td></tr>
+    <tr><td>AI providers</td><td>Provider unit costs, budgets, encrypted API keys, which plans may use which model.</td><td><span class="tag d">Designed</span></td></tr>
+    <tr><td>Wallets</td><td>Manual credits and debits with reference, two approvers for large amounts, full history.</td><td><span class="tag d">Designed</span></td></tr>
+    <tr><td>Number pool</td><td>Add numbers, assign to clients, take back; rent and our cost per number.</td><td><span class="tag b">Built</span> <span class="tag d">rent</span></td></tr>
+    <tr><td>Support access</td><td>Only with the client owner's approval, time-limited, banner on every page, every page logged.</td><td><span class="tag d">Designed</span></td></tr>
+    <tr><td>Audit log &amp; admin roles</td><td>Every important admin action recorded, never editable; Super admin, Finance, Support, Read-only roles.</td><td><span class="tag d">Designed</span></td></tr>
+  </table>
+</section>
+
+<!-- ===================== 6. STATUS & NEXT ===================== -->
+<section class="page">
+  <h2>6. Where we are and what comes next</h2>
+  <div class="two">
+    <div class="box"><b class="t" style="color:var(--ok)">Built and tested</b><ul>
+      <li>Sign-in / register, dashboard</li><li>Agents, Services &amp; Products</li><li>Billing: wallet, ledger, low-balance alert (test top-ups)</li><li>Leads CRM: board, list, import, search</li><li>Campaigns: audience, cost estimate, schedule, retries, pause / cancel, progress</li><li>Call history and call detail, CSV export</li><li>Follow-ups: callbacks and team tasks</li><li>Phone numbers and Voxura number pool</li>
+    </ul><p class="foot">Checked by 285 automated end-to-end tests, including separation between companies and role limits.</p></div>
+    <div class="box"><b class="t" style="color:var(--exp)">Designed, waiting for your approval</b><ul>
+      <li>Team &amp; Settings (5 screens)</li><li>Complete Super Admin (13 screens) + data and billing architecture</li><li>Sales expansion (17 screens): lead sources, scoring, WhatsApp / email, meetings, quotes, handover, onboarding, automations, voice studio, AI models, knowledge base, usage &amp; cost, live monitor, sales dashboard</li>
+    </ul></div>
+  </div>
+  <h3>Build order after approval</h3>
+  <table>
+    <tr><th style="width:24px">#</th><th style="width:170px">Phase</th><th>Includes</th></tr>
+    <tr><td>1</td><td><b>Team &amp; Settings</b></td><td>Team invites and roles, company profile, password reset, sign-in protection, support-access approval.</td></tr>
+    <tr><td>2</td><td><b>Super Admin foundation</b></td><td>Clients, plans and pricing, provider costs and access, wallet adjustments, number rent, support access, audit log, dashboards from real data.</td></tr>
+    <tr><td>3</td><td><b>Voice engine &amp; Live call</b></td><td>Browser test calls, then real phone calls; campaigns, callbacks and incoming calls start running; real usage and costs recorded.</td></tr>
+    <tr><td>4</td><td><b>Payments &amp; go-live</b></td><td>Razorpay top-ups, GST invoices, server set-up (VPS, HTTPS, backups), terms and privacy policy.</td></tr>
+    <tr><td>5</td><td><b>Sales expansion</b></td><td>In the order you choose: scoring, WhatsApp / email, meetings, quotes, handover, onboarding, automations, and the rest.</td></tr>
+  </table>
+  <h3>What we need from you</h3>
+  <div class="box"><ul>
+    <li><b>Approval</b> of the Team &amp; Settings / Super Admin draft and answers to its questions (plans, prices, billing per second or per minute, approval limits, support access rules, data-keeping period).</li>
+    <li><b>Provider accounts:</b> LiveKit, Deepgram, Sarvam, Claude API (plus OpenAI / Gemini if wanted), an Indian SIP provider; later WhatsApp Business API, email service, Razorpay.</li>
+    <li><b>Legal checks:</b> TRAI rules for promotional calls (DND registry, calling hours, consent), call-recording consent, WhatsApp opt-in, data privacy (DPDP Act).</li>
+    <li><b>Priority</b> of the sales-expansion features.</li>
+  </ul></div>
+  <p class="foot">Figures and names in the draft screens are sample data. In the built app every number comes from the database.</p>
+</section>
+
+</body>
+</html>

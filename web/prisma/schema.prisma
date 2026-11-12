@@ -36,6 +36,12 @@ model Workspace {
   calls        Call[]
   followUps    FollowUp[]
   transactions WalletTransaction[]
+  integrations    Integration[]
+  apiKeys         ApiKey[]
+  inboundEvents   InboundEvent[]
+  assignmentRules AssignmentRule[]
+  jobs            Job[]
+  leadEvents      LeadEvent[]
 }
 
 enum UserRole {
@@ -60,6 +66,7 @@ model User {
   workspace     Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   assignedLeads Lead[]     @relation("LeadOwner")
   followUps     FollowUp[] @relation("FollowUpOwner")
+  leadEvents    LeadEvent[]
 
   @@index([workspaceId])
 }
@@ -140,6 +147,7 @@ model Agent {
   campaigns    Campaign[]
   calls        Call[]
   followUps    FollowUp[]
+  leads        Lead[]
 
   @@unique([workspaceId, name])
   @@index([workspaceId])
@@ -241,18 +249,46 @@ model Lead {
   memory           String?   @db.Text // what the agent remembers about this caller
   assignedUserId   String?
   isDnd            Boolean   @default(false)
+  // Added for the Lead Source Integration Hub. All optional, so older leads are unchanged.
+  email            String?      @db.VarChar(190) // stored lower-case
+  company          String?      @db.VarChar(160)
+  requirements     String?      @db.Text
+  budget           String?      @db.VarChar(80)
+  language         String?      @db.VarChar(10) // e.g. hi-IN
+  category         String?      @db.VarChar(80) // business category
+  agentId          String? // AI agent that will handle this lead
+  aiStatus         LeadAiStatus @default(NOT_QUEUED)
+  aiStatusReason   String?      @db.VarChar(255)
+  aiQueuedAt       DateTime?
+  consentAt        DateTime?
+  consentSource    String?      @db.VarChar(120)
+  consentEvidence  String?      @db.Text
+  consentChannels  Json? // ["CALL","WHATSAPP","SMS","EMAIL"]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  workspace      Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  interestedItem CatalogItem?   @relation(fields: [interestedItemId], references: [id], onDelete: SetNull)
-  assignedUser   User?          @relation("LeadOwner", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  workspace      Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  interestedItem CatalogItem?     @relation(fields: [interestedItemId], references: [id], onDelete: SetNull)
+  assignedUser   User?            @relation("LeadOwner", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  agent          Agent?           @relation(fields: [agentId], references: [id], onDelete: SetNull)
   campaignLeads  CampaignLead[]
   calls          Call[]
   followUps      FollowUp[]
+  sources        LeadSourceLink[]
+  events         LeadEvent[]
+  inboundEvents  InboundEvent[]
 
   @@unique([workspaceId, phone])
   @@index([workspaceId, stage])
+  @@index([workspaceId, email])
+  @@index([workspaceId, aiStatus])
+}
+
+// Whether future AI campaigns may pick this lead up. Nothing is called automatically until the voice engine and compliance checks are ready.
+enum LeadAiStatus {
+  NOT_QUEUED
+  QUEUED
+  INELIGIBLE
 }
 
 // ---------- Campaigns ----------
@@ -454,4 +490,216 @@ model WalletTransaction {
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId, createdAt])
+}
+
+// ---------- Lead Source Integration Hub ----------
+// Every row belongs to one workspace. Secrets are stored encrypted (IntegrationSecret) or hashed (ApiKey), never in plain text.
+
+enum IntegrationType {
+  CSV_IMPORT
+  API
+  WEBHOOK
+  WEBSITE_FORM
+  ZAPIER
+  MAKE
+  GOOGLE_SHEETS
+  WORDPRESS
+  GOOGLE_ADS
+  META
+  INDIAMART
+  JUSTDIAL
+  ACRES99
+}
+
+enum IntegrationStatus {
+  ACTIVE
+  PAUSED
+  ERROR
+  DISCONNECTED
+}
+
+model Integration {
+  id            String            @id @default(cuid())
+  workspaceId   String
+  type          IntegrationType
+  name          String            @db.VarChar(120)
+  status        IntegrationStatus @default(ACTIVE)
+  endpointKey   String?           @unique @db.VarChar(40) // public id used in the webhook URL
+  config        Json? // allowed domains, field mapping, etc.
+  lastEventAt   DateTime?
+  lastSuccessAt DateTime?
+  lastErrorAt   DateTime?
+  lastError     String?           @db.VarChar(500)
+  totalReceived Int               @default(0)
+  totalCreated  Int               @default(0)
+  totalMerged   Int               @default(0)
+  totalFailed   Int               @default(0)
+  createdById   String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  workspace Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  secrets   IntegrationSecret[]
+  apiKeys   ApiKey[]
+  events    InboundEvent[]
+  sources   LeadSourceLink[]
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId, type])
+}
+
+model IntegrationSecret {
+  id            String    @id @default(cuid())
+  integrationId String
+  kind          String    @db.VarChar(40) // e.g. webhook_secret, access_token
+  ciphertext    String    @db.Text // AES-256-GCM: iv.tag.data (base64)
+  hint          String?   @db.VarChar(12) // last 4 characters, for display only
+  expiresAt     DateTime?
+  createdAt     DateTime  @default(now())
+
+  integration Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@unique([integrationId, kind])
+}
+
+model ApiKey {
+  id            String    @id @default(cuid())
+  workspaceId   String
+  integrationId String
+  name          String    @db.VarChar(80)
+  prefix        String    @db.VarChar(20) // shown to the user, e.g. vx_live_ab12
+  hash          String    @unique @db.VarChar(64) // sha256 of the full key
+  lastUsedAt    DateTime?
+  revokedAt     DateTime?
+  createdById   String?
+  createdAt     DateTime  @default(now())
+
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  integration Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+}
+
+enum InboundStatus {
+  RECEIVED
+  PROCESSING
+  CREATED
+  MERGED
+  REJECTED
+  FAILED
+}
+
+// Every incoming lead is stored here first (raw payload), then processed by a job. dedupeKey stops the same event twice.
+model InboundEvent {
+  id            String        @id @default(cuid())
+  workspaceId   String
+  integrationId String
+  dedupeKey     String        @db.VarChar(191)
+  externalId    String?       @db.VarChar(191)
+  payload       Json
+  status        InboundStatus @default(RECEIVED)
+  result        String?       @db.VarChar(500)
+  trace         Json? // step-by-step processing log
+  leadId        String?
+  ip            String?       @db.VarChar(64)
+  receivedAt    DateTime      @default(now())
+  processedAt   DateTime?
+
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  integration Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  lead        Lead?       @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  @@unique([integrationId, dedupeKey])
+  @@index([workspaceId, receivedAt])
+  @@index([integrationId, status])
+}
+
+// Every source a lead came from (a lead can arrive from several), with campaign / ad / form details.
+model LeadSourceLink {
+  id             String   @id @default(cuid())
+  workspaceId    String
+  leadId         String
+  integrationId  String
+  inboundEventId String?  @unique
+  externalLeadId String?  @db.VarChar(191)
+  formName       String?  @db.VarChar(160)
+  campaignName   String?  @db.VarChar(160)
+  adName         String?  @db.VarChar(160)
+  receivedAt     DateTime @default(now())
+
+  lead        Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  integration Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, leadId])
+  @@index([integrationId])
+}
+
+// Everything that happened to a lead (created, source added, field changed, task created, queued for AI ...).
+// Append-only, so the future AI orchestration engine and auditors can read the whole journey.
+model LeadEvent {
+  id          String   @id @default(cuid())
+  workspaceId String
+  leadId      String
+  type        String   @db.VarChar(40)
+  actorType   String   @db.VarChar(20) // USER | SYSTEM | INTEGRATION | AI
+  actorUserId String?
+  data        Json?
+  createdAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  lead      Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  actorUser User?     @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([leadId, createdAt])
+  @@index([workspaceId, createdAt])
+}
+
+// Ordered rules: the first active rule whose conditions all match decides the agent, salesperson and next step.
+model AssignmentRule {
+  id               String   @id @default(cuid())
+  workspaceId      String
+  name             String   @db.VarChar(120)
+  position         Int      @default(0)
+  isActive         Boolean  @default(true)
+  conditions       Json // { integrationIds, campaignContains, cities, languages, categories, field: { key, equals } }
+  agentId          String?
+  salespersonMode  String   @default("NONE") @db.VarChar(12) // NONE | FIXED | ROUND_ROBIN
+  salespersonIds   Json?
+  roundRobinCursor Int      @default(0)
+  createTask       Boolean  @default(true)
+  queueForAi       Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, position])
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  DONE
+  FAILED
+}
+
+// Background work with safe retries. Claimed atomically (lockedUntil), so two workers never run the same job.
+model Job {
+  id          String    @id @default(cuid())
+  workspaceId String
+  type        String    @db.VarChar(40)
+  payload     Json
+  status      JobStatus @default(PENDING)
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(5)
+  runAt       DateTime  @default(now())
+  lockedUntil DateTime?
+  lastError   String?   @db.VarChar(1000)
+  createdAt   DateTime  @default(now())
+  finishedAt  DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([status, runAt])
+  @@index([workspaceId, status])
 }

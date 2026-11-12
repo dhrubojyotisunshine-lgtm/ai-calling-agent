@@ -1,0 +1,837 @@
+[
+ {
+  "id": "s01",
+  "tpl": "intro",
+  "chapter": "",
+  "narr": "This is Voxura. An AI calling platform that helps businesses reach every lead, in their own language, and turn conversations into customers."
+ },
+ {
+  "id": "s02",
+  "tpl": "cards",
+  "chapter": "Why Voxura",
+  "kicker": "The everyday problem",
+  "title": "One connected system for every lead",
+  "cards": [
+   {
+    "h": "Leads come from everywhere",
+    "p": "Website, ads, Excel sheets, phone enquiries"
+   },
+   {
+    "h": "Calling takes hours",
+    "p": "Every lead needs a call, in the right language"
+   },
+   {
+    "h": "Follow-ups get missed",
+    "p": "Promised callbacks slip through the cracks"
+   }
+  ],
+  "end": "Voxura brings all of it into one place",
+  "narr": "Every business faces the same problem. Leads arrive from many places. Calling each one takes hours. And follow-ups get forgotten. Voxura brings all of it into one connected system."
+ },
+ {
+  "id": "s03",
+  "tpl": "six",
+  "chapter": "Overview",
+  "narr": "From the customer's side, Voxura works in six simple steps. Set up once. Add your leads. Start a campaign. Let the AI agent call. Follow up. And win the customer."
+ },
+ {
+  "id": "s04",
+  "tpl": "twoflows",
+  "chapter": "Overview",
+  "narr": "Behind these six steps are two flows. The setup flow is done only once. The daily flow repeats every day. Let's walk through both, step by step."
+ },
+ {
+  "id": "s05",
+  "tpl": "section",
+  "chapter": "Setup flow",
+  "color": "setup",
+  "kicker": "Part one",
+  "title": "Setup flow",
+  "sub": "Done once · seven steps",
+  "narr": "First, the setup flow."
+ },
+ {
+  "id": "s06",
+  "tpl": "screen",
+  "chapter": "Setup flow",
+  "color": "setup",
+  "kicker": "Setup · Step 1",
+  "title": "Create the company account",
+  "badge": "live",
+  "img": "assets/app-register.png",
+  "steps": [
+   "Open the sign-up page",
+   "Enter company, owner, email, mobile, password",
+   "Click Create account"
+  ],
+  "sys": "Private workspace created · you become the Owner",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    1,
+    560,
+    20,
+    1040,
+    585
+   ]
+  ],
+  "narr": "Step one. The business creates its account. It enters the company name, the owner's details and a password. Voxura creates a private workspace for that company, and the person who signs up becomes the owner. Every company sees only its own data."
+ },
+ {
+  "id": "s07",
+  "tpl": "screen",
+  "chapter": "Setup flow",
+  "color": "setup",
+  "kicker": "Setup · Step 2",
+  "title": "Add money to the wallet",
+  "badge": "live",
+  "img": "assets/app-billing.png",
+  "steps": [
+   "Open Billing",
+   "Pick an amount, or type one",
+   "Set a low-balance alert"
+  ],
+  "sys": "Balance and ledger saved together · every call charged once",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    1,
+    224,
+    0,
+    1200,
+    675
+   ]
+  ],
+  "narr": "Step two. Add money to the wallet. Voxura is prepaid. Every top-up and every call charge is written to a ledger, so the balance always matches the history. A low-balance alert warns the team before the money runs out. Online payment will be connected before go-live."
+ },
+ {
+  "id": "s08",
+  "tpl": "screen",
+  "chapter": "Setup flow",
+  "color": "setup",
+  "kicker": "Setup · Step 3",
+  "title": "Get a business phone number",
+  "badge": "live",
+  "img": "assets/app-admin-numbers.png",
+  "img2": "assets/app-numbers.png",
+  "swap": 0.45,
+  "steps": [
+   "Voxura adds numbers to a central pool",
+   "Assigns one to the company",
+   "Company chooses who answers"
+  ],
+  "sys": "Lines, monthly rent and renewal date shown · one answering agent per number",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.45,
+    224,
+    0,
+    1300,
+    731
+   ],
+   [
+    0.46,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    1,
+    224,
+    0,
+    1200,
+    675
+   ]
+  ],
+  "narr": "Step three. Get a business phone number. Voxura's team adds numbers to a central pool and assigns one to the company. The company then sees its lines, the monthly rent and the renewal date, and chooses which AI agent answers incoming calls."
+ },
+ {
+  "id": "s09",
+  "tpl": "screen",
+  "chapter": "Setup flow",
+  "color": "setup",
+  "kicker": "Setup · Step 4",
+  "title": "Add services and products",
+  "badge": "live",
+  "img": "assets/app-services.png",
+  "img2": "assets/app-service-new.png",
+  "swap": 0.5,
+  "steps": [
+   "Describe the service or product",
+   "Decide if the AI may quote the price",
+   "Set when to offer it and the next step"
+  ],
+  "sys": "Linked to the agents that may sell it",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.5,
+    224,
+    0,
+    1300,
+    731
+   ],
+   [
+    0.51,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    1,
+    300,
+    0,
+    1200,
+    675
+   ]
+  ],
+  "narr": "Step four. Add services and products. For each one, the business decides what the AI may say about the price, when to offer it, and what the next step should be, such as booking a demo."
+ },
+ {
+  "id": "s10",
+  "tpl": "screen",
+  "chapter": "Setup flow",
+  "color": "setup",
+  "kicker": "Setup · Step 5",
+  "title": "Create the AI agent",
+  "badge": "live",
+  "img": "assets/app-agent.png",
+  "steps": [
+   "Identity: name, mode, purpose, number",
+   "What to say: greeting and instructions",
+   "What to sell",
+   "Knowledge: facts and FAQs",
+   "Voice and language: 11 Indian languages",
+   "Advanced: recording, memory, calls at once"
+  ],
+  "sys": "Agent ready for campaigns and callbacks",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.2,
+    430,
+    60,
+    800,
+    450
+   ],
+   [
+    0.75,
+    430,
+    60,
+    800,
+    450
+   ],
+   [
+    1,
+    380,
+    170,
+    1000,
+    563
+   ]
+  ],
+  "callouts": [
+   [
+    0.22,
+    470,
+    112,
+    "6 setup steps"
+   ],
+   [
+    0.6,
+    610,
+    326,
+    "Assistant or Announcement"
+   ]
+  ],
+  "narr": "Step five. Create the AI agent, in six short steps. Give it a name and a purpose. Write what it should say. Choose what it may sell. Add company knowledge and common questions. Pick one of eleven Indian languages and a voice. Then set options like call recording and memory."
+ },
+ {
+  "id": "s11",
+  "tpl": "screen",
+  "chapter": "Setup flow",
+  "color": "setup",
+  "kicker": "Setup · Steps 6 and 7",
+  "title": "Invite the team · Connect lead sources",
+  "badge": "design",
+  "img": "assets/draft-workspace-settings.png",
+  "img2": "assets/draft-integrations.png",
+  "swap": 0.42,
+  "steps": [
+   "Invite team members with a role",
+   "Connect website, Facebook, Google Ads, IndiaMART",
+   "New leads then arrive by themselves"
+  ],
+  "sys": "Designed and approved · next to build",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.42,
+    236,
+    0,
+    1364,
+    767
+   ],
+   [
+    0.43,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    1,
+    236,
+    100,
+    1364,
+    767
+   ]
+  ],
+  "narr": "Steps six and seven are designed, and come next. The owner will invite team members with roles, and connect lead sources like the website, Facebook, Google Ads and IndiaMART, so that new leads arrive automatically."
+ },
+ {
+  "id": "s12",
+  "tpl": "section",
+  "chapter": "Setup flow",
+  "color": "ok",
+  "kicker": "Setup complete",
+  "title": "Ready to call",
+  "sub": "The AI agent can start working",
+  "narr": "With setup complete, the AI agent is ready to start calling."
+ },
+ {
+  "id": "s13",
+  "tpl": "section",
+  "chapter": "Daily flow",
+  "color": "daily",
+  "kicker": "Part two",
+  "title": "Daily flow",
+  "sub": "Every day · seven steps",
+  "narr": "Now, the daily flow. This is what the team does every day."
+ },
+ {
+  "id": "s14",
+  "tpl": "screen",
+  "chapter": "Daily flow",
+  "color": "daily",
+  "kicker": "Daily · Step 1",
+  "title": "Start the day on the Dashboard",
+  "badge": "live",
+  "img": "assets/app-dashboard.png",
+  "steps": [
+   "Wallet balance, calls and minutes",
+   "Running campaign and its progress",
+   "Follow-ups overdue and due today"
+  ],
+  "sys": "Every figure opens the full page in one click",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.25,
+    320,
+    150,
+    1200,
+    675
+   ],
+   [
+    1,
+    700,
+    280,
+    820,
+    461
+   ]
+  ],
+  "callouts": [
+   [
+    0.25,
+    474,
+    220,
+    "Wallet balance"
+   ],
+   [
+    0.55,
+    912,
+    380,
+    "Running campaign"
+   ],
+   [
+    0.75,
+    1300,
+    360,
+    "3 overdue"
+   ]
+  ],
+  "narr": "The day starts on the dashboard. In one view, the team sees the wallet balance, calls and minutes, the running campaign, and the follow-ups that are due or overdue. Every figure opens the full page with one click."
+ },
+ {
+  "id": "s15",
+  "tpl": "screen",
+  "chapter": "Daily flow",
+  "color": "daily",
+  "kicker": "Daily · Step 2",
+  "title": "Add new leads",
+  "badge": "live",
+  "img": "assets/app-lead-new.png",
+  "img2": "assets/app-leads.png",
+  "swap": 0.4,
+  "steps": [
+   "Type in a lead, or import from Excel",
+   "Number cleaned into one format",
+   "Duplicates blocked automatically",
+   "Six stages, from New to Won"
+  ],
+  "sys": "98765 43210 · 098765-43210 · +91 98765 43210 → one lead",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.4,
+    300,
+    0,
+    1300,
+    731
+   ],
+   [
+    0.41,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    1,
+    250,
+    160,
+    1340,
+    754
+   ]
+  ],
+  "narr": "Next, leads are added. When a lead is saved, Voxura cleans the phone number into one standard format and blocks duplicates. Each lead then moves across six stages, from New to Won, on a simple board."
+ },
+ {
+  "id": "s16",
+  "tpl": "screen",
+  "chapter": "Daily flow",
+  "color": "daily",
+  "kicker": "Daily · Step 2",
+  "title": "Import thousands from Excel",
+  "badge": "live",
+  "img": "assets/app-import.png",
+  "steps": [
+   "Choose an Excel or CSV file",
+   "Columns detected automatically",
+   "Preview: valid, invalid, repeated",
+   "Import · existing leads never overwritten"
+  ],
+  "sys": "Up to 10,000 rows · one click to call them in a campaign",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    1,
+    300,
+    40,
+    1150,
+    647
+   ]
+  ],
+  "narr": "Thousands of leads can be imported from Excel at once. Voxura finds the right columns, shows a preview of valid, invalid and repeated rows, and never overwrites an existing lead. One click then sends the new leads into a campaign."
+ },
+ {
+  "id": "s17",
+  "tpl": "screen",
+  "chapter": "Daily flow",
+  "color": "daily",
+  "kicker": "Daily · Step 3",
+  "title": "Create a campaign",
+  "badge": "live",
+  "img": "assets/app-campaign-new.png",
+  "steps": [
+   "Pick the AI agent",
+   "Choose who to call: stage, city, owner",
+   "Skip DND and busy leads",
+   "See count, cost and wallet check"
+  ],
+  "sys": "7 leads will be called · estimated ₹53 · wallet ₹980.92",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.15,
+    440,
+    120,
+    1000,
+    563
+   ],
+   [
+    0.45,
+    440,
+    300,
+    1000,
+    563
+   ],
+   [
+    1,
+    440,
+    380,
+    1000,
+    563
+   ]
+  ],
+  "callouts": [
+   [
+    0.2,
+    1127,
+    231,
+    "AI agent"
+   ],
+   [
+    0.4,
+    700,
+    395,
+    "Who to call"
+   ],
+   [
+    0.6,
+    660,
+    522,
+    "DND skipped"
+   ],
+   [
+    0.78,
+    820,
+    610,
+    "Live count and cost"
+   ]
+  ],
+  "narr": "Then a campaign is created. The team picks the AI agent, and chooses who to call, by stage, city or owner. Voxura instantly shows how many people will be called, the estimated cost, and whether the wallet is enough. Do-not-disturb numbers are skipped by default."
+ },
+ {
+  "id": "s18",
+  "tpl": "status",
+  "chapter": "Daily flow",
+  "color": "daily",
+  "kicker": "Daily · Step 3",
+  "title": "Timing and campaign status",
+  "steps": [
+   "Start date and time",
+   "Daily calling hours",
+   "Calls at the same time",
+   "Retries and the gap between them"
+  ],
+  "narr": "The team sets the start time, the daily calling hours, how many calls run at once, and how many retries to make. A campaign moves from draft, to scheduled, to running, and finally to completed. It can be paused, restarted, or cancelled at any time."
+ },
+ {
+  "id": "s19",
+  "tpl": "aicall",
+  "chapter": "Daily flow",
+  "color": "daily",
+  "kicker": "Daily · Step 4",
+  "title": "The AI makes the call",
+  "narr": "Now the AI makes the call. Before dialling, it checks the calling hours, do-not-disturb, the wallet, and the call limit. During the call, it listens, understands, and replies in the chosen language, using only the company's approved information. After the call, it saves the recording, the transcript and the outcome, charges the talk time once, and schedules a retry or a callback if needed. This live voice connection is the next build step, once the provider accounts are ready."
+ },
+ {
+  "id": "s20",
+  "tpl": "screen",
+  "chapter": "Daily flow",
+  "color": "daily",
+  "kicker": "Daily · Step 5",
+  "title": "Check the call results",
+  "badge": "live",
+  "img": "assets/app-calls.png",
+  "img2": "assets/app-call.png",
+  "swap": 0.4,
+  "steps": [
+   "Filter by result, outcome, agent, date",
+   "Open a call: summary and conversation",
+   "See talk time, rate and charge"
+  ],
+  "sys": "Unanswered calls are never charged",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.4,
+    224,
+    0,
+    1300,
+    731
+   ],
+   [
+    0.41,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.7,
+    380,
+    120,
+    1100,
+    619
+   ],
+   [
+    1,
+    700,
+    280,
+    780,
+    439
+   ]
+  ],
+  "callouts": [
+   [
+    0.75,
+    1260,
+    428,
+    "Charged once: ₹3.33"
+   ]
+  ],
+  "narr": "Every call appears in call history, with names instead of codes. Opening a call shows the result, the summary, the conversation, and exactly what it cost. Unanswered calls are never charged."
+ },
+ {
+  "id": "s21",
+  "tpl": "screen",
+  "chapter": "Daily flow",
+  "color": "daily",
+  "kicker": "Daily · Step 6",
+  "title": "Follow up: callbacks and tasks",
+  "badge": "live",
+  "img": "assets/app-followups.png",
+  "steps": [
+   "Team task for a person",
+   "Or a callback the AI will make",
+   "Sorted: Overdue · Today · Upcoming",
+   "Done, edit, cancel or reopen"
+  ],
+  "sys": "Late items surface on the dashboard",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.3,
+    320,
+    100,
+    1200,
+    675
+   ],
+   [
+    1,
+    320,
+    170,
+    1000,
+    563
+   ]
+  ],
+  "callouts": [
+   [
+    0.3,
+    395,
+    137,
+    "Overdue first"
+   ],
+   [
+    0.55,
+    392,
+    247,
+    "Team task"
+   ],
+   [
+    0.75,
+    408,
+    458,
+    "AI callback"
+   ]
+  ],
+  "narr": "Follow-ups make sure no lead is forgotten. A follow-up can be a task for a team member, or a callback that the AI will make. They are sorted into overdue, today and upcoming, and late items appear on the dashboard."
+ },
+ {
+  "id": "s22",
+  "tpl": "screen",
+  "chapter": "Daily flow",
+  "color": "daily",
+  "kicker": "Daily · Step 7",
+  "title": "Move the lead to Won",
+  "badge": "live",
+  "img": "assets/app-leads.png",
+  "steps": [
+   "Update the stage as the deal moves",
+   "Contacted → Interested → Demo → Won"
+  ],
+  "sys": "Customer won · the cycle repeats tomorrow",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    1,
+    1000,
+    150,
+    560,
+    315
+   ]
+  ],
+  "callouts": [
+   [
+    0.6,
+    1338,
+    186,
+    "Customer won"
+   ]
+  ],
+  "narr": "Finally, the team moves the lead forward, stage by stage, until the customer is won. And the next day, the cycle begins again."
+ },
+ {
+  "id": "s23",
+  "tpl": "rules",
+  "chapter": "Behind the scenes",
+  "kicker": "Built-in business logic",
+  "title": "Rules that run on every action",
+  "narr": "Behind every screen, business rules run automatically. Phone numbers are cleaned. Duplicates are blocked. Do-not-disturb is respected. Costs are checked before a campaign starts. Each call is charged only once. And every company's data stays private. Scheduled automation, such as reminders and emails, comes with the next phase."
+ },
+ {
+  "id": "s24",
+  "tpl": "roles",
+  "chapter": "Behind the scenes",
+  "kicker": "Role-based access",
+  "title": "Everyone sees what they need",
+  "narr": "Access is controlled by role. Owners and admins manage agents, campaigns and money. Staff work with leads and tasks. These rules are checked on the server, for every single action."
+ },
+ {
+  "id": "s25",
+  "tpl": "screen",
+  "chapter": "Voxura staff",
+  "color": "staff",
+  "kicker": "Voxura Super Admin",
+  "title": "Running the platform",
+  "badge": "design",
+  "img": "assets/draft-admin-home.png",
+  "img2": "assets/draft-admin-finance.png",
+  "swap": 0.5,
+  "steps": [
+   "Client companies and plans",
+   "Wallets with second approval",
+   "Provider costs and margin",
+   "Complete audit log"
+  ],
+  "sys": "Designed · the number pool is already built",
+  "cam": [
+   [
+    0,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    0.5,
+    236,
+    0,
+    1364,
+    767
+   ],
+   [
+    0.51,
+    0,
+    0,
+    1600,
+    900
+   ],
+   [
+    1,
+    236,
+    60,
+    1364,
+    767
+   ]
+  ],
+  "narr": "Voxura's own team runs the platform from the Super Admin. It is designed to manage client companies, plans and prices, wallets with a second approval, provider costs and margin, and a complete audit log. The phone number pool is already built."
+ },
+ {
+  "id": "s26",
+  "tpl": "stats",
+  "chapter": "Work delivered",
+  "kicker": "Work delivered so far",
+  "title": "Built, tested and designed",
+  "narr": "So far, twelve modules are built and working, covering forty-two workflows, and verified by two hundred and eighty-five automated checks. Fifty-seven screens are designed for the complete platform."
+ },
+ {
+  "id": "s27",
+  "tpl": "outro",
+  "chapter": "",
+  "narr": "Voxura. Set up once, and grow every day."
+ }
+]

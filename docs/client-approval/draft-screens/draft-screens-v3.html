@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxura Draft Screens v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout idea: a review board. Left index of screens; each screen = app mock (in the live app's own look) beside a notes column. */
+  --brand: #4a2c9e;        /* Voxura sidebar purple, taken from the live app */
+  --brand-soft: #efeafb;
+  --ink: #1d1a2b;
+  --muted: #6b6780;
+  --paper: #f6f5fa;
+  --card: #ffffff;
+  --line: #e4e1ee;
+  --ok: #0f9d58;  --ok-soft: #e3f6ec;
+  --warn: #c86a00; --warn-soft: #fff1dc;
+  --bad: #c62828;  --bad-soft: #fde8e8;
+  --info: #1a63d8; --info-soft: #e6effd;
+  --font-display: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.55 var(--font-body); }
+a { color: var(--brand); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #8f74e6; outline-offset: 2px; }
+h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- page shell ---------- */
+.top { background: var(--brand); color: #fff; padding: 28px 24px 24px; }
+.top-inner { max-width: 1320px; margin: 0 auto; display: grid; gap: 14px; }
+.top h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.top p { margin: 0; max-width: 78ch; color: #ddd4fb; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.top .legend .tag { box-shadow: 0 0 0 1px rgba(255,255,255,.25); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: #cfc4f6; }
+.facts b { color: #fff; }
+
+.wrap { max-width: 1320px; margin: 0 auto; padding: 24px 16px 60px; display: grid; grid-template-columns: 230px 1fr; gap: 24px; align-items: start; }
+.index { position: sticky; top: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 2px; font-size: 13.5px; }
+.index h4 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 6px 8px 4px; }
+.index a { display: flex; justify-content: space-between; align-items: center; gap: 6px; text-decoration: none; color: var(--ink); padding: 6px 8px; border-radius: 8px; }
+.index a:hover { background: var(--brand-soft); }
+.index .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.screens { display: grid; gap: 28px; min-width: 0; }
+
+.tag { display: inline-flex; align-items: center; gap: 5px; font: 700 11px/1 var(--font-body); letter-spacing: .05em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
+.t-live { background: var(--ok-soft); color: var(--ok); }
+.t-chg { background: var(--warn-soft); color: var(--warn); }
+.t-new { background: var(--info-soft); color: var(--info); }
+.t-unseen { background: #ecebf1; color: #55516a; }
+.d-live { background: var(--ok); } .d-chg { background: var(--warn); } .d-new { background: var(--info); } .d-unseen { background: #8f8aa3; }
+
+/* ---------- screen block ---------- */
+.screen { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; scroll-margin-top: 12px; }
+.screen-head { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.screen-head .no { font: 600 12px var(--font-mono); color: var(--muted); }
+.screen-head h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.screen-head .url { margin-left: auto; font: 12px var(--font-mono); color: var(--muted); }
+.screen-body { display: grid; grid-template-columns: minmax(0, 1fr) 300px; }
+.mock-area { padding: 20px 16px 16px; background: #f1eff7; min-width: 0; overflow-x: auto; }
+.notes { padding: 16px 18px; border-left: 1px solid var(--line); display: grid; gap: 14px; align-content: start; font-size: 13.5px; }
+.notes h4 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.notes ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.notes .q li { color: #3d2a85; }
+.notes .issue li::marker { color: var(--bad); }
+
+/* ---------- app mock (Voxura look) ---------- */
+.app { display: grid; grid-template-columns: 136px minmax(0, 1fr); min-width: 640px; background: #fff; border-radius: 10px; box-shadow: 0 1px 2px rgba(30,20,60,.08), 0 8px 24px rgba(30,20,60,.08); font-size: 13px; }
+.side { border-radius: 10px 0 0 10px; background: var(--brand); color: #e6defc; padding: 12px 8px; display: grid; align-content: start; gap: 2px; font-size: 12.5px; }
+.side .logo { display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 800; padding: 4px 6px 12px; }
+.side .logo i { width: 22px; height: 22px; border-radius: 6px; background: #fff; display: inline-block; }
+.side .grp { font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: #a999e0; padding: 10px 8px 3px; }
+.side span { padding: 6px 8px; border-radius: 7px; display: flex; justify-content: space-between; align-items: center; }
+.side span.on { background: rgba(255,255,255,.16); color: #fff; font-weight: 700; }
+.side span em { font-style: normal; font-size: 9px; font-weight: 800; background: #fff; color: var(--info); padding: 2px 5px; border-radius: 6px; }
+.main { padding: 16px 18px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.ph { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.ph h3 { font-size: 17px; font-weight: 800; }
+.ph p { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; color: var(--ink); font: 600 12px var(--font-body); padding: 7px 11px; border-radius: 8px; white-space: nowrap; }
+.btn.pri { background: var(--brand); border-color: var(--brand); color: #fff; }
+.btn.go { background: #12c06a; border-color: #12c06a; color: #fff; }
+.btn.del { background: var(--bad-soft); border-color: #f6caca; color: var(--bad); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.box { border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; background: #fff; min-width: 0; }
+.box.soft { background: #faf9fd; }
+.box h5 { margin: 0 0 6px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.big { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.sub { color: var(--muted); font-size: 11.5px; }
+.wallet { background: var(--brand); color: #fff; border: 0; }
+.wallet h5, .wallet .sub { color: #cfc4f6; }
+.banner { background: linear-gradient(90deg, #0d9a5c, #138a68); color: #fff; border-radius: 10px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.banner b { font-size: 15px; }
+.alert { border-radius: 9px; padding: 9px 11px; font-size: 12px; display: flex; gap: 8px; align-items: center; }
+.alert.w { background: var(--warn-soft); color: #7a4300; }
+.alert.b { background: var(--bad-soft); color: #8e1c1c; }
+.alert.i { background: var(--info-soft); color: #164a9e; }
+.field { display: grid; gap: 4px; }
+.field label { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.inp { border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; background: #fff; color: var(--ink); font-size: 12.5px; min-height: 32px; }
+.inp.ph-t { color: #a29eb3; }
+.inp.area { min-height: 54px; }
+.seg { display: inline-flex; background: #f0eef6; border-radius: 8px; padding: 3px; gap: 2px; }
+.seg b { font-weight: 600; font-size: 12px; padding: 5px 10px; border-radius: 6px; color: var(--muted); }
+.seg b.on { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.chip { display: inline-block; font: 500 10.5px var(--font-mono); padding: 3px 7px; border-radius: 999px; background: #f1edfb; color: #4c3a96; border: 1px solid #e0d8f7; white-space: nowrap; }
+.chip.g { background: var(--ok-soft); color: var(--ok); border-color: #c4ead4; }
+.chip.r { background: var(--bad-soft); color: var(--bad); border-color: #f6caca; }
+.chip.o { background: var(--warn-soft); color: var(--warn); border-color: #f3dcb4; }
+.chip.b { background: var(--info-soft); color: var(--info); border-color: #c9dcfa; }
+.chip.n { background: #f0eff4; color: #5d5970; border-color: #e2e0ea; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tbl th { text-align: left; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 8px; border-bottom: 1px solid #f0eef5; vertical-align: middle; }
+.tbl td.r, .tbl th.r { text-align: right; }
+.tbl tr.muted td { color: #a29eb3; }
+.mark { outline: 2px dashed var(--info); outline-offset: 3px; border-radius: 8px; position: relative; }
+.mark.c { outline-color: var(--warn); }
+.pin { position: absolute; top: -9px; right: 6px; z-index: 1; font: 800 9px var(--font-body); letter-spacing: .05em; padding: 2px 6px; border-radius: 6px; color: #fff; background: var(--info); }
+.mark.c > .pin { background: var(--warn); }
+.agent { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+.agent .meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.agent .stats { text-align: right; font-size: 11.5px; color: var(--muted); }
+.agent .stats b { color: var(--ink); font-size: 14px; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.steps span { font-size: 11.5px; font-weight: 600; padding: 6px 10px; border-radius: 8px; background: #f0eef6; color: var(--muted); }
+.steps span.on { background: var(--brand); color: #fff; }
+.steps span.done { background: var(--ok-soft); color: var(--ok); }
+.bar { height: 7px; background: #eceaf3; border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--brand); border-radius: 99px; }
+.kan { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 8px; }
+.kan .col { background: #f5f4fa; border-radius: 9px; padding: 8px; display: grid; gap: 6px; align-content: start; }
+.kan .col h6 { margin: 0; font-size: 11px; display: flex; justify-content: space-between; }
+.kan .cd { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 7px 8px; font-size: 11.5px; display: grid; gap: 3px; }
+.tx { display: grid; gap: 6px; }
+.tx div { max-width: 82%; padding: 7px 10px; border-radius: 10px; font-size: 12px; }
+.tx .ag { background: #f1edfb; }
+.tx .cu { background: #eef7f1; justify-self: end; }
+.wave { height: 30px; border-radius: 8px; background: repeating-linear-gradient(90deg, #cbbdf3 0 3px, transparent 3px 6px); opacity: .8; }
+.login { display: grid; grid-template-columns: 1fr 1fr; min-width: 640px; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 24px rgba(30,20,60,.08); background: #fff; font-size: 13px; }
+.login .l { background: linear-gradient(160deg, #3b1f8a, #1a1236); color: #fff; padding: 24px; display: grid; gap: 10px; align-content: center; }
+.login .l h3 { font-size: 22px; line-height: 1.15; }
+.login .l span { border: 1px solid rgba(255,255,255,.18); border-radius: 9px; padding: 8px 10px; font-size: 12px; background: rgba(255,255,255,.06); }
+.login .r { padding: 26px 30px; display: grid; gap: 10px; align-content: center; }
+
+.end { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 12px; }
+.end ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.end h2 { font-size: 20px; }
+
+@media (max-width: 1100px) {
+  .screen-body { grid-template-columns: 1fr; }
+  .notes { border-left: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 820px) {
+  .wrap { grid-template-columns: 1fr; }
+  .index { position: static; grid-template-columns: 1fr 1fr; }
+  .index h4 { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) { .index { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html { scroll-behavior: smooth; }
+
+/* ---------- v3 additions ---------- */
+.t-exp { background: #f3e8ff; color: #7b2cbf; }
+.d-exp { background: #7b2cbf; }
+.mark.x { outline-color: #7b2cbf; } .mark.x > .pin { background: #7b2cbf; }
+.part { background: linear-gradient(120deg, #2a1660, #4a2c9e); color: #fff; border-radius: 14px; padding: 22px 22px 18px; display: grid; gap: 12px; }
+.part h2 { font-size: 22px; font-weight: 800; }
+.part p { margin: 0; color: #ddd4fb; max-width: 90ch; }
+.journey { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; }
+.journey div { flex: 1 1 110px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22); border-radius: 10px; padding: 9px 10px; font-size: 12px; }
+.journey b { display: block; font-size: 13px; color: #fff; }
+.journey span { color: #cfc4f6; }
+.journey .now { background: rgba(18,192,106,.22); border-color: rgba(18,192,106,.6); }
+.status { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: #cfc4f6; }
+.status i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.tg { display: inline-block; width: 30px; height: 17px; border-radius: 99px; background: #d9d5e6; position: relative; vertical-align: middle; flex: none; }
+.tg::after { content: ""; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; }
+.tg.on { background: var(--ok); } .tg.on::after { left: 15px; }
+.src { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; }
+.src .ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; font: 800 12px var(--font-body); color: #fff; }
+.slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.slots span { border: 1px solid var(--line); border-radius: 7px; padding: 6px; text-align: center; font-size: 11.5px; }
+.slots span.on { background: var(--brand); color: #fff; border-color: var(--brand); }
+.slots span.no { color: #b9b5c8; text-decoration: line-through; }
+.wf { display: grid; gap: 6px; justify-items: start; }
+.wf .n { border: 1px solid var(--line); border-radius: 9px; padding: 8px 11px; background: #fff; font-size: 12px; min-width: 260px; }
+.wf .n.t { border-color: #c9dcfa; background: var(--info-soft); }
+.wf .n.c { border-color: #f3dcb4; background: var(--warn-soft); }
+.wf .n.a { border-color: #c4ead4; background: var(--ok-soft); }
+.wf .ln { width: 2px; height: 12px; background: #cfcadf; margin-left: 22px; }
+.score { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; font: 800 12px var(--font-body); color: #fff; }
+.meter { display: grid; grid-template-columns: 90px 1fr 70px; gap: 8px; align-items: center; font-size: 11.5px; }
+.stack { display: flex; height: 12px; border-radius: 99px; overflow: hidden; }
+.stack i { display: block; height: 100%; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <h1>Voxura AI Calling Agent: draft screens v3</h1>
+    <p>Draft screens for client approval, based on the live Voxura app (agents.kriscenttechnohub.com), which was reviewed while logged in on 31 Oct 2026. Each screen shows what the app does today and what we propose to build. All names, numbers and figures in the mock screens are sample data. Nothing gets built until you approve.</p>
+    <p><b>New in v3 (2 Nov 2026):</b> screens 01–15 are unchanged from v2. Screens 16–32 add the requested sales-automation expansion: from the first enquiry to a paying, onboarded client. These are proposals only; none of them is built yet.</p>
+    <div class="legend">
+      <span class="tag t-live">Live: keep as is</span>
+      <span class="tag t-chg">Changed: live screen, improved</span>
+      <span class="tag t-new">New: not in the app yet</span>
+      <span class="tag t-unseen">Not seen: couldn't check with this login</span>
+      <span class="tag t-exp">Expansion: requested 2 Nov, not built</span>
+    </div>
+    <div class="facts">
+      <span>Live app has <b>8 pages</b>: Dashboard, Live call, Campaigns, Agents, Phone numbers, Call history, Billing, Sign in</span>
+      <span>Proposed: <b>15 screens</b> + <b>17 expansion screens</b></span>
+      <span>New app build so far: <b>screens 01, 02, 04–15 working</b> (03 Live call needs the voice provider accounts)</span>
+      <span>Billing model: <b>prepaid ₹ wallet, per-minute</b> + monthly plan</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="index" aria-label="Screens">
+    <h4>Screens</h4>
+    <a href="#s01">01 Sign in / Register <i class="dot d-chg"></i></a>
+    <a href="#s02">02 Dashboard <i class="dot d-chg"></i></a>
+    <a href="#s03">03 Live call (test) <i class="dot d-live"></i></a>
+    <a href="#s04">04 Agents <i class="dot d-chg"></i></a>
+    <a href="#s05">05 Agent setup <i class="dot d-chg"></i></a>
+    <a href="#s06">06 Services &amp; Products <i class="dot d-new"></i></a>
+    <a href="#s07">07 Campaigns <i class="dot d-chg"></i></a>
+    <a href="#s08">08 Create campaign <i class="dot d-chg"></i></a>
+    <a href="#s09">09 Campaign progress <i class="dot d-new"></i></a>
+    <a href="#s10">10 Phone numbers <i class="dot d-chg"></i></a>
+    <a href="#s11">11 Call history <i class="dot d-chg"></i></a>
+    <a href="#s12">12 Call detail <i class="dot d-chg"></i></a>
+    <a href="#s13">13 Leads (CRM) <i class="dot d-new"></i></a>
+    <a href="#s14">14 Follow-ups <i class="dot d-new"></i></a>
+    <a href="#s15">15 Billing <i class="dot d-chg"></i></a>
+    <h4 style="margin-top:8px">Expansion (v3)</h4>
+    <a href="#journey">The full sales journey</a>
+    <a href="#s16">16 Lead sources &amp; instant call <i class="dot d-exp"></i></a>
+    <a href="#s17">17 Lead scoring (Hot/Warm/Cold) <i class="dot d-exp"></i></a>
+    <a href="#s18">18 WhatsApp &amp; email <i class="dot d-exp"></i></a>
+    <a href="#s19">19 Meeting booking <i class="dot d-exp"></i></a>
+    <a href="#s20">20 Quotes &amp; proposals <i class="dot d-exp"></i></a>
+    <a href="#s21">21 Hand over to a person <i class="dot d-exp"></i></a>
+    <a href="#s22">22 Client onboarding <i class="dot d-exp"></i></a>
+    <a href="#s23">23 Automation workflows <i class="dot d-exp"></i></a>
+    <a href="#s24">24 Voice studio <i class="dot d-exp"></i></a>
+    <a href="#s25">25 AI models &amp; providers <i class="dot d-exp"></i></a>
+    <a href="#s26">26 Knowledge base <i class="dot d-exp"></i></a>
+    <a href="#s27">27 AI usage &amp; cost <i class="dot d-exp"></i></a>
+    <a href="#s28">28 Admin console <i class="dot d-exp"></i></a>
+    <a href="#s29">29 Live call monitor <i class="dot d-exp"></i></a>
+    <a href="#s30">30 Voice engine (how calls run) <i class="dot d-exp"></i></a>
+    <a href="#s31">31 Team &amp; settings <i class="dot d-exp"></i></a>
+    <a href="#s32">32 Sales operations dashboard <i class="dot d-exp"></i></a>
+    <a href="#next">Open questions &amp; next steps</a>
+  </nav>
+
+  <main class="screens">
+
+<!-- ============ 01 LOGIN ============ -->
+<section class="screen" id="s01">
+  <div class="screen-head"><span class="no">01</span><h2>Sign in / Register</h2><span class="tag t-chg">Changed</span><span class="url">/login</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="login">
+        <div class="l">
+          <h3>Put a voice agent on every phone call.</h3>
+          <span>Human-like conversations</span><span>Your choice of AI brain</span><span>Bulk campaigns in minutes</span><span>Wallet-driven billing</span>
+        </div>
+        <div class="r">
+          <h3 style="font-size:19px">Create your workspace</h3>
+          <div class="seg"><b>Sign in</b><b class="on">Register</b></div>
+          <div class="grid2">
+            <div class="field mark"><span class="pin">NEW</span><label for="r-co">Company name</label><div class="inp ph-t" id="r-co">Brightlane Software</div></div>
+            <div class="field mark"><span class="pin">NEW</span><label for="r-ph">Mobile (OTP)</label><div class="inp ph-t" id="r-ph">+91 98•••• ••210</div></div>
+          </div>
+          <div class="field"><label for="r-em">Email</label><div class="inp ph-t" id="r-em">you@company.com</div></div>
+          <div class="field"><label for="r-pw">Password</label><div class="inp ph-t" id="r-pw">••••••••</div></div>
+          <span class="btn pri" style="justify-content:center">Create workspace</span>
+          <div class="row" style="justify-content:space-between"><span class="sub mark" style="padding:2px 4px"><span class="pin">NEW</span>Forgot password?</span><span class="sub">New accounts start with a ₹0 wallet.</span></div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Email and password, with Sign in and Register tabs.</li><li>"New accounts start with a ₹0 wallet. Recharge to place calls."</li><li>No "Forgot password" link was visible.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Collect the company name and mobile number at registration (needed for invoices and caller ID).</li><li>Add Forgot password.</li><li>Verify the mobile number by OTP.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Is open self sign-up allowed, or must the admin approve each new workspace?</li><li>Should registration collect a GST number for invoices?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 02 DASHBOARD ============ -->
+<section class="screen" id="s02">
+  <div class="screen-head"><span class="no">02</span><h2>Dashboard</h2><span class="tag t-chg">Changed</span><span class="url">/</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side mark c"><span class="pin">LABELS</span>
+          <div class="logo"><i></i>Voxura</div>
+          <div class="grp">Workspace</div>
+          <span class="on">Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Services <em>NEW</em></span><span>Leads <em>NEW</em></span><span>Follow-ups <em>NEW</em></span><span>Phone numbers</span><span>Call history</span>
+          <div class="grp">Finance</div><span>Billing</span>
+        </div>
+        <div class="main">
+          <div class="banner"><div><b>Ready to make a call?</b><div style="font-size:12px;opacity:.85">Open the call workspace to choose an agent.</div></div><span class="btn">Start a call now →</span></div>
+          <div class="alert w mark"><span class="pin">NEW</span>Wallet is below ₹200. That's roughly 90 minutes of calls at your current rate. <u>Add funds</u></div>
+          <div class="grid4">
+            <div class="box wallet"><h5>Wallet balance</h5><div class="big num">₹1,250.17</div><div class="sub">Live · auto-deducts per call</div></div>
+            <div class="box"><h5>Total calls</h5><div class="big num">124</div><div class="sub">Avg ₹1.30 per call</div></div>
+            <div class="box"><h5>Minutes used</h5><div class="big num">60.8</div><div class="sub">this month</div></div>
+            <div class="box mark c"><span class="pin">FIX</span><h5>Spent</h5><div class="big num">₹121.97</div><div class="sub">one figure, matching Billing</div></div>
+          </div>
+          <div class="grid3 mark"><span class="pin">NEW</span>
+            <div class="box soft"><h5>Today</h5><div class="row"><b class="num">38</b> calls · <b class="num">21</b> answered · <b class="num">6</b> interested</div></div>
+            <div class="box soft"><h5>Running campaign</h5><div>Diwali ERP offer</div><div class="bar" style="margin-top:6px"><i style="width:62%"></i></div><div class="sub">310 of 500 leads called</div></div>
+            <div class="box soft"><h5>Follow-ups due</h5><div class="row"><b class="num">7</b> today · <b class="num" style="color:var(--bad)">2</b> overdue</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Green "Start a call now" banner, plus 4 tiles: Wallet, Total calls, Minutes used, Customer spend.</li><li>"Add funds" panel (₹100 / ₹250 / ₹500 / ₹1,000 or a custom amount).</li><li>The sidebar shows icons only, with no labels.</li></ul></div>
+      <div class="issue"><h4>Issues seen</h4><ul><li>The dashboard says 124 total calls, but Call history lists 184.</li><li>"Customer spend" is ₹161.40, but "Total spent" is ₹121.97. Two different spend figures will confuse users.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Add text labels to the sidebar.</li><li>Show a low-balance warning.</li><li>Add a "Today" summary, campaign progress and follow-ups due.</li><li>Keep the Add funds panel on Billing only.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>What wallet balance should trigger the low-balance warning?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 03 LIVE CALL ============ -->
+<section class="screen" id="s03">
+  <div class="screen-head"><span class="no">03</span><h2>Live call (test an agent)</h2><span class="tag t-live">Live</span><span class="url">/call</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span class="on">Live call</span><span>Campaigns</span><span>Agents</span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Live call</h3><p>Pick an agent and start a real-time voice session in the browser.</p></div><span class="btn">Refresh agents</span></div>
+          <div class="grid2">
+            <div class="box" style="display:grid;gap:10px">
+              <div class="field"><label for="lc-a">Agent</label><div class="inp" id="lc-a">Brightlane Sales Assistant ▾</div></div>
+              <div class="alert i">Assistant mode · Outbound · Max concurrent calls: 1 · Caller number: +91 79•• ••• 210</div>
+              <div class="field"><label>Call mode</label><div class="seg"><b class="on">Browser · FREE</b><b>SIP phone</b></div></div>
+              <div class="field mark"><span class="pin">NEW</span><label for="lc-n">Test as lead (optional)</label><div class="inp ph-t" id="lc-n">Pick a lead to test with their {name}, {city}</div></div>
+              <span class="btn go" style="justify-content:center">Start voice call</span>
+            </div>
+            <div class="box soft" style="display:grid;place-items:center;text-align:center;gap:6px;min-height:200px">
+              <div style="width:46px;height:46px;border-radius:50%;background:var(--brand-soft)"></div>
+              <b>Ready for a voice call</b><div class="sub">Your microphone will be used in this browser.</div><span class="chip n">LiveKit · WebRTC</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Choose an agent, then Browser (free) or SIP phone mode, then Start voice call.</li><li>Shows the agent's mode, purpose, concurrency and caller number.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Keep this screen as it is.</li><li>Optional: test the agent "as" a lead, so placeholders like {name} are filled in during the test.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>In SIP phone mode, should the user type the number to call? (Not checked; we didn't start a call.)</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 04 AGENTS ============ -->
+<section class="screen" id="s04">
+  <div class="screen-head"><span class="no">04</span><h2>Agents</h2><span class="tag t-chg">Changed</span><span class="url">/agents</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span class="on">Agents</span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Agents</h3><p>Create and configure voice agents, then assign them to calls.</p></div><div class="row"><span class="sub mark c" style="padding:2px 6px"><span class="pin">PLAN</span>3 of 3 agents used</span><span class="btn pri">+ New agent</span></div></div>
+          <div class="box agent">
+            <div><div class="row"><b style="font-size:14px">Brightlane Sales Assistant</b><span class="chip g">● ACTIVE</span><span class="chip">Assistant</span></div>
+              <div class="meta mark c"><span class="pin">PLAIN</span><span class="chip">Brain: OpenAI GPT-4.1 mini</span><span class="chip">Hears: Deepgram (Hindi)</span><span class="chip">Voice: Sarvam “Priya”</span><span class="chip b">Outbound · ••210</span><span class="chip">Memory</span><span class="chip r">Recording</span><span class="chip n">×1</span></div>
+              <div class="meta mark"><span class="pin">NEW</span><span class="chip o">Offers: ERP, Mobile apps, Billing App</span></div></div>
+            <div class="stats"><div>CALLS <b class="num">28</b> · BILLED <b class="num" style="color:var(--ok)">₹89.76</b></div><div class="row" style="margin-top:6px;justify-content:flex-end"><span class="btn">Edit</span><span class="btn go">Call</span><span class="btn del">Delete</span></div></div>
+          </div>
+          <div class="box agent">
+            <div><div class="row"><b style="font-size:14px">Webinar Reminder</b><span class="chip g">● ACTIVE</span><span class="chip b">Announcement</span></div>
+              <div class="meta"><span class="chip">Brain: OpenAI GPT-4.1 mini</span><span class="chip">Voice: Cartesia Sonic 3</span><span class="chip b">Outbound · ••210</span><span class="chip n">No memory</span><span class="chip n">No rec</span><span class="chip n">×2</span></div></div>
+            <div class="stats"><div>CALLS <b class="num">60</b> · BILLED <b class="num" style="color:var(--ok)">₹41.64</b></div><div class="row" style="margin-top:6px;justify-content:flex-end"><span class="btn">Edit</span><span class="btn go">Call</span><span class="btn del">Delete</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Each agent is a card: name, Active status, mode (Assistant or Announcement), provider chips, purpose and number, Memory/Recording, concurrency, calls and amount billed.</li><li>Edit, Call and Delete buttons on each card.</li></ul></div>
+      <div class="issue"><h4>Issues seen</h4><ul><li>The chips show internal provider codes (e.g. "deepgram_nova2", "cartesia_sonic3") that customers won't understand.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Use plain labels: Brain, Hears, Voice.</li><li>Show which services or products each agent offers.</li><li>Show how many agents the plan allows.</li><li>Ask for confirmation before deleting an agent.</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 05 AGENT SETUP ============ -->
+<section class="screen" id="s05">
+  <div class="screen-head"><span class="no">05</span><h2>Agent setup (new / edit)</h2><span class="tag t-chg">Changed</span><span class="url">/agents/new · /agents/:id</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Live call</span><span>Campaigns</span><span class="on">Agents</span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Brightlane Sales Assistant <span class="chip o">EDITING</span></h3><p>Changes apply on the next call.</p></div><div class="row"><span class="btn">Cancel</span><span class="btn pri">Save changes</span></div></div>
+          <div class="steps mark c"><span class="pin">STEPS</span><span class="done">1 Identity</span><span class="on">2 What to say</span><span>3 What to sell</span><span>4 Knowledge</span><span>5 Voice &amp; language</span><span>6 Advanced (AI models)</span></div>
+          <div class="grid2">
+            <div style="display:grid;gap:9px">
+              <div class="field"><label>Agent mode</label><div class="seg"><b class="on">Assistant</b><b>Announcement</b></div></div>
+              <div class="field"><label>Call purpose *</label><div class="seg"><b class="on">Outbound</b><b>Inbound</b><b>Both</b></div></div>
+              <div class="field"><label for="ag-g">Greeting</label><div class="inp area" id="ag-g">Namaste {name}, main Priya bol rahi hoon Brightlane Software se…</div></div>
+              <div class="field"><label for="ag-s">System prompt</label><div class="inp area" id="ag-s">You are Priya, a friendly sales assistant. Find out what software the caller needs…</div></div>
+            </div>
+            <div style="display:grid;gap:9px;align-content:start">
+              <div class="field"><label for="ag-f">Fallback response</label><div class="inp" id="ag-f">Sorry, there's a temporary problem. Please try again shortly.</div></div>
+              <div class="grid2"><div class="field"><label for="ag-t">No-response timeout</label><div class="inp" id="ag-t">30 sec</div></div><div class="field"><label for="ag-c">Max concurrent calls</label><div class="inp" id="ag-c">1</div></div></div>
+              <div class="box soft mark"><span class="pin">NEW</span><h5>Step 3 · What to sell</h5><div class="row"><span class="chip o">✓ ERP for retail</span><span class="chip o">✓ Mobile app development</span><span class="chip o">✓ Brightlane Billing App</span><span class="chip n">+ pick more</span></div><div class="sub" style="margin-top:6px">The agent only pitches the items ticked here (taken from Services &amp; Products).</div></div>
+              <div class="alert i">Est. billing for this setup: <b>₹2.00/min</b> (models ₹0.60 + server ₹0.05, assistant minimum ₹1.00/min applies)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>One long page with these sections:<ul><li>Identity &amp; behaviour</li><li>Voice &amp; capacity</li><li>Knowledge base: memory, recording, system prompt, notes, FAQ pairs, file upload (.txt / .pdf / .csv)</li><li>Providers &amp; models, with fallback models</li></ul></li><li>The model picker shows token prices in $ (e.g. "Input $0.4/1M"). Voice lists offer 16 female and 14 male Sarvam voices and 11 Indian languages.</li><li>Shows an estimated price per minute for the chosen setup (good, keep it).</li><li>Announcement mode replaces Greeting with a fixed script and an "End call after announcement" option.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Split the page into 6 steps.</li><li>Move AI models and fallbacks under "Advanced", for admins or power users.</li><li>Add a "What to sell" step linked to Services &amp; Products.</li><li>Let the user play a sample of each voice.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Should customers see AI model names and $ token prices, or only the ₹/min estimate?</li><li>Which providers will you offer in the first release?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 06 SERVICES & PRODUCTS ============ -->
+<section class="screen" id="s06">
+  <div class="screen-head"><span class="no">06</span><h2>Services &amp; Products</h2><span class="tag t-new">New</span><span class="url">/services (proposed)</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Agents</span><span class="on">Services <em>NEW</em></span><span>Leads <em>NEW</em></span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Services &amp; Products</h3><p>What your agents are allowed to talk about and sell.</p></div><div class="row"><span class="btn">+ Add product</span><span class="btn pri">+ Add service</span></div></div>
+          <table class="tbl">
+            <thead><tr><th>Name</th><th>Type</th><th>Price shown to caller</th><th>When to offer</th><th>Next step</th><th>Agents</th></tr></thead>
+            <tbody>
+              <tr><td><b>ERP for retail</b></td><td><span class="chip">Service</span></td><td class="num">From ₹4.5 lakh</td><td>Shops with 3+ branches</td><td>Book demo</td><td class="num">2</td></tr>
+              <tr><td><b>Mobile app development</b></td><td><span class="chip">Service</span></td><td>Quote after call</td><td>Asks about an app</td><td>Send proposal</td><td class="num">1</td></tr>
+              <tr><td><b>AI voice agent setup</b></td><td><span class="chip">Service</span></td><td class="num">₹4,999 / month</td><td>High call volume</td><td>Book demo</td><td class="num">1</td></tr>
+              <tr><td><b>Brightlane Billing App</b></td><td><span class="chip o">Product</span></td><td class="num">₹799 / user / month</td><td>Small shops</td><td>Send sign-up link</td><td class="num">2</td></tr>
+            </tbody>
+          </table>
+          <div class="box soft" style="display:grid;gap:8px">
+            <h5>Edit: Brightlane Billing App</h5>
+            <div class="grid3">
+              <div class="field"><label>Type</label><div class="seg"><b>Service</b><b class="on">Product</b></div></div>
+              <div class="field"><label for="sp-p">Price</label><div class="inp" id="sp-p">₹799 per user / month</div></div>
+              <div class="field"><label for="sp-t">Free trial</label><div class="inp" id="sp-t">14 days</div></div>
+            </div>
+            <div class="field"><label for="sp-d">Short description (what the agent says)</label><div class="inp area" id="sp-d">GST billing and stock app for small shops, works on mobile and desktop…</div></div>
+            <div class="grid2"><div class="field"><label for="sp-q">May agent quote the price?</label><div class="seg"><b class="on">Yes</b><b>No, say "we'll send a quote"</b></div></div><div class="field"><label for="sp-n">When the caller says yes</label><div class="inp" id="sp-n">Send sign-up link by WhatsApp + create lead</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Not in the app. Today, all product information goes into the agent's prompt, notes and FAQ fields (one agent had 23 FAQ pairs).</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>One catalogue per workspace (each company sees only its own).</li><li>Each item can be linked to one or more agents.</li><li>The agent uses each item's price rule and next step.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Which fields do you need for products: price per user, free trial, sign-up link?</li><li>When a caller agrees, what should happen: book a demo, send a link, transfer to a human?</li><li>Should WhatsApp/SMS be used for links? (This needs a provider.)</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 07 CAMPAIGNS ============ -->
+<section class="screen" id="s07">
+  <div class="screen-head"><span class="no">07</span><h2>Campaigns</h2><span class="tag t-chg">Changed</span><span class="url">/campaigns</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Live call</span><span class="on">Campaigns</span><span>Agents</span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Campaigns</h3><p>Create and monitor your lead outreach campaigns.</p></div><span class="btn pri">+ New campaign</span></div>
+          <table class="tbl">
+            <thead><tr><th>Campaign</th><th>Agent</th><th>Status</th><th>Progress</th><th class="r">Answered</th><th class="r">Interested</th><th class="r">Spent</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><b>Diwali ERP offer</b><div class="sub">Started 28 Oct, 10:00 am</div></td><td>Sales Assistant</td><td><span class="chip g">● Running</span></td><td style="min-width:110px"><div class="bar"><i style="width:62%"></i></div><div class="sub num">310 / 500</div></td><td class="r num">171</td><td class="r num">24</td><td class="r num">₹412.80</td><td><span class="btn">Pause</span></td></tr>
+              <tr><td><b>Webinar reminder: 2 Nov</b><div class="sub">Scheduled 1 Nov, 11:00 am</div></td><td>Webinar Reminder</td><td><span class="chip b">Scheduled</span></td><td><div class="bar"><i style="width:0"></i></div><div class="sub num">0 / 220</div></td><td class="r num">-</td><td class="r num">-</td><td class="r num">-</td><td><span class="btn">Edit</span></td></tr>
+              <tr><td><b>Billing app trial users</b><div class="sub">Ended 20 Oct</div></td><td>Sales Assistant</td><td><span class="chip n">Completed</span></td><td><div class="bar"><i style="width:100%;background:var(--ok)"></i></div><div class="sub num">140 / 140</div></td><td class="r num">92</td><td class="r num">11</td><td class="r num">₹198.40</td><td><span class="btn">Report</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Empty state only ("No campaigns yet"). This account has no campaigns, so we couldn't see what the list looks like with data.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>A list with status (Scheduled, Running, Paused, Completed), progress, answered, interested and amount spent.</li><li>Pause and resume a running campaign.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Does the backend already support pausing and scheduling campaigns?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 08 CREATE CAMPAIGN ============ -->
+<section class="screen" id="s08">
+  <div class="screen-head"><span class="no">08</span><h2>Create campaign</h2><span class="tag t-chg">Changed</span><span class="url">/campaigns/new</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span class="on">Campaigns</span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Create a campaign</h3><p>Choose an agent, upload leads, and configure call delivery.</p></div></div>
+          <div class="grid2">
+            <div style="display:grid;gap:9px;align-content:start">
+              <div class="field"><label for="cc-n">Campaign name</label><div class="inp" id="cc-n">Diwali ERP offer</div></div>
+              <div class="field"><label for="cc-a">Calling agent</label><div class="inp" id="cc-a">Brightlane Sales Assistant · outbound · ••210 ▾</div></div>
+              <div class="grid2"><div class="field"><label for="cc-c">Concurrent calls</label><div class="inp" id="cc-c">1</div></div><div class="field"><label>SIP trunk</label><div class="inp ph-t">From assigned number</div></div></div>
+              <div class="box soft mark"><span class="pin">NEW</span><h5>When to call</h5>
+                <div class="grid2"><div class="field"><label for="cc-s">Start</label><div class="inp" id="cc-s">Now ▾</div></div><div class="field"><label for="cc-h">Calling hours</label><div class="inp" id="cc-h">10:00 am – 7:00 pm</div></div></div>
+                <div class="grid2" style="margin-top:8px"><div class="field"><label for="cc-r">Retry unanswered</label><div class="inp" id="cc-r">2 times, 3 hrs apart</div></div><div class="field"><label for="cc-d">Skip DND numbers</label><div class="seg"><b class="on">Yes</b><b>No</b></div></div></div>
+              </div>
+            </div>
+            <div style="display:grid;gap:9px;align-content:start">
+              <div class="box" style="text-align:center;border-style:dashed"><b>leads-diwali.xlsx</b><div class="sub">500 rows · CSV, XLSX or XLS</div></div>
+              <div class="box soft mark"><span class="pin">NEW</span><h5>Column check</h5>
+                <table class="tbl"><tbody>
+                  <tr><td>phone</td><td><span class="chip g">Phone ✓</span></td><td class="r sub">496 valid · 4 bad</td></tr>
+                  <tr><td>name</td><td><span class="chip">{name}</span></td><td class="r sub">used in greeting</td></tr>
+                  <tr><td>city</td><td><span class="chip">{city}</span></td><td class="r sub">-</td></tr>
+                </tbody></table>
+              </div>
+              <div class="alert i mark"><span class="pin">NEW</span>Estimated cost ≈ ₹1,000 (500 leads × ~1 min × ₹2.00). Your wallet: ₹1,250.17</div>
+              <div class="row" style="justify-content:flex-end"><span class="btn">Cancel</span><span class="btn pri">Create and start campaign</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Fields: Campaign name, Calling agent, Concurrent calls, SIP trunk (taken from the agent's number), lead file (CSV, XLSX or XLS), and Phone column (optional).</li><li>Spreadsheet columns can be used in the script as placeholders, e.g. {name}, {amount}, {city}.</li><li>"This campaign starts automatically after it is created." There's no scheduling.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Add a start time and calling hours, needed to follow TRAI calling-time rules.</li><li>Retry unanswered calls.</li><li>Option to skip DND numbers.</li><li>Check the file's columns and phone numbers before starting.</li><li>Show an estimated cost against the wallet balance.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Should calling hours be a fixed company rule or set per campaign?</li><li>Is DND scrubbing required, and if so, which provider?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 09 CAMPAIGN PROGRESS ============ -->
+<section class="screen" id="s09">
+  <div class="screen-head"><span class="no">09</span><h2>Campaign progress</h2><span class="tag t-new">New</span><span class="url">/campaigns/:id (proposed)</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span class="on">Campaigns</span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Diwali ERP offer <span class="chip g">● Running</span></h3><p>Sales Assistant · calling 10:00 am – 7:00 pm · 1 line</p></div><div class="row"><span class="btn">Pause</span><span class="btn">Download results</span></div></div>
+          <div class="grid4">
+            <div class="box"><h5>Called</h5><div class="big num">310<span class="sub"> / 500</span></div><div class="bar" style="margin-top:6px"><i style="width:62%"></i></div></div>
+            <div class="box"><h5>Answered</h5><div class="big num">171</div><div class="sub">55%</div></div>
+            <div class="box"><h5>Interested</h5><div class="big num" style="color:var(--ok)">24</div><div class="sub">moved to Leads</div></div>
+            <div class="box"><h5>Spent</h5><div class="big num">₹412.80</div><div class="sub">avg ₹2.41 / answered call</div></div>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Lead</th><th>Phone</th><th>Attempt</th><th>Result</th><th>Outcome</th><th class="r">Duration</th></tr></thead>
+            <tbody>
+              <tr><td>Ravi Traders</td><td class="num">98•• •••410</td><td>1</td><td><span class="chip g">Answered</span></td><td><span class="chip o">Interested · ERP</span></td><td class="r num">2m 14s</td></tr>
+              <tr><td>Meena Stores</td><td class="num">97•• •••022</td><td>2</td><td><span class="chip n">No answer</span></td><td class="sub">Retry 3:40 pm</td><td class="r num">-</td></tr>
+              <tr><td>Kumar Electricals</td><td class="num">90•• •••871</td><td>1</td><td><span class="chip g">Answered</span></td><td><span class="chip n">Not interested</span></td><td class="r num">0m 41s</td></tr>
+              <tr><td>Sai Pharma</td><td class="num">88•• •••305</td><td>1</td><td><span class="chip r">Failed</span></td><td class="sub">Invalid number</td><td class="r num">-</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Not seen: this account has no campaigns, so we don't know if a detail page exists.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Live counters and a result for each lead, with attempt number and outcome.</li><li>Interested leads go into Leads (CRM) automatically.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Who decides "Interested": the AI after reading the call, or a person?</li><li>Which outcome labels do you need?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 10 PHONE NUMBERS ============ -->
+<section class="screen" id="s10">
+  <div class="screen-head"><span class="no">10</span><h2>Phone numbers</h2><span class="tag t-chg">Changed</span><span class="url">/phone-numbers</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Agents</span><span class="on">Phone numbers</span><span>Call history</span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Phone numbers</h3><p>Numbers your agents call from and receive calls on.</p></div><span class="btn pri">+ Get a number</span></div>
+          <table class="tbl">
+            <thead><tr><th>Number</th><th>Channels</th><th>Assigned agent</th><th>Used for</th><th>Rental</th><th>Renews</th><th></th></tr></thead>
+            <tbody>
+              <tr><td class="num"><b>+91 79•• ••• 210</b></td><td class="num">1 (1 in use)</td><td>Sales Assistant, Webinar Reminder</td><td><span class="chip b">Outbound + Inbound</span></td><td class="num">₹250 / month</td><td class="num">19 Nov 2026</td><td><span class="btn">Manage</span></td></tr>
+            </tbody>
+          </table>
+          <div class="alert w">2 agents share 1 channel, so only one call can run at a time on this number. Add channels in Billing.</div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div class="issue"><h4>Issues seen</h4><ul><li>The page stayed on "Loading phone numbers…" for more than 12 seconds, on two separate visits. It never showed any data.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>A list of numbers with channels, assigned agents, rental cost and renewal date.</li><li>A warning when agents share one channel.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Can customers buy numbers themselves, or does the admin assign them?</li><li>Is this page working for other accounts?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 11 CALL HISTORY ============ -->
+<section class="screen" id="s11">
+  <div class="screen-head"><span class="no">11</span><h2>Call history</h2><span class="tag t-chg">Changed</span><span class="url">/calls</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Phone numbers</span><span class="on">Call history</span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Call history</h3><p>Customer calls, billing, and transcripts.</p></div><div class="row"><span class="btn">Export</span><span class="btn">Refresh</span></div></div>
+          <div class="row mark"><span class="pin">NEW</span><div class="inp ph-t" style="min-width:160px">Search name / number</div><div class="inp">All agents ▾</div><div class="inp">All campaigns ▾</div><div class="inp">Status: All ▾</div><div class="inp">Last 7 days ▾</div><label class="sub"><input type="checkbox" checked id="ch-0"> Hide 0-second calls</label></div>
+          <table class="tbl">
+            <thead><tr><th>Customer</th><th>Agent</th><th>When</th><th>Mode</th><th>Status</th><th>Outcome</th><th class="r">Duration</th><th class="r">Total</th></tr></thead>
+            <tbody>
+              <tr><td><b>Ravi Traders</b><div class="sub num">98•• •••410</div></td><td>Sales Assistant</td><td class="num">29 Oct, 1:37 pm</td><td>SIP</td><td><span class="chip g">Completed</span></td><td><span class="chip o">Interested</span></td><td class="r num">1m 53s</td><td class="r num">₹4.95</td></tr>
+              <tr><td><b>Meena Stores</b><div class="sub num">97•• •••022</div></td><td>Webinar Reminder</td><td class="num">29 Oct, 1:28 pm</td><td>SIP</td><td><span class="chip g">Completed</span></td><td><span class="chip n">Message played</span></td><td class="r num">35s</td><td class="r num">₹2.37</td></tr>
+              <tr><td><b>Test call</b><div class="sub">browser</div></td><td>Sales Assistant</td><td class="num">28 Oct, 6:25 pm</td><td>Browser</td><td><span class="chip g">Completed</span></td><td class="sub">-</td><td class="r num">6m 20s</td><td class="r num">₹16.75</td></tr>
+              <tr><td><b>Sai Pharma</b><div class="sub num">88•• •••305</div></td><td>Sales Assistant</td><td class="num">28 Oct, 11:48 am</td><td>SIP</td><td><span class="chip r">Failed</span></td><td class="sub">No answer</td><td class="r num">-</td><td class="r num">₹0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>"Call ledger" with 184 calls. Columns: Call identity, Timestamp, Mode, Status, Duration, Rate/min, Total, View.</li><li>Rows can be ticked, with a "Delete selected" button.</li></ul></div>
+      <div class="issue"><h4>Issues seen</h4><ul><li>Each row shows only two internal IDs (call and agent). There's no customer name, phone number or agent name.</li><li>Many recent calls show "Completed" with 0 seconds and ₹0, which looks like the call didn't connect but is reported as completed.</li><li>There are no filters and no search.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Show the customer, number, agent and campaign on each row.</li><li>Add an outcome column.</li><li>Add filters and search.</li><li>Hide 0-second calls by default.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Should customers be allowed to delete call records? (It affects the billing record.)</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 12 CALL DETAIL ============ -->
+<section class="screen" id="s12">
+  <div class="screen-head"><span class="no">12</span><h2>Call detail</h2><span class="tag t-chg">Changed</span><span class="url">/calls → View</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span class="on">Call history</span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Call details</h3><p>Ravi Traders · 98•• •••410 · Sales Assistant · Diwali ERP offer</p></div><div class="row"><span class="chip">SIP</span><span class="chip g">Completed</span></div></div>
+          <div class="grid4">
+            <div class="box"><h5>Duration</h5><div class="big num">1m 53s</div><div class="sub">1.88 billable min</div></div>
+            <div class="box"><h5>Rate</h5><div class="big num">₹2.63</div><div class="sub">per minute</div></div>
+            <div class="box"><h5>Total billed</h5><div class="big num">₹4.95</div><div class="sub">29 Oct, 1:37 pm</div></div>
+            <div class="box mark"><span class="pin">NEW</span><h5>Outcome</h5><div><span class="chip o">Interested · ERP</span></div><div class="sub">Next: book demo</div></div>
+          </div>
+          <div class="grid2">
+            <div style="display:grid;gap:8px;align-content:start">
+              <div class="box mark"><span class="pin">NEW</span><h5>Recording</h5><div class="row"><span class="btn">▶</span><div class="wave" style="flex:1"></div><span class="sub num">1:53</span></div></div>
+              <div class="box mark"><span class="pin">NEW</span><h5>AI summary</h5><div style="font-size:12px">Owner runs 4 shops and wants ERP with GST billing. Budget about ₹5 lakh. Asked for a demo next week.</div>
+                <div class="row" style="margin-top:8px"><span class="btn pri">Create follow-up</span><span class="btn">Open lead</span></div></div>
+            </div>
+            <div class="box"><h5>Transcript · 17 messages</h5>
+              <div class="tx"><div class="ag">Namaste Ravi ji, main Priya bol rahi hoon Brightlane Software se…</div><div class="cu">Haan, ERP ke baare mein batayiye.</div><div class="ag">Zaroor. Aapke kitne branch hain?</div><div class="cu">Chaar shops hain.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>A "Call details" panel with ID, mode, status, a billing summary (duration, billable minutes, rate, total) and the full transcript (Hindi/English mix shown correctly).</li><li>No recording player was visible, although Recording is on for some agents.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Show who was called.</li><li>Add a recording player.</li><li>Add an AI summary and outcome.</li><li>Add one-click Create follow-up and Open lead.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>How long should recordings be kept?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 13 LEADS CRM ============ -->
+<section class="screen" id="s13">
+  <div class="screen-head"><span class="no">13</span><h2>Leads (CRM pipeline)</h2><span class="tag t-new">New</span><span class="url">/leads (proposed)</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Services <em>NEW</em></span><span class="on">Leads <em>NEW</em></span><span>Follow-ups <em>NEW</em></span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Leads</h3><p>Everyone your agents have spoken to, by stage.</p></div><div class="row"><span class="btn">Import</span><span class="btn pri">+ Add lead</span></div></div>
+          <div class="kan">
+            <div class="col"><h6>New <span class="num">212</span></h6><div class="cd"><b>Meena Stores</b><span class="sub">No answer ×2</span></div><div class="cd"><b>Gupta Hardware</b><span class="sub">Campaign: Diwali</span></div></div>
+            <div class="col"><h6>Contacted <span class="num">64</span></h6><div class="cd"><b>Kumar Electricals</b><span class="sub">Call back after 5 Nov</span></div></div>
+            <div class="col"><h6>Interested <span class="num">24</span></h6><div class="cd"><b>Ravi Traders</b><span class="chip o">ERP · ~₹5L</span><span class="sub">Demo due 4 Nov</span></div><div class="cd"><b>Om Textiles</b><span class="chip o">Billing App</span></div></div>
+            <div class="col"><h6>Demo / proposal <span class="num">6</span></h6><div class="cd"><b>Patel &amp; Sons</b><span class="chip o">Mobile app</span><span class="sub">Proposal sent</span></div></div>
+            <div class="col"><h6>Won / Lost <span class="num">3 / 9</span></h6><div class="cd"><b>Sharma Clinic</b><span class="chip g">Won · ₹62,000</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Not in the app. The "Memory" setting remembers a caller between calls, but there's no list of leads anywhere.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Leads are created from campaign files and calls.</li><li>The stage is set from the call outcome.</li><li>Drag a lead to move it between stages.</li><li>Each lead shows its calls, transcripts and notes.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Are these 5 stages right?</li><li>Do you need to sync with an outside CRM (Zoho, HubSpot) or is this enough?</li><li>Do you need team members, with leads assigned to staff?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 14 FOLLOW-UPS ============ -->
+<section class="screen" id="s14">
+  <div class="screen-head"><span class="no">14</span><h2>Follow-ups</h2><span class="tag t-new">New</span><span class="url">/follow-ups (proposed)</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Leads <em>NEW</em></span><span class="on">Follow-ups <em>NEW</em></span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Follow-ups</h3><p>Callbacks the AI promised, and tasks for your team.</p></div><div class="seg"><b class="on">Today (7)</b><b>Overdue (2)</b><b>Upcoming</b><b>Done</b></div></div>
+          <table class="tbl">
+            <thead><tr><th>Due</th><th>Lead</th><th>What</th><th>Who does it</th><th>Source</th><th></th></tr></thead>
+            <tbody>
+              <tr><td class="num" style="color:var(--bad)"><b>Yesterday 4 pm</b></td><td>Om Textiles</td><td>Send Billing App sign-up link</td><td><span class="chip">Team · Anita</span></td><td class="sub">Call 27 Oct</td><td><span class="btn">Mark done</span></td></tr>
+              <tr><td class="num">Today 11:00 am</td><td>Kumar Electricals</td><td>Callback: asked to call after 5 Nov</td><td><span class="chip b">AI agent</span></td><td class="sub">Call 29 Oct</td><td><span class="btn">Reschedule</span></td></tr>
+              <tr><td class="num">Today 3:30 pm</td><td>Ravi Traders</td><td>Book ERP demo slot</td><td><span class="chip">Team · Vikram</span></td><td class="sub">Call 29 Oct</td><td><span class="btn">Mark done</span></td></tr>
+            </tbody>
+          </table>
+          <div class="alert i">When a caller says "call me later", the AI creates an AI-agent follow-up and calls back at that time, within calling hours.</div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Not in the app.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Two kinds of follow-up: automatic AI callbacks, and tasks for people.</li><li>Tabs for Today, Overdue, Upcoming and Done.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Should AI callbacks happen automatically, or wait for approval?</li><li>Should reminders be sent by email or WhatsApp to staff?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 15 BILLING ============ -->
+<section class="screen" id="s15">
+  <div class="screen-head"><span class="no">15</span><h2>Billing</h2><span class="tag t-chg">Changed</span><span class="url">/billing</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Finance</div><span class="on">Billing</span></div>
+        <div class="main">
+          <div class="ph"><div><h3>Billing</h3><p>Manage your wallet, usage, subscription, and transactions.</p></div></div>
+          <div class="grid3">
+            <div class="box wallet"><h5>Wallet balance</h5><div class="big num">₹1,250.17</div><div class="sub">Recharged ₹1,451.00 · Spent ₹121.97</div><div class="row" style="margin-top:8px"><span class="btn">₹250</span><span class="btn">₹500</span><span class="btn">₹1,000</span><span class="btn">Custom</span></div></div>
+            <div class="box"><h5>Current plan <span class="chip g">Active</span></h5><div class="big num">₹4,999<span class="sub"> / month</span></div><div class="sub">Agents 3 / 3 · Channels 2 · KB 20k chars, 50 FAQs</div><div class="sub">Renews 19 Nov 2026</div></div>
+            <div class="box"><h5>Add-ons</h5><div class="sub">Extra channel: ₹1,000 / month</div><div class="sub">Phone number rental: ₹250 / month</div><div class="sub">Knowledge base +100K: ₹1,000 / month</div><span class="btn pri" style="margin-top:8px">Change plan</span></div>
+          </div>
+          <div class="seg"><b class="on">All (30)</b><b>Top-ups (20)</b><b>Spent (10)</b><b class="mark" style="outline-offset:1px"><span class="pin">NEW</span>Invoices</b></div>
+          <table class="tbl">
+            <thead><tr><th>Type</th><th>Date</th><th>Details</th><th class="r">Amount</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><span class="chip g">Top-up</span></td><td class="num mark c" style="outline-offset:1px"><span class="pin">FIX</span>20 Oct 2026, 3:21 pm</td><td>Wallet recharge</td><td class="r num" style="color:var(--ok)">+₹100.00</td><td><span class="btn">Receipt</span></td></tr>
+              <tr><td><span class="chip r">Call</span></td><td class="num">2 Oct 2026, 7:37 pm</td><td>Ravi Traders · 9m 12s</td><td class="r num">−₹21.62</td><td><span class="btn">View call</span></td></tr>
+              <tr><td><span class="chip b">Plan</span></td><td class="num">19 Oct 2026</td><td>Monthly plan renewal</td><td class="r num">−₹4,999.00</td><td><span class="btn">Invoice</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Live app today</h4><ul><li>Wallet with quick top-ups (₹100–₹1,000 or a custom amount, whole rupees only).</li><li>"Your current plan": ₹4,999/month, 3 of 3 agents, 2 VoiceLink channels, KB allowance of 20k chars and 50 FAQs, renews on 2026-11-19.</li><li>Plan builder: extra channels at ₹1,000/month each, phone rental at ₹250/month, KB+100K at ₹1,000/month, paid with "Buy &amp; activate (wallet)".</li><li>Transaction list with All, Top-ups and Spent tabs.</li></ul></div>
+      <div class="issue"><h4>Issues seen</h4><ul><li>Dates show in raw computer format ("2026-10-20T09:51:43"), in UTC rather than Indian time.</li><li>The Agent plan dropdown shows "__none__".</li><li>Call charges show only an internal call ID.</li><li>There are no GST invoices.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Are GST invoices for top-ups and plans needed?</li><li>Which payment gateway is used for top-ups? (We didn't check it; no payment was made.)</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+
+<!-- ============ JOURNEY ============ -->
+<section class="part" id="journey">
+  <h2>Expansion: one AI sales team, from first enquiry to paying client</h2>
+  <p>Requested on 2 Nov 2026: the agent should not stop after one call. It should take every lead through the whole journey below, and hand over to a person when it matters. Screens 16–32 show each step; 32 follows a reference dashboard you shared.</p>
+  <div class="journey">
+    <div class="now"><b>1. Collect</b><span>Excel/CSV (built) · Facebook, Google, website forms (16)</span></div>
+    <div><b>2. Call</b><span>Instantly after an enquiry, in the lead's language (16, 24)</span></div>
+    <div><b>3. Qualify</b><span>Budget, need, timeline → Hot / Warm / Cold (17)</span></div>
+    <div class="now"><b>4. Follow up</b><span>Callbacks + tasks (built) · WhatsApp, email (18)</span></div>
+    <div><b>5. Meet</b><span>Book, confirm, remind, reschedule (19)</span></div>
+    <div><b>6. Close</b><span>Quotes, objections, hand over to a person (20, 21)</span></div>
+    <div><b>7. Onboard</b><span>Mark converted, welcome, stop sales calls (22)</span></div>
+  </div>
+  <div class="status"><span><i style="background:#12c06a"></i>green = already built in the new app</span><span><i style="background:rgba(255,255,255,.4)"></i>others = proposed below</span><span>Runs on: automations (23), voice studio (24), AI models (25), knowledge (26), cost tracking (27), admin (28)</span></div>
+</section>
+
+<!-- ============ 16 ============ -->
+<section class="screen" id="s16">
+  <div class="screen-head"><span class="no">16</span><h2>Lead sources &amp; instant call</h2><span class="tag t-exp">Expansion</span><span class="url">/settings/integrations · /leads/sources</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span class="on">Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Lead sources</h3><p>New enquiries arrive here automatically and can be called within a minute.</p></div><span class="btn pri">+ Connect a source</span></div>
+          <div class="box" style="display:grid;gap:10px">
+            <div class="src"><span class="ic" style="background:#1877f2">f</span><div><b>Facebook Lead Ads</b><div class="sub">Page "Brightlane Software" · form "ERP demo" · 42 leads this week</div></div><span class="chip g">Connected</span></div>
+            <div class="src"><span class="ic" style="background:#ea4335">G</span><div><b>Google Ads lead forms</b><div class="sub">Campaign "Retail ERP – Jaipur" · 17 leads this week</div></div><span class="chip g">Connected</span></div>
+            <div class="src"><span class="ic" style="background:#4a2c9e">&lt;/&gt;</span><div><b>Website form</b><div class="sub">Paste a small code snippet, or send forms to a webhook link</div></div><span class="btn">Get code</span></div>
+            <div class="src"><span class="ic" style="background:#6b6780">⇄</span><div><b>Other CRM / Zapier</b><div class="sub">HubSpot, Zoho, Google Sheets via webhook</div></div><span class="chip n">Not connected</span></div>
+          </div>
+          <div class="grid2">
+            <div class="box mark x"><span class="pin">SPEED</span><h5>Call new leads instantly</h5><div class="row"><span class="tg on"></span><b>On</b> · within <b>60 seconds</b>, only inside calling hours</div><div class="sub" style="margin-top:4px">Agent: Priya Sales · language from the form, else Hindi</div></div>
+            <div class="box"><h5>Duplicates</h5><div class="row"><span class="tg on"></span>Merge by mobile number</div><div class="sub" style="margin-top:4px">Same person from 2 sources → one lead with both sources in its history</div></div>
+          </div>
+          <table class="tbl"><tr><th>Arrived</th><th>Lead</th><th>Source</th><th>Called</th></tr>
+            <tr><td class="num">10:02 am</td><td>Anita Joshi</td><td><span class="chip b">Facebook</span></td><td><span class="chip g">after 41 s · Interested</span></td></tr>
+            <tr><td class="num">9:47 am</td><td>Rakesh Rao</td><td><span class="chip o">Website</span></td><td><span class="chip n">Merged with existing lead</span></td></tr>
+            <tr><td class="num">8:15 am</td><td>Sunil Mehta</td><td><span class="chip b">Google</span></td><td><span class="chip o">Queued: calling hours start 10 am</span></td></tr></table>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Leads come only from Excel/CSV upload or are typed in by hand (built). Duplicates are refused, not merged.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Connect Facebook Lead Ads, Google Ads lead forms, a website form and a webhook for other tools.</li><li>Optionally call every new lead within about a minute ("speed to lead"), only inside calling hours and never if marked Do not call.</li><li>Merge duplicates by mobile number and keep every source in the lead's history.</li></ul></div>
+      <div class="issue"><h4>Needs first</h4><ul><li>Facebook and Google business accounts with admin access to the ad forms.</li><li>Consent text on forms ("we may call you") for TRAI compliance.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Which sources matter first: Facebook, Google, website form, or a CRM you already use?</li><li>Should instant calls happen at night too, or wait for calling hours? (We suggest wait.)</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 17 ============ -->
+<section class="screen" id="s17">
+  <div class="screen-head"><span class="no">17</span><h2>Lead scoring &amp; qualification (Hot / Warm / Cold)</h2><span class="tag t-exp">Expansion</span><span class="url">/leads · /agents/:id → Qualify</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span class="on">Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Leads</h3><p>The agent asks your qualifying questions and scores each lead.</p></div><div class="seg"><b class="on">All</b><b>🔥 Hot 18</b><b>Warm 46</b><b>Cold 120</b></div></div>
+          <table class="tbl"><tr><th>Score</th><th>Lead</th><th>Need</th><th>Budget</th><th>Timeline</th><th>Next step</th></tr>
+            <tr><td><span class="score" style="background:#e5484d">86</span></td><td><b>Ravi Traders</b><div class="sub">Jaipur · 3 branches</div></td><td>Stock + GST in one app</td><td class="num">₹4–5 lakh</td><td>This month</td><td><span class="chip g">Demo booked Fri 11 am</span></td></tr>
+            <tr><td><span class="score" style="background:#f59e0b">58</span></td><td><b>Kumar Electricals</b><div class="sub">Jaipur</div></td><td>Billing only</td><td class="num">Not shared</td><td>In 3 months</td><td><span class="chip o">Callback Tue</span></td></tr>
+            <tr><td><span class="score" style="background:#6b7280">21</span></td><td><b>Rao Mobiles</b><div class="sub">Hyderabad</div></td><td>Just browsing</td><td>-</td><td>No plan</td><td><span class="chip n">Monthly newsletter</span></td></tr></table>
+          <div class="box mark x"><span class="pin">SETUP</span><h5>Qualifying questions (per agent)</h5>
+            <div class="grid2"><div class="sub">1. What do you need it for? <b>(need)</b><br>2. Roughly what budget? <b>(budget)</b><br>3. When do you want to start? <b>(timeline)</b><br>4. Who decides? <b>(authority)</b></div>
+            <div class="sub">Hot ≥ 70 · Warm 40–69 · Cold &lt; 40<br>Hot lead → alert the owner on WhatsApp at once<br>Score updates after every call</div></div></div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Leads have stages (New → Won/Lost) and a deal value (built). There's no score and no recorded budget, need or timeline.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>You write the qualifying questions per agent; the agent asks them naturally and saves the answers on the lead.</li><li>Score 0–100 with Hot / Warm / Cold labels; filter and sort by it; instant alert for Hot leads.</li><li>The score and reasons are shown on the lead page, so a salesperson can see why.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>What makes a lead "Hot" for your business (e.g. budget above ₹X and starting this month)?</li><li>Who should get the Hot-lead alert: the lead owner, or a fixed person?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 18 ============ -->
+<section class="screen" id="s18">
+  <div class="screen-head"><span class="no">18</span><h2>WhatsApp &amp; email follow-ups</h2><span class="tag t-exp">Expansion</span><span class="url">/messages · /settings/integrations</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span class="on">Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Messages</h3><p>Follow-up messages sent by the agent after calls, from approved templates.</p></div><span class="btn pri">+ New template</span></div>
+          <div class="grid2">
+            <div class="box"><h5>WhatsApp templates (approved by Meta)</h5>
+              <div class="sub"><b>after_call_interested</b> · <span class="chip g">Approved</span><br>"Namaste {name}, thanks for speaking with Priya. Here is the ERP brochure: {link}"</div>
+              <div class="sub" style="margin-top:6px"><b>meeting_reminder</b> · <span class="chip g">Approved</span><br>"Reminder: your demo is at {time} today. Join: {meeting_link}"</div>
+              <div class="sub" style="margin-top:6px"><b>no_answer</b> · <span class="chip o">Waiting for approval</span></div></div>
+            <div class="box mark x"><span class="pin">SEQUENCE</span><h5>Sequence: "Interested but not booked"</h5>
+              <div class="wf"><div class="n">Day 0 · WhatsApp brochure</div><div class="n">Day 2 · Email case study</div><div class="n">Day 4 · Agent calls back</div><div class="n">Day 7 · WhatsApp "still interested?"</div></div>
+              <div class="sub" style="margin-top:6px">Stops automatically when the lead replies, books a meeting or says stop.</div></div>
+          </div>
+          <table class="tbl"><tr><th>When</th><th>Lead</th><th>Channel</th><th>Message</th><th>Status</th></tr>
+            <tr><td class="num">10:05 am</td><td>Ravi Traders</td><td><span class="chip g">WhatsApp</span></td><td>after_call_interested</td><td><span class="chip g">Read</span></td></tr>
+            <tr><td class="num">9:30 am</td><td>Das Furniture</td><td><span class="chip b">Email</span></td><td>Case study: retail ERP</td><td><span class="chip n">Delivered</span></td></tr>
+            <tr><td class="num">Yesterday</td><td>Meena Stores</td><td><span class="chip g">WhatsApp</span></td><td>Reply: "Call me after Diwali"</td><td><span class="chip o">Follow-up created</span></td></tr></table>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Follow-ups are agent callbacks and team tasks only (built). No WhatsApp, email or SMS is sent.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>WhatsApp Business messages from Meta-approved templates, with {placeholders} from the lead.</li><li>Email follow-ups from your own domain.</li><li>Sequences that stop on reply, booking or "stop"; replies appear in the lead's history and can create follow-ups.</li><li>The agent remembers past messages and calls when it talks to the lead again.</li></ul></div>
+      <div class="issue"><h4>Needs first</h4><ul><li>WhatsApp Business API account (via Meta or a provider such as Gupshup/Interakt) and approved templates.</li><li>An email sending service and domain set-up (SPF/DKIM).</li><li>Opt-out handling for every message.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Which WhatsApp number should messages come from?</li><li>Is SMS needed too, or WhatsApp + email only?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 19 ============ -->
+<section class="screen" id="s19">
+  <div class="screen-head"><span class="no">19</span><h2>Meeting &amp; appointment booking</h2><span class="tag t-exp">Expansion</span><span class="url">/meetings · /settings/calendar</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span class="on">Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Meetings</h3><p>The agent offers free slots during the call and books them.</p></div><div class="seg"><b class="on">Upcoming 6</b><b>Today 2</b><b>Past</b></div></div>
+          <div class="grid2">
+            <div class="box mark x"><span class="pin">DURING CALL</span><h5>Free slots offered by the agent (Fri 7 Nov)</h5>
+              <div class="slots"><span class="no">10:00</span><span class="on">11:00</span><span>12:00</span><span class="no">2:00</span><span>3:00</span></div>
+              <div class="sub" style="margin-top:6px">From Rahul's Google Calendar · 30-minute demo · 15 min gap between meetings</div></div>
+            <div class="box"><h5>Automatic messages</h5><div class="sub">✓ Confirmation on WhatsApp + email with meeting link<br>✓ Reminder 1 day before and 1 hour before<br>✓ "Reschedule" link; the agent can also rebook on a call<br>✓ No-show → agent calls to rebook</div></div>
+          </div>
+          <table class="tbl"><tr><th>When</th><th>Lead</th><th>With</th><th>Type</th><th>Status</th></tr>
+            <tr><td class="num">Fri 11:00 am</td><td>Ravi Traders</td><td>Rahul (Sales)</td><td>Google Meet demo</td><td><span class="chip g">Confirmed</span></td></tr>
+            <tr><td class="num">Fri 3:00 pm</td><td>Kumar Electricals</td><td>Rahul (Sales)</td><td>Office visit</td><td><span class="chip o">Reminder sent</span></td></tr>
+            <tr><td class="num">Thu 12:00 pm</td><td>Iyer Bakery</td><td>Neha (Sales)</td><td>Phone</td><td><span class="chip r">No-show → rebooking call queued</span></td></tr></table>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Not available. The agent can only note "wants a demo" in the summary; someone books it by hand.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Connect Google or Outlook calendars per salesperson; the agent offers real free slots during the call.</li><li>Book, confirm, remind (1 day / 1 hour before), reschedule, and handle no-shows by calling back.</li><li>Meetings appear on the lead page and move the lead to Demo / proposal.</li></ul></div>
+      <div class="issue"><h4>Needs first</h4><ul><li>Calendar access for each salesperson (Google Workspace or Microsoft 365).</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Google Calendar, Outlook, or both?</li><li>Online meetings (Google Meet/Zoom), office visits, or both?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 20 ============ -->
+<section class="screen" id="s20">
+  <div class="screen-head"><span class="no">20</span><h2>Quotes &amp; proposals</h2><span class="tag t-exp">Expansion</span><span class="url">/quotes · /leads/:id → Quote</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span class="on">Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Quote Q-2026-014</h3><p>For Ravi Traders · created from the call on 6 Nov</p></div><div class="row"><span class="btn">Preview PDF</span><span class="btn pri">Send on WhatsApp + email</span></div></div>
+          <table class="tbl"><tr><th>Item (from Services &amp; Products)</th><th class="r">Qty</th><th class="r">Price</th><th class="r">Amount</th></tr>
+            <tr><td>ERP for retail · yearly licence</td><td class="r num">3 branches</td><td class="r num">₹45,000</td><td class="r num">₹1,35,000</td></tr>
+            <tr><td>Set-up and data migration</td><td class="r num">1</td><td class="r num">₹25,000</td><td class="r num">₹25,000</td></tr>
+            <tr><td class="sub">Discount (approved by owner)</td><td></td><td></td><td class="r num">−₹10,000</td></tr>
+            <tr><td><b>Total + GST 18%</b></td><td></td><td></td><td class="r num"><b>₹1,77,000</b></td></tr></table>
+          <div class="grid3">
+            <div class="box"><h5>Status</h5><span class="chip g">Viewed 2 times</span><div class="sub">Last opened today 9:12 am</div></div>
+            <div class="box mark x"><span class="pin">RULE</span><h5>Discount limit</h5><div class="sub">Agent may offer up to 5%. Above that → ask the owner first.</div></div>
+            <div class="box"><h5>Next</h5><div class="sub">Not accepted in 3 days → agent calls to answer questions</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Services &amp; Products hold prices and "may quote price" (built). No quotes or proposals are created.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Create a quote from the lead's interest and your Services &amp; Products; GST added; PDF with your logo.</li><li>Send on WhatsApp/email; see when it's opened; accept online.</li><li>Discount limits: the agent may offer up to a set %, larger discounts go to the owner.</li><li>Common objections (price, timing, competitor) answered from your own approved replies.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Do you need a formal proposal document, or a quote is enough?</li><li>What is the maximum discount the agent may offer on its own?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 21 ============ -->
+<section class="screen" id="s21">
+  <div class="screen-head"><span class="no">21</span><h2>Hand over to a person</h2><span class="tag t-exp">Expansion</span><span class="url">/agents/:id → Handover · live call</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span class="on">Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Hand over to a person</h3><p>When to transfer a live call from the agent to your team.</p></div><span class="chip g">2 salespeople available now</span></div>
+          <div class="box" style="display:grid;gap:8px">
+            <div class="row"><span class="tg on"></span>The caller asks for a person</div>
+            <div class="row"><span class="tg on"></span>Lead is <b>Hot</b> and wants to negotiate price</div>
+            <div class="row"><span class="tg on"></span>Caller is angry or the agent can't answer twice in a row</div>
+            <div class="row"><span class="tg"></span>Deal value above ₹5,00,000</div>
+          </div>
+          <div class="grid2">
+            <div class="box"><h5>Who gets the call</h5><div class="sub">1. The lead's owner, if free<br>2. Else round-robin: Rahul → Neha<br>3. Nobody free → agent books a callback and alerts on WhatsApp</div></div>
+            <div class="box mark x"><span class="pin">WHISPER</span><h5>What the person hears first</h5><div class="sub">"Ravi Traders, Jaipur, Hot lead. Wants ERP for 3 branches, budget ₹4–5 lakh, asking for 10% off." Then the caller is connected.</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Not available. Calls end with the agent; the team reads the summary later.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Rules for when to transfer (asked for a person, Hot lead negotiating, upset caller, high deal value).</li><li>Ring the lead owner, else the next free salesperson; the person hears a short summary before joining.</li><li>If nobody is free: agent books a callback and alerts the team.</li></ul></div>
+      <div class="issue"><h4>Needs first</h4><ul><li>SIP provider that supports call transfer (most do; to be confirmed with the chosen provider).</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Should transfers ring salespeople's mobile phones, or a desk phone / browser?</li><li>Working hours for live transfers?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 22 ============ -->
+<section class="screen" id="s22">
+  <div class="screen-head"><span class="no">22</span><h2>Client conversion &amp; onboarding</h2><span class="tag t-exp">Expansion</span><span class="url">/leads/:id → Converted · /settings/onboarding</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span class="on">Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Ravi Traders</h3><p>Converted on 12 Nov · ERP for retail · ₹1,77,000</p></div><span class="chip g">Client</span></div>
+          <div class="alert i">All sales follow-ups and campaign calls for this lead were stopped automatically.</div>
+          <div class="grid2">
+            <div class="box mark x"><span class="pin">ONBOARDING</span><h5>Onboarding checklist</h5><div class="sub">✓ Welcome message on WhatsApp + email<br>✓ Login details and getting-started guide sent<br>◻ Kick-off call booked with support (agent will offer slots)<br>◻ Data migration files received<br>◻ 7-day check-in call by the agent</div></div>
+            <div class="box"><h5>Client history</h5><div class="sub">First enquiry: Facebook form, 2 Nov<br>3 calls · 4 WhatsApp messages · 1 demo · 1 quote<br>Kept for support and renewals</div></div>
+          </div>
+          <div class="box soft"><h5>When a lead counts as converted</h5><div class="sub">Quote accepted, or payment received, or a team member marks Won → stage becomes <b>Client</b>, onboarding starts.</div></div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>A lead can be moved to Won by hand (built). Nothing happens automatically after that.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Mark converted automatically (quote accepted / payment) or by hand.</li><li>Stop all sales calls and messages to converted clients.</li><li>Onboarding checklist with welcome messages, a kick-off booking and check-in calls by the agent.</li><li>Full client history kept for support and renewals.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>What are your onboarding steps today?</li><li>Should the agent also handle renewal reminders later?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 23 ============ -->
+<section class="screen" id="s23">
+  <div class="screen-head"><span class="no">23</span><h2>Automation workflows</h2><span class="tag t-exp">Expansion</span><span class="url">/automations</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span class="on">Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Automation: Hot lead fast-track</h3><p>When something happens → check → do these steps.</p></div><div class="row"><span class="tg on"></span><b>Active</b><span class="btn">Test with a lead</span></div></div>
+          <div class="wf">
+            <div class="n t"><b>WHEN</b> a call ends with score ≥ 70 (Hot)</div><div class="ln"></div>
+            <div class="n c"><b>IF</b> no meeting booked yet</div><div class="ln"></div>
+            <div class="n a"><b>DO</b> WhatsApp "after_call_interested" to the lead</div><div class="ln"></div>
+            <div class="n a"><b>DO</b> alert the lead owner on WhatsApp</div><div class="ln"></div>
+            <div class="n a"><b>WAIT</b> 1 day → if still no meeting, agent calls back</div>
+          </div>
+          <table class="tbl"><tr><th>Automation</th><th>Runs this week</th><th>Status</th></tr>
+            <tr><td>New Facebook lead → call in 60 s</td><td class="num">42</td><td><span class="chip g">On</span></td></tr>
+            <tr><td>No answer 3 times → WhatsApp "When can we call?"</td><td class="num">17</td><td><span class="chip g">On</span></td></tr>
+            <tr><td>Quote not opened in 2 days → email reminder</td><td class="num">3</td><td><span class="chip n">Off</span></td></tr></table>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Fixed behaviour only: campaigns retry, follow-ups are created by hand or by the agent.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Simple builder: When (new lead, call ended, score changed, meeting missed, quote opened…) → If (conditions) → Do (call, WhatsApp, email, task, change stage, alert).</li><li>Ready-made templates for the common cases; a test run on one lead before switching on.</li><li>Every automated action is logged on the lead's history.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Which 3 automations would save your team the most time?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 24 ============ -->
+<section class="screen" id="s24">
+  <div class="screen-head"><span class="no">24</span><h2>Voice studio (voice, tone, speed, language)</h2><span class="tag t-exp">Expansion</span><span class="url">/agents/:id → Voice</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span class="on">Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Priya Sales · Voice</h3><p>How the agent sounds. Press Preview to hear the greeting.</p></div><span class="btn go">▶ Preview greeting</span></div>
+          <div class="grid3">
+            <div class="field"><label>Voice</label><div class="inp">Anushka · female ▾</div></div>
+            <div class="field"><label>Tone</label><div class="seg"><b>Professional</b><b class="on">Friendly</b><b>Energetic</b><b>Sales</b></div></div>
+            <div class="field"><label>Accent</label><div class="inp">Indian English / Hindi ▾</div></div>
+          </div>
+          <div class="grid2">
+            <div class="box"><h5>Speed</h5><div class="meter"><span>Slower</span><div class="bar"><i style="width:55%"></i></div><span>Faster</span></div><div class="sub">1.05× · pauses before numbers and prices</div></div>
+            <div class="box mark x"><span class="pin">LANGUAGE</span><h5>Languages</h5><div class="sub">Starts in: <b>Hindi</b> · switches with the caller<br><span class="tg on"></span> Understand Hinglish (Hindi + English mixed)<br>Also: English, Bengali, Tamil, Telugu, Marathi, Gujarati, Kannada, Punjabi, Malayalam, Odia</div></div>
+          </div>
+          <div class="box soft"><h5>Voice per campaign</h5><div class="sub">"Diwali offer – North": Anushka, Hindi, friendly · "South dealers": Kavya, Tamil, professional</div></div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Agent setup has male/female voice, personality and 11 languages (built), but no preview, speed, accent, per-campaign voice or Hinglish switching yet.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Voice preview before saving; speed and style; accent.</li><li>Start language per agent or per lead, and switch mid-call when the caller does (Hinglish).</li><li>Override the voice per campaign.</li></ul></div>
+      <div class="issue"><h4>Needs first</h4><ul><li>Voice provider account (Sarvam for Indian languages; others optional).</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Which languages are needed at launch?</li><li>Should we offer a custom (cloned) voice of your own team later?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 25 ============ -->
+<section class="screen" id="s25">
+  <div class="screen-head"><span class="no">25</span><h2>AI models &amp; providers</h2><span class="tag t-exp">Expansion</span><span class="url">/settings/ai-models · admin: /admin/providers</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span class="on">AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>AI models</h3><p>Choose a model for each job. Costs are shown per minute of call.</p></div><span class="chip n">Rates are examples</span></div>
+          <table class="tbl"><tr><th>Job</th><th>Provider · model</th><th>Fallback</th><th class="r">≈ per min</th></tr>
+            <tr><td><b>Conversation brain</b></td><td>Anthropic · Claude Haiku</td><td>OpenAI · GPT mini</td><td class="r num">₹0.40</td></tr>
+            <tr><td>Hard questions / summaries</td><td>Anthropic · Claude Sonnet</td><td>Google · Gemini</td><td class="r num">₹0.20</td></tr>
+            <tr><td><b>Speech to text</b></td><td>Deepgram · Nova (Hindi + English)</td><td>Sarvam · Saarika</td><td class="r num">₹0.35</td></tr>
+            <tr><td><b>Text to speech</b></td><td>Sarvam · Bulbul</td><td>ElevenLabs</td><td class="r num">₹0.50</td></tr>
+            <tr><td>Voice-native (speech to speech)</td><td><span class="chip n">Off · for testing</span></td><td>-</td><td class="r">-</td></tr></table>
+          <div class="grid2">
+            <div class="box mark x"><span class="pin">PER AGENT</span><h5>Agent override</h5><div class="sub">"Reception" uses a faster, cheaper brain; "Priya Sales" uses the smarter one for objections.</div></div>
+            <div class="box"><h5>Estimated cost of this setup</h5><div class="big num">≈ ₹1.45 / min</div><div class="sub">AI + voice only; telephony and your margin are added by the plan rate</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Each agent picks a Claude model, Deepgram and Sarvam (built as settings). Only Anthropic is offered; no fallback.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Several providers per job: OpenAI, Google Gemini, Anthropic Claude for the brain; Deepgram/Sarvam for speech to text; Sarvam/ElevenLabs for voice.</li><li>Automatic fallback if a provider is down.</li><li>Voxura admin decides which models customers may pick and at what rate; customers see a simple ₹/min.</li></ul></div>
+      <div class="issue"><h4>Needs first</h4><ul><li>API accounts with each provider you want to offer.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Should customers choose models themselves, or only Voxura admin?</li><li>Which providers do you already have accounts with?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 26 ============ -->
+<section class="screen" id="s26">
+  <div class="screen-head"><span class="no">26</span><h2>Knowledge base (PDFs, website, FAQs)</h2><span class="tag t-exp">Expansion</span><span class="url">/agents/:id → Knowledge</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span class="on">Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Priya Sales · Knowledge</h3><p>What the agent may answer from. It says "I'll check and get back" when the answer isn't here.</p></div><span class="btn pri">+ Upload files</span></div>
+          <table class="tbl"><tr><th>Source</th><th>Type</th><th>Size</th><th>Status</th></tr>
+            <tr><td>ERP brochure 2026.pdf</td><td><span class="chip b">PDF</span></td><td class="num">14 pages</td><td><span class="chip g">Ready</span></td></tr>
+            <tr><td>Price list (internal).xlsx</td><td><span class="chip b">Excel</span></td><td class="num">3 sheets</td><td><span class="chip g">Ready · prices only if allowed</span></td></tr>
+            <tr><td>brightlane.in (website)</td><td><span class="chip o">Website</span></td><td class="num">22 pages</td><td><span class="chip o">Reading… 60%</span></td></tr>
+            <tr><td>FAQs</td><td><span class="chip n">Typed</span></td><td class="num">18</td><td><span class="chip g">Ready</span></td></tr></table>
+          <div class="box mark x"><span class="pin">TRY IT</span><h5>Ask a test question</h5><div class="inp">Do you support GST e-invoicing?</div>
+            <div class="sub" style="margin-top:6px"><b>Agent would say:</b> "Haan ji, hamara ERP GST e-invoice seedha generate karta hai." · Source: ERP brochure, page 6</div></div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Each agent has a typed knowledge text and FAQs (built). No file upload or website reading.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Upload PDFs, Word and Excel files; read your website; keep FAQs.</li><li>The agent answers only from these, says where an answer came from, and avoids guessing.</li><li>Test box to check answers before going live.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Which documents should the agent learn from first?</li><li>Any information it must never share (e.g. internal prices)?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 27 ============ -->
+<section class="screen" id="s27">
+  <div class="screen-head"><span class="no">27</span><h2>AI usage &amp; cost breakdown</h2><span class="tag t-exp">Expansion</span><span class="url">/usage · admin: /admin/usage</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span class="on">AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>AI usage · November</h3><p>Where the money goes, per call, agent and campaign. Figures are illustrative.</p></div><div class="seg"><b class="on">This month</b><b>Last month</b></div></div>
+          <div class="grid4">
+            <div class="box"><h5>Calls</h5><div class="big num">1,250</div></div>
+            <div class="box"><h5>Call minutes</h5><div class="big num">4,800</div></div>
+            <div class="box"><h5>Cost per call</h5><div class="big num">₹4.80</div></div>
+            <div class="box mark x"><span class="pin">ROI</span><h5>Cost per client won</h5><div class="big num">₹1,500</div><div class="sub">4 clients from 1,250 calls</div></div>
+          </div>
+          <div class="box"><h5>Cost split (₹6,000)</h5>
+            <div class="stack"><i style="width:28%;background:#4a2c9e"></i><i style="width:12%;background:#1a63d8"></i><i style="width:20%;background:#12c06a"></i><i style="width:40%;background:#c86a00"></i></div>
+            <div class="row sub" style="margin-top:6px"><span>■ AI brain (tokens) ₹1,680</span><span style="color:#1a63d8">■ Speech to text ₹720</span><span style="color:#0f9d58">■ Voice ₹1,200</span><span style="color:#c86a00">■ Telephony ₹2,400</span></div></div>
+          <table class="tbl"><tr><th>Agent / campaign</th><th class="r">Calls</th><th class="r">Minutes</th><th class="r">Cost</th><th class="r">Hot leads</th></tr>
+            <tr><td>Priya Sales · Diwali offer</td><td class="r num">900</td><td class="r num">3,600</td><td class="r num">₹4,500</td><td class="r num">14</td></tr>
+            <tr><td>Reception (incoming)</td><td class="r num">350</td><td class="r num">1,200</td><td class="r num">₹1,500</td><td class="r num">4</td></tr></table>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Each call stores its charge and raw usage (tokens, speech seconds) in the database (built), but there is no breakdown screen.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Split every call's cost into AI brain, speech to text, voice and telephony.</li><li>Totals per agent, campaign and month; cost per call, per Hot lead and per client won.</li><li>Customers see their ₹ charges; Voxura admin also sees the real provider cost and margin.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Should customers see the provider split, or only their total ₹/min?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 28 ============ -->
+<section class="screen" id="s28">
+  <div class="screen-head"><span class="no">28</span><h2>Admin console (Voxura staff)</h2><span class="tag t-exp">Expansion</span><span class="url">/admin</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Voxura admin</div><span class="on">Clients</span><span>Plans & rates</span><span>AI providers</span><span>Number pool</span><span>Usage</span><span>Audit log</span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Clients</h3><p>Every company on Voxura, with wallet, plan and usage.</p></div><span class="btn pri">+ Add client</span></div>
+          <div class="grid4">
+            <div class="box"><h5>Active clients</h5><div class="big num">38</div></div>
+            <div class="box"><h5>Minutes this month</h5><div class="big num">52,400</div></div>
+            <div class="box"><h5>Revenue</h5><div class="big num">₹2.6 L</div></div>
+            <div class="box"><h5>Provider cost</h5><div class="big num">₹1.4 L</div><div class="sub">margin 46%</div></div>
+          </div>
+          <table class="tbl"><tr><th>Client</th><th>Plan</th><th class="r">Wallet</th><th class="r">Min (Nov)</th><th>Rate</th><th></th></tr>
+            <tr><td><b>Brightlane Software</b><div class="sub">owner@brightlane.in</div></td><td>Growth</td><td class="r num">₹1,250</td><td class="r num">4,800</td><td>₹6.00/min</td><td><span class="btn">Open</span></td></tr>
+            <tr><td><b>Sunrise Realty</b><div class="sub">admin@sunrise.in</div></td><td>Starter</td><td class="r num" style="color:var(--bad)">₹40</td><td class="r num">900</td><td>₹7.00/min</td><td><span class="btn">Open</span></td></tr>
+            <tr class="muted"><td>Old Test Co</td><td>Suspended</td><td class="r num">₹0</td><td class="r num">0</td><td>-</td><td><span class="btn">Open</span></td></tr></table>
+          <div class="box soft mark x"><span class="pin">CONTROLS</span><div class="sub">Per client: plan, ₹/min rate, allowed models, agent and line limits, wallet credit/adjustment (logged), suspend, log in as client (with consent, logged).</div></div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Only the number pool exists for Voxura staff (built). Plans, rates and clients are not manageable on screen.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Client list with wallet, plan, usage, rate and status; suspend or reactivate.</li><li>Plans and per-minute rates; which AI models each plan may use; agent and line limits.</li><li>Manual wallet adjustments and every admin action recorded in an audit log.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Who at Voxura needs admin access, and should some staff be read-only?</li><li>Plans and prices to start with?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 29 ============ -->
+<section class="screen" id="s29">
+  <div class="screen-head"><span class="no">29</span><h2>Live call monitor</h2><span class="tag t-exp">Expansion</span><span class="url">/calls/live</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span class="on">Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Calls happening now</h3><p>Listen in, see the live transcript, or take over.</p></div><span class="chip g">● 3 live · 2 lines free</span></div>
+          <div class="grid2">
+            <div class="box" style="display:grid;gap:8px">
+              <div class="row" style="justify-content:space-between"><b>Ravi Traders</b><span class="chip g">02:14</span></div>
+              <div class="sub">Priya Sales · Diwali offer · Hot 86</div>
+              <div class="tx"><div class="ag">Teen branches ke liye price ₹45,000 per branch hai.</div><div class="cu">Thoda discount mil sakta hai?</div></div>
+              <div class="row"><span class="btn">🎧 Listen</span><span class="btn">Whisper to agent</span><span class="btn pri">Take over</span></div>
+            </div>
+            <div class="box" style="display:grid;gap:6px">
+              <div class="row" style="justify-content:space-between"><b>+91 90000 00099</b><span class="chip g">00:41</span></div><div class="sub">Reception · incoming</div>
+              <div class="row" style="justify-content:space-between;margin-top:8px"><b>Meena Stores</b><span class="chip o">Ringing</span></div><div class="sub">Priya Sales · attempt 2 of 3</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Not available: calls can only be reviewed afterwards in Call history (built).</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>See live calls with a running transcript; listen in; whisper an instruction to the agent; take over the call.</li><li>Shows free lines so you know if a campaign is held back by line limits.</li></ul></div>
+      <div class="issue"><h4>Needs first</h4><ul><li>Recording and monitoring consent wording at the start of calls.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Should staff be allowed to listen in, or only owners and admins?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 30 ============ -->
+<section class="screen" id="s30">
+  <div class="screen-head"><span class="no">30</span><h2>Voice engine (how a call runs)</h2><span class="tag t-exp">Expansion</span><span class="url">behind the scenes · no screen for customers</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span class="on">Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Voice engine</h3><p>The part that actually talks. Customers don't see this; it powers every call.</p></div><span class="chip o">Not built: needs provider accounts</span></div>
+          <div class="wf">
+            <div class="n t"><b>1.</b> Campaign, callback, instant-call or incoming call starts (inside calling hours, wallet &gt; ₹0, not DND)</div><div class="ln"></div>
+            <div class="n"><b>2.</b> Phone line via SIP provider → LiveKit room</div><div class="ln"></div>
+            <div class="n"><b>3.</b> Caller's voice → speech to text (Hindi/English/Hinglish)</div><div class="ln"></div>
+            <div class="n"><b>4.</b> AI brain answers from the agent's script, knowledge, lead details and memory</div><div class="ln"></div>
+            <div class="n"><b>5.</b> Text → natural voice, played back in under a second</div><div class="ln"></div>
+            <div class="n a"><b>6.</b> Call ends → transcript, summary, outcome, score, follow-ups, wallet charge, automations</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>The web app stores everything the engine needs (agents, leads, campaigns, follow-ups, wallet) and is ready for it.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>A Python worker on LiveKit Agents, one process per call, scaled by line count.</li><li>Honours calling hours, Do-not-call, wallet balance and retries; charges each answered call once.</li><li>Works first in the browser (Live call, screen 03), then on real phone lines.</li></ul></div>
+      <div class="issue"><h4>Needs first</h4><ul><li>LiveKit, Deepgram, Sarvam and Claude API keys; an Indian SIP provider for phone calls; a server (VPS) to run it.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Which SIP provider will you use for Indian numbers?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 31 ============ -->
+<section class="screen" id="s31">
+  <div class="screen-head"><span class="no">31</span><h2>Team &amp; settings</h2><span class="tag t-exp">Expansion</span><span class="url">/settings</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span>Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span class="on">Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Team</h3><p>Who can use this workspace, and what they may do.</p></div><span class="btn pri">+ Invite member</span></div>
+          <table class="tbl"><tr><th>Name</th><th>Role</th><th>Leads owned</th><th>Status</th><th></th></tr>
+            <tr><td><b>Demo Owner</b><div class="sub">owner@brightlane.in</div></td><td><span class="chip">Owner</span></td><td class="num">8</td><td><span class="chip g">Active</span></td><td></td></tr>
+            <tr><td><b>Rahul Verma</b><div class="sub">rahul@brightlane.in</div></td><td><span class="chip b">Admin</span></td><td class="num">31</td><td><span class="chip g">Active</span></td><td><span class="btn">Edit</span></td></tr>
+            <tr><td><b>Neha Singh</b><div class="sub">neha@brightlane.in</div></td><td><span class="chip n">Staff</span></td><td class="num">24</td><td><span class="chip o">Invite sent</span></td><td><span class="btn">Resend</span></td></tr></table>
+          <div class="grid3">
+            <div class="box"><h5>Company</h5><div class="sub">Name, GST number, address for invoices, logo for quotes</div></div>
+            <div class="box"><h5>Calling defaults</h5><div class="sub">Hours 10:00–19:00 IST · skip DND · Sundays off</div></div>
+            <div class="box"><h5>Security</h5><div class="sub">Change password · two-step login · sign out other devices</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>Roles work everywhere (built), but there's no screen to invite or manage team members, or edit company details.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>Invite by email; roles Owner / Admin / Staff; deactivate without losing their history; reassign their leads.</li><li>Company details, calling defaults, change password, forgot password, two-step login.</li></ul></div>
+      
+      <div class="q"><h4>Questions for you</h4><ul><li>Should staff see all leads, or only the leads assigned to them?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 32 ============ -->
+<section class="screen" id="s32">
+  <div class="screen-head"><span class="no">32</span><h2>Sales operations dashboard (AI insights)</h2><span class="tag t-exp">Expansion</span><span class="url">/ (dashboard, sales view)</span></div>
+  <div class="screen-body">
+    <div class="mock-area">
+      <div class="app">
+        <div class="side"><div class="logo"><i></i>Voxura</div><div class="grp">Workspace</div><span class="on">Dashboard</span><span>Live call</span><span>Campaigns</span><span>Agents</span><span>Leads</span><span>Follow-ups</span><span>Meetings <em>NEW</em></span><span>Messages <em>NEW</em></span><span>Quotes <em>NEW</em></span><span>Automations <em>NEW</em></span><span>Call history</span><div class="grp">Finance</div><span>Billing</span><span>AI usage <em>NEW</em></span><div class="grp">Settings</div><span>Team</span><span>Integrations <em>NEW</em></span><span>AI models <em>NEW</em></span></div>
+        <div class="main">
+
+          <div class="ph"><div><h3>Sales operations</h3><p>One view of calls, qualification, meetings and what the AI recommends next.</p></div><div class="seg"><b class="on">Today</b><b>7 days</b><b>30 days</b></div></div>
+          <div class="grid4">
+            <div class="box"><h5>Booking rate</h5><div class="big num">38%</div><div class="sub" style="color:var(--ok)">▲ 5% vs last week</div></div>
+            <div class="box"><h5>Avg call</h5><div class="big num">3m 18s</div></div>
+            <div class="box"><h5>Qualified today</h5><div class="big num">12</div><div class="sub">5 Hot · 7 Warm</div></div>
+            <div class="box"><h5>Meetings booked</h5><div class="big num">6</div></div>
+          </div>
+          <div class="grid2">
+            <div class="box"><h5>Live call · Ravi Traders · 02:14</h5>
+              <div class="tx"><div class="ag">Aapke kitne branches hain?</div><div class="cu">Teen. Abhi Tally use karte hain.</div><div class="ag">Monthly kitne bills bante hain?</div></div>
+              <div class="row" style="margin-top:6px"><span class="btn pri">Book meeting</span><span class="btn">Add to nurture sequence</span></div></div>
+            <div class="box mark x"><span class="pin">AI INSIGHTS</span><h5>For this lead</h5><div class="sub">✓ Strong fit: 3 branches, uses Tally, budget ₹4–5 lakh<br>✓ Recommended: book a demo this week<br>Confidence 0.89 · Sentiment: positive</div>
+              <h5 style="margin-top:10px">Sentiment today</h5>
+              <div class="meter"><span>Positive</span><div class="bar"><i style="width:66%;background:#12c06a"></i></div><span class="num">66%</span></div>
+              <div class="meter"><span>Neutral</span><div class="bar"><i style="width:28%;background:#1a63d8"></i></div><span class="num">28%</span></div>
+              <div class="meter"><span>Negative</span><div class="bar"><i style="width:9%;background:#c62828"></i></div><span class="num">9%</span></div></div>
+          </div>
+          <div class="grid2">
+            <table class="tbl"><tr><th>Qualification</th><th>Size</th><th>Uses</th><th>Budget</th><th>Result</th></tr>
+              <tr><td>Ravi Traders</td><td class="num">3 shops</td><td>Tally</td><td class="num">₹4–5 L</td><td><span class="chip g">Qualified</span></td></tr>
+              <tr><td>Kumar Electricals</td><td class="num">1 shop</td><td>Excel</td><td class="num">₹50–80k</td><td><span class="chip o">Nurture</span></td></tr>
+              <tr><td>Patel Hardware</td><td class="num">6 shops</td><td>Zoho</td><td>Not shared</td><td><span class="chip n">Manual review</span></td></tr></table>
+            <div class="box"><h5>CRM sync</h5><div class="sub">HubSpot · <span class="chip g">synced 2 min ago</span><br>Zoho CRM · <span class="chip o">1 update pending</span><br>Google Sheets · <span class="chip g">synced 15 min ago</span></div>
+              <h5 style="margin-top:10px">Call queue</h5><div class="sub">Sharma Kirana · qualifying next<br>Gupta Medicals · demo reminder call 3 pm<br>Iyer Bakery · ready (attempt 2)</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <div><h4>Today</h4><ul><li>The dashboard shows wallet, calls, minutes, spend, today's calls, the running campaign and follow-ups due (built). No AI insights, sentiment, booking rate or CRM sync.</li></ul></div>
+      <div><h4>Proposed</h4><ul><li>A sales view of the dashboard: booking rate, qualified leads, meetings, average call length.</li><li>AI insights per live or recent call: fit, recommended next step, confidence and sentiment.</li><li>Sentiment split across today's calls; qualification table; upcoming call queue.</li><li>Two-way sync with an outside CRM (HubSpot, Zoho, Salesforce, Pipedrive, Google Sheets) for teams that keep using theirs.</li></ul></div>
+      <div class="issue"><h4>Needs first</h4><ul><li>API access to the outside CRM being synced.</li></ul></div>
+      <div class="q"><h4>Questions for you</h4><ul><li>Do you (or your clients) use another CRM that Voxura must sync with? Which one?</li><li>Is this the main dashboard, or a separate “Sales” view next to the current one?</li></ul></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ NEXT ============ -->
+<section class="end" id="next">
+  <h2>Open questions and next steps</h2>
+  <ol>
+    <li><b>Is this the right base?</b> These screens improve the existing Voxura app instead of designing a new one from scratch. Please confirm this is the plan.</li>
+    <li><b>Do we have access to the source code</b> of the live app (front end and backend)? We need it to know whether pausing, scheduling, recordings and outcomes already exist on the backend.</li>
+    <li><b>What's in scope for release 1?</b> Please tick: Services &amp; Products, Leads (CRM), Follow-ups, campaign scheduling and retries, call-history improvements, billing fixes.</li>
+    <li><b>Admin console.</b> This login is a customer account, so we couldn't see any admin screens (pricing per minute, plans, customer list). Please share an admin login if one exists.</li>
+    <li><b>Bugs to fix first:</b> Phone numbers page never loads; call counts don't match (124 vs 184); two different spend figures (₹161.40 vs ₹121.97); raw dates and "__none__" on Billing; 0-second calls marked Completed.</li>
+  </ol>
+  <h2 style="margin-top:8px">Expansion (screens 16–32): what we need from you</h2>
+  <ol>
+    <li><b>Order of work.</b> Our suggestion: voice engine and Live call (30, 03) first, because everything else depends on real calls; then lead scoring (17), WhatsApp (18) and meeting booking (19); then quotes, handover and onboarding (20–22); then automations, usage and the admin console (23, 27, 28).</li>
+    <li><b>Accounts to create:</b> LiveKit, Deepgram, Sarvam, Claude API (plus OpenAI/Gemini if wanted), an Indian SIP provider, WhatsApp Business API, an email service, Facebook/Google ad access, Google or Outlook calendars.</li>
+    <li><b>Legal checks:</b> TRAI rules for promotional calls (DND registry, calling hours, consent), call-recording consent, WhatsApp opt-in, and data privacy (DPDP Act) for stored conversations.</li>
+    <li><b>Pricing:</b> plans and the ₹/min rate per plan, so the cost screens (25, 27, 28) can show real numbers.</li>
+  </ol>
+  <p class="sub">How this was reviewed: we logged into the live app on 31 Oct 2026 and only opened pages, forms and the detail view of one call. Nothing was saved, deleted, called or paid.</p>
+</section>
+
+  </main>
+</div>
+</body>
+</html>
